@@ -3,25 +3,27 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { UserEntity } from '../user/user.entity';
+import { UserModule } from '../user/user.module';
+import { UserService } from '../user/user.service';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { JwtStrategy } from './jwt.strategy';
-import { User } from './user.entity';
-import { UsersService } from './users.service';
 
 @Module({
-  imports: [
-    PassportModule,
-    JwtModule.registerAsync({
-      imports: [ConfigModule],
-      useFactory: async () => ({
-        secret: process.env.JWT_SECRET,
-      }),
-      inject: [ConfigService],
-    }),
-    TypeOrmModule.forFeature([User]),
-  ],
-  controllers: [AuthController],
-  providers: [AuthService, UsersService, JwtStrategy],
+    imports: [
+        PassportModule,
+        JwtModule.registerAsync({
+            imports: [ConfigModule],
+            useFactory: async () => ({
+                secret: process.env.JWT_SECRET,
+            }),
+            inject: [ConfigService],
+        }),
+        TypeOrmModule.forFeature([UserEntity]),
+        UserModule,
+    ],
+    controllers: [AuthController],
+    providers: [AuthService, UserService, JwtStrategy],
 })
 export class AuthModule {}

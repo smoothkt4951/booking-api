@@ -6,21 +6,21 @@ import { JwtAuthGuard } from './jwt-auth.guard';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+    constructor(private readonly authService: AuthService) {}
 
-  @Post('login')
-  async login(@Body() authLoginDto: AuthLoginDto) {
-    return this.authService.login(authLoginDto);
-  }
+    @Post('login')
+    async login(@Body() authLoginDto: AuthLoginDto) {
+        return this.authService.login(authLoginDto);
+    }
 
-  @Post('register')
-  async register(@Body() authRegisterDto: RegisterDto) {
-    return this.authService.register(authRegisterDto);
-  }
+    @Post('register')
+    async register(@Body() authRegisterDto: RegisterDto) {
+        return this.authService.register(authRegisterDto);
+    }
 
-  @UseGuards(JwtAuthGuard)
-  @Get('')
-  async test() {
-    return 'success';
-  }
+    @UseGuards(JwtAuthGuard)
+    @Get('')
+    async test() {
+        return 'success';
+    }
 }
