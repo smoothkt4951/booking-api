@@ -8,7 +8,10 @@ import { UserModule } from './user/user.module';
 
 @Module({
     imports: [
-        ConfigModule.forRoot(),
+        ConfigModule.forRoot({
+            isGlobal: true,
+            // isGlobal property to true so this module is loaded on every other module (if you don’t set this, you’ll have to add the ConfigModule to the imports of every module where you have to use the .env information).
+        }),
         AuthModule,
         TypeOrmModule.forRoot({
             type: 'postgres',
@@ -20,7 +23,7 @@ import { UserModule } from './user/user.module';
             autoLoadEntities: true,
             synchronize: true,
         }),
-        UserModule
+        UserModule,
     ],
     controllers: [AppController],
     providers: [AppService],

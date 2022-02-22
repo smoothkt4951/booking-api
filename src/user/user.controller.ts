@@ -9,7 +9,9 @@ import {
   Put,
   UseInterceptors,
 } from '@nestjs/common';
-import { RegisterDto } from './user.dto';
+import { CreateUserDto } from 'src/auth/dto/create-user.dto';
+import { UserEntity } from './user.entity';
+// import { RegisterDto } from './user.dto';
 
 @Controller('users')
 export class UserController {
@@ -22,16 +24,16 @@ export class UserController {
 
   @Get(':id')
   async getUser(@Param('id') id: string) {
-    return this.userService.findUserById(id);
+    return this.userService.findUserBy(id);
   }
 
   @Post()
-  async createUser(@Body() body: RegisterDto) {
+  async createUser(@Body() body: CreateUserDto) {
     return this.userService.createUser(body);
   }
 
   @Put(':id')
-  async updateUserInfo(@Param('id') id: string, @Body() body: any) {
+  async updateUser(@Param('id') id: string, @Body() body: any) {
     return this.userService.updateUser(id, body);
   }
 
