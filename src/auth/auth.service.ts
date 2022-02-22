@@ -1,5 +1,7 @@
 import {
     BadRequestException,
+    HttpException,
+    HttpStatus,
     Injectable,
     UnauthorizedException,
 } from '@nestjs/common';
@@ -49,7 +51,10 @@ export class AuthService {
 
         const user = await this.usersService.findUserBy({ email });
         if (!(await user?.validatePassword(password))) {
-            throw new UnauthorizedException();
+            throw new HttpException(
+                'Email or Password is invalid!',
+                HttpStatus.BAD_REQUEST,
+            );
         }
         return user;
     }

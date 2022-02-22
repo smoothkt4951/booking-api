@@ -1,9 +1,12 @@
-import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { AuthMiddleware } from './auth/auth.middleware';
 import { AuthModule } from './auth/auth.module';
+import { JwtStrategy } from './auth/jwt.strategy';
 import { UserModule } from './user/user.module';
 
 @Module({
@@ -24,8 +27,22 @@ import { UserModule } from './user/user.module';
             synchronize: true,
         }),
         UserModule,
+        JwtModule.registerAsync({
+            imports: [ConfigModule],
+            useFactory: async () => ({
+                secret: process.env.JWT_SECRET,
+            }),
+            inject: [ConfigService],
+        }),
     ],
     controllers: [AppController],
     providers: [AppService],
 })
-export class AppModule {}
+export class AppModule {
+    configure(consumer: MiddlewareConsumer) {
+        consumer.apply(AuthMiddleware).forRoutes({
+            path: '*',
+            method: RequestMethod.ALL,
+        });
+    }
+}

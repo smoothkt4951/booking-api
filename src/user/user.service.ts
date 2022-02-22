@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+    HttpException,
+    HttpStatus,
+    Injectable,
+    NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserDto } from '../auth/dto/create-user.dto';
 import { Repository } from 'typeorm';
@@ -24,6 +29,13 @@ export class UserService {
 
     async createUser({ firstname, lastname, email, password }: CreateUserDto) {
         const user = new UserEntity(firstname, lastname, email, password);
+        const userEmail = await this.findUserBy({ email });
+        if (userEmail) {
+            throw new HttpException(
+                'Email are taken!',
+                HttpStatus.UNPROCESSABLE_ENTITY,
+            );
+        }
         const createUser = await this.userRepository.create(user);
         console.log(createUser);
         if (!createUser) {
