@@ -1,0 +1,5 @@
+npm i bcrypt
+npm i -D @types/bcrypt
+npm i class-validator
+yarn add @nestjs/passport @nestjs/jwt passport passport-jwt
+yarn add @types/passport-jwt -D
