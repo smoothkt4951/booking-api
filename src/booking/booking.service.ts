@@ -1,4 +1,4 @@
-import { Injectable, Options } from '@nestjs/common';
+import { Injectable, NotFoundException, Options } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { BookingRepository } from './booking.repository';
@@ -34,16 +34,26 @@ export class BookingService {
     return entity_list
   }
 
-  async findOne(id: number) { //uuid
-    return await this.repository.findOneOrFail(id)
+  async findBookingById(id: string) { //uuid
+    var entity = await this.repository.findOne({id:id})  //can only return 1/0 
+    if (!entity)
+      throw new NotFoundException("not found ")
+    return entity
   }
 
-  update(id: number, updateBookingDto: UpdateBookingDto) { //this one fking wait 
-    return `This action updates a #${id} booking`;
+  async findBookingByUser(id: string) {      
+    var entity = await this.repository.find({user_id:id}) //can be 1 user book multiple
+    if (!entity)
+      throw new NotFoundException("not found ")
+    return entity
+  }
+
+  async update(id: number, dto: UpdateBookingDto) { //Date? need examination
+    return await this.repository.update(id , dto)
   }
 
   async remove(id: number) {
-    var entity = await this.repository.findOneOrFail(id)
+    var entity = await this.repository.findOne(id)
     return this.repository.remove(entity);
   }
 }

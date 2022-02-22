@@ -18,13 +18,13 @@ export class BookingController {
   }
 
   @Get(':bookingId')
-  findBookingByID(@Param('bookingId') id: string) {//not sure, waiting a bit ?
-    return this.bookingService.findOne(+id);
+  findBookingByID(@Param('bookingId') id: string) {
+    return this.bookingService.findBookingById(id);
   }
 
   @Get(':userId')
-  findBookingByUser(@Param('userId') id: string) {
-    return this.bookingService.findOne(+id);
+  findBookingByUser(@Param('userId') userid: string) {
+    return this.bookingService.findBookingByUser(userid);
   }
 
   @Patch(':bookingId')

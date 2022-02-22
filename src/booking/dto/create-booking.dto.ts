@@ -1,6 +1,6 @@
 import { ApiProperty, PartialType } from "@nestjs/swagger";
 import { Booking } from "../entities/booking.entity";
-
+import { IsDate, IsEmail, isNotEmpty, IsNotEmpty } from 'class-validator';
 
 
 
@@ -8,8 +8,10 @@ import { Booking } from "../entities/booking.entity";
 
 export class CreateBookingDto {
     @ApiProperty()
+    @IsNotEmpty()
     userid: string;
 
+    @IsNotEmpty()
     @ApiProperty()
     roomid: string;
 
