@@ -1,25 +1,53 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { UserEntity } from './user.entity';
 
 @Injectable()
 export class UserService {
 
-    async getAllUsers(){
-        return await `get all users ok`;  
+    constructor(
+        @InjectRepository(UserEntity)
+        private readonly userRepository: Repository<UserEntity>
+    ){}
+
+
+    async findAllUsers(){
+        const users = await this.userRepository.find();
+        console.log(users)
+        return users;
     }
 
-    async getUser(id){
-        return await `get user by ${id}`;
+    async findUserById(id: string) {
+        const user = await this.userRepository.findOne({
+            where: [{ id: id }]
+        });
+        return user;
     }
 
-    async createUser(id, body){
-        return await `create user: ${id} ++ ${body}`;
+    async createUser(body){
+        console.log(body);
+        const createUser = await this.userRepository.create(body);
+        console.log(createUser);
+        if(!createUser){
+            throw new NotFoundException(`Cant create user`) ;
+        }
+        return this.userRepository.save(createUser);
     }
 
     async updateUser(id, body){
-        return `updated by ${id} ++ ${body}`;
+        const updateUser = await this.userRepository.update(id, body);
+        if(!updateUser){
+            throw new NotFoundException(`Cant update userinfo`) ;
+        }
+        return updateUser;
     }
 
     async removeUser(id){
-        return `rm by ${id}`;
+        const removeUser = await this.userRepository.delete(id);
+        if(!removeUser){
+            throw new NotFoundException(`Cant rm user`) ;
+        }
+        return removeUser;
     }
 }

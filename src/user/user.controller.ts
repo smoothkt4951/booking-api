@@ -1,5 +1,6 @@
 import { UserService } from './user.service';
-import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, UseInterceptors } from '@nestjs/common';
+import { RegisterDto } from './user.dto';
 
 @Controller('users')
 export class UserController {
@@ -7,17 +8,17 @@ export class UserController {
 
     @Get()
     async getAllUsers(){
-        return this.userService.getAllUsers();
+        return this.userService.findAllUsers();
     }
 
     @Get(':id')
     async getUser(@Param('id') id :string){
-        return this.userService.getUser(id);
+        return this.userService.findUserById(id);
     }
 
-    @Post(':id')
-    async createUser(@Param('id') id: string, @Body() body: any){
-        return this.userService.createUser(id, body);
+    @Post()
+    async createUser(@Body() body: RegisterDto){
+        return this.userService.createUser(body);
     }
 
     @Put(':id')
@@ -29,4 +30,5 @@ export class UserController {
     async removeUser(@Param('id') id: string){
         return this.userService.removeUser(id);
     }
+
 }
