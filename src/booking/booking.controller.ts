@@ -3,7 +3,7 @@ import { BookingService } from './booking.service';
 import { CreateBookingDto } from './dto/create-booking.dto';
 import { UpdateBookingDto } from './dto/update-booking.dto';
 
-@Controller('booking')
+@Controller('/booking')
 export class BookingController {
   constructor(private readonly bookingService: BookingService) {}
 
@@ -14,21 +14,26 @@ export class BookingController {
 
   @Get("/")
   findAll() {
-    return this.bookingService.findAll();
+    return this.bookingService.findAll();//done?
   }
 
   @Get(':bookingId')
-  findOne(@Param('bookingId') id: string) {
+  findBookingByID(@Param('bookingId') id: string) {//not sure, waiting a bit ?
     return this.bookingService.findOne(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateBookingDto: UpdateBookingDto) {
+  @Get(':userId')
+  findBookingByUser(@Param('userId') id: string) {
+    return this.bookingService.findOne(+id);
+  }
+
+  @Patch(':bookingId')
+  update(@Param('bookingId') id: string, @Body() updateBookingDto: UpdateBookingDto) {
     return this.bookingService.update(+id, updateBookingDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
+  @Delete(':bookingId')
+  remove(@Param('bookingId') id: number) {
     return this.bookingService.remove(+id);
   }
 }

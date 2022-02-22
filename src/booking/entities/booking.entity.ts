@@ -1,39 +1,45 @@
 import { Column, Entity, EntityRepository, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { BookingRepository } from "../booking.repository";
-
-
-
-
 @Entity()
-// - id
-// - booking_id (transaction_token)
-// - room_id
-// - user_id
-// - check_in_date
-// - check_out_date
-// - created_at
-// - Total Price
 export class Booking {
+    
     @PrimaryGeneratedColumn('uuid')
-    private id : string;
+    id : string;
+
+    @Column({
+      type:'text',
+      nullable:true,
+      default:null
+    })
+    booking_id:string
 
     // @ManyToOne(type => User, { primary: true }) foreign keys , awaiting merging
-    // @JoinColumn({ name: "userID" })
-    // private user_id: User;
+    // @JoinColumn({ name: "user_id" })
+    //   user_id: User;
+    @Column({
+      type:"text", 
+      primary: true,
+    })
+    user_id:string
 
     // @OneToOne(type => Room, { primary: true }) foreign keys
-    // @JoinColumn({ name: "roomID" })
-    // private room_id:Room;
+    // @JoinColumn({ name: "room_id" })
+    //   room_id:Room;
+    @Column({
+      type:"text", 
+      primary: true,
+    })
+    room_id:string 
 
-    @Column({ type: 'date' })
-    private check_in_date : string;
 
-    @Column({ type: 'date' })
-    private check_out_date : string;
+    @Column({ type: 'timestamptz' })
+    check_in_date : Date;
 
-    @Column({ type: 'date' })
-    private created_date : string;
+    @Column({ type: 'timestamptz' })
+    check_out_date : Date;
+
+    @Column({ type: 'timestamptz' })
+    created_date : Date;
 
     @Column()
-    private totalPrice :number //float, currency issue ?
+    totalPrice :number 
 }
