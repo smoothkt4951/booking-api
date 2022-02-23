@@ -45,8 +45,8 @@ export class Booking {
 
     constructor(dto:UpdateBookingDto){
       this.check_in_date =new Date(Date.parse(dto.check_in_date))
-      this.check_out_date =new Date(Date.parse(dto.check_in_date))
-      this.created_date =new Date(Date.parse(dto.check_in_date))
+      this.check_out_date =new Date(Date.parse(dto.check_out_date))
+      this.created_date =new Date(Date.now())
       this.totalPrice=this.totalPrice
     }
   }
