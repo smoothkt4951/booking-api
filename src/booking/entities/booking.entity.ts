@@ -1,4 +1,5 @@
-import { Column, Entity, EntityRepository, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, EntityRepository, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { CreateBookingDto } from "../dto/create-booking.dto";
 import { UpdateBookingDto } from "../dto/update-booking.dto";
 @Entity()
 export class Booking {
@@ -36,17 +37,11 @@ export class Booking {
 
     @Column({ type: 'timestamptz' })
     check_out_date : Date;
-
-    @Column({ type: 'timestamptz' })
+    @CreateDateColumn({ type: 'timestamptz' })
     created_date : Date;
 
-    @Column()
+    @Column({type:'float',nullable:true})
     totalPrice :number 
 
-    constructor(dto:UpdateBookingDto){
-      this.check_in_date =new Date(Date.parse(dto.check_in_date))
-      this.check_out_date =new Date(Date.parse(dto.check_out_date))
-      this.created_date =new Date(Date.now())
-      this.totalPrice=this.totalPrice
-    }
+    days:number
   }

@@ -1,27 +1,33 @@
-import { ApiProperty, PartialType } from "@nestjs/swagger";
+import { ApiProperty, ApiPropertyOptional, PartialType } from "@nestjs/swagger";
 import { Booking } from "../entities/booking.entity";
-import { IsDate, IsEmail, isNotEmpty, IsNotEmpty } from 'class-validator';
+import { IsDate, IsEmail, isNotEmpty, IsNotEmpty, IsOptional } from 'class-validator';
 
 
 
 
 
 export class CreateBookingDto {
-    @ApiProperty()
-    @IsNotEmpty()
-    userid: string;
+    @ApiPropertyOptional()
+    @IsOptional()
+    uuid: string;
 
-    @IsNotEmpty()
-    @ApiProperty()
-    roomid: string;
+    @ApiPropertyOptional()
+    @IsOptional()
+    user_id: string;
 
-    @ApiProperty({description: 'Date object in JS, converted to timestampz for transportation with .toISOString() '})
+    @ApiPropertyOptional()
+    @IsOptional()
+    room_id: string;
+
+    @ApiPropertyOptional({description: 'Date object in JS, converted to timestampz,usig format ISO8601 for transportation with .toISOString() '})
+    @IsOptional()
     check_in_date : string; 
-  
-    @ApiProperty({description: 'Date object in JS, converted to timestampz for transportation with .toISOString() '})
+    
+    @ApiProperty({description: 'Date object in JS, converted to timestampz,using format ISO8601 for transportation with .toISOString() '})
+    @IsOptional()
     check_out_date : string;
   
-
-    @ApiProperty()
-    totalPrice: number;
+    @ApiPropertyOptional()
+    @IsOptional()
+    price: string;
 }

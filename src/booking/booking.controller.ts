@@ -18,22 +18,22 @@ export class BookingController {
   }
 
   @Get(':bookingId')
-  findBookingByID(@Param('bookingId') id: string) {
-    return this.bookingService.findBookingById(id);
+  findBookingByID(@Param('bookingId') bookingId: string) {
+    return this.bookingService.findBookingByBookingId(bookingId);
   }
 
   @Get(':userId')
-  findBookingByUser(@Param('userId') userid: string) {
-    return this.bookingService.findBookingByUser(userid);
+  findBookingByUserID(@Param('userId') userid: string) {
+    return this.bookingService.findBookingByUserId(userid);
   }
 
   @Patch(':bookingId')
-  update(@Param('bookingId') id: string, @Body() updateBookingDto: UpdateBookingDto) {
-    return this.bookingService.update(+id, updateBookingDto);
+  updateById(@Param('bookingId') id: string, @Body() updateBookingDto: UpdateBookingDto) {
+    return this.bookingService.updateByBookingId(id, updateBookingDto);
   }
 
   @Delete(':bookingId')
-  remove(@Param('bookingId') id: number) {
-    return this.bookingService.remove(+id);
+  remove(@Param('bookingId') id: string) {
+    return this.bookingService.removeByBookingId(id);
   }
 }

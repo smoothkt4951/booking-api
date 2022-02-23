@@ -9,52 +9,44 @@ import { Booking } from './entities/booking.entity';
 @Injectable()
 export class BookingService {
   constructor(
-    @InjectRepository(Booking)
     private repository:BookingRepository,
     // private userService:UserService,
     // private roomService:RoomService
-    private userArray=[],
-    private roomArray=[],
+
     ){}
-    
-  async create(createBookingDto: CreateBookingDto) {// TRANSACTION REQUIRED and all of these are to be in the independent repository
-    // var room_entity:Room=await this.roomService.findOne(parseInt(createBookingDto.roomid))
-    // var user_entity:User=await this.userService.findOne(parseInt(createBookingDto.userid))
-    // var check_in_date:Date=new Date(createBookingDto.check_in_date)
-    // var check_out_date:Date=new Date(createBookingDto.check_out_date)
-    // var created_at:Date = new Date(createBookingDto.created_date)
-    
-    // room_entity.isVacant=false;                     // Must change to alternative .merge()                                                
-    // var entity  = this.repository.create({"room_id":room_entity,"user_id":user_entity,"check_in_date":check_in_date,"check_out_date":check_out_date,"created_at":created_at})
-    // return this.repository.save(entity)
+  async create(dto: CreateBookingDto) {
+    return await this.repository.create1(dto)
   }
 
   async findAll() {
-    const entity_list = await this.repository.find()
+    const entity_list = await this.repository.find() 
     return entity_list
   }
 
-  async findBookingById(id: string) { //uuid
-    const entity = await this.repository.findOne({id:id})
-    if (!entity)
-      throw new NotFoundException("not found ")
-    return entity
+  async findBookingByBookingId(id: string) { //uuid
+    try{
+      const entity = await this.repository.findOneOrFail({booking_id:id})
+      return entity;
+    }
+    catch (err) {
+        throw err
+    }
   }
 
-  async findBookingByUser(id: string) {      
-    const  entity = await this.repository.find({user_id:id}) //can be 1 user book multiple
-    if (!entity)
-      throw new NotFoundException("not found ")
-    return entity
+  async findBookingByUserId(id: string) {      
+    const  entity_list = await this.repository.find({user_id:id}) 
+    if (entity_list.length==0)
+      throw new NotFoundException("not found")
+    return entity_list
   }
 
-  async update(id: number, dto: UpdateBookingDto) { //Date? need examination
-    const object =new Booking(dto)
-    return await this.repository.update(id ,object)
+  async updateByBookingId(Bookingid: string, dto: UpdateBookingDto) { 
+
+    return await this.repository.updateByBookingId(Bookingid ,dto)
   }
 
-  async remove(id: number) {
-    const entity = await this.repository.findOne(id)
+  async removeByBookingId(booking_id: string) {
+    const entity = await this.findBookingByBookingId(booking_id)
     return this.repository.remove(entity);
   }
 }
