@@ -14,45 +14,6 @@ export enum Gender {
 }
 @Entity()
 export class UserEntity {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
-
-  @Column({ unique: true })
-  email: string;
-
-  @Column()
-  @Exclude()
-  password: string;
-
-  @Column({
-    type: 'enum',
-    enum: UserRole,
-    default: UserRole.CLIENT,
-  })
-  role: UserRole;
-
-  @Column({
-    type: 'text',
-    nullable: true,
-  })
-  firstname: string;
-
-  @Column({
-    type: 'text',
-    nullable: true,
-  })
-  lastname: string;
-
-  @Column({
-    type: 'enum',
-    enum: Gender,
-    default: Gender.OTHER,
-  })
-  gender: Gender;
-
-  @Column({ type: 'date', nullable: true, default: null })
-  dateOfBirth: string;
-
   public constructor(
     firstname: string,
     lastname: string,
@@ -64,6 +25,59 @@ export class UserEntity {
     this.email = email;
     this.password = password;
   }
+  // uuid
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
+
+  // email
+  @Column({ unique: true })
+  email: string;
+
+  // password
+  @Column()
+  @Exclude()
+  password: string;
+
+  // userRole
+  @Column({
+    type: 'enum',
+    enum: UserRole,
+    default: UserRole.CLIENT,
+  })
+  role: UserRole;
+
+  // firstname
+  @Column({
+    type: 'text',
+    nullable: true,
+  })
+  firstname: string;
+
+  // lastname
+  @Column({
+    type: 'text',
+    nullable: true,
+  })
+  lastname: string;
+
+  // gender
+  @Column({
+    type: 'enum',
+    enum: Gender,
+    default: Gender.OTHER,
+  })
+  gender: Gender;
+
+  // birthday
+  @Column({ type: 'date', nullable: true, default: null })
+  dateOfBirth: string;
+
+  // avatar
+  @Column({ nullable: true })
+  avatarUrl: string;
+
+  // @Column({ nullable: true })
+  // avatar: string[];
 
   @BeforeInsert()
   async hashPassword() {
