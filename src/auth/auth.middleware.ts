@@ -1,4 +1,9 @@
-import { Injectable, NestMiddleware } from '@nestjs/common';
+import {
+    HttpException,
+    HttpStatus,
+    Injectable,
+    NestMiddleware,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { NextFunction, Request, Response } from 'express';
 import { UserService } from 'src/user/user.service';
@@ -26,6 +31,12 @@ export class AuthMiddleware implements NestMiddleware {
             const { userId } = decode;
 
             const user = await this.userService.findUserBy({ userId });
+            if (!user) {
+                throw new HttpException(
+                    'User not found.',
+                    HttpStatus.UNAUTHORIZED,
+                );
+            }
             req.user = user;
             next();
         } catch (error) {

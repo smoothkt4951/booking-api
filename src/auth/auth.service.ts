@@ -23,6 +23,7 @@ export class AuthService {
 
         const payload = {
             userId: user.id,
+            userRole: user.role,
         };
 
         return {

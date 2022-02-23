@@ -7,17 +7,23 @@ import {
     Param,
     Post,
     Put,
+    UseGuards,
     UseInterceptors,
 } from '@nestjs/common';
 import { CreateUserDto } from 'src/auth/dto/create-user.dto';
-import { UserEntity } from './user.entity';
+import { Role, UserEntity } from './user.entity';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { RolesGuard } from 'src/auth/roles.guard';
+import { Roles } from 'src/auth/roles.decorator';
 // import { RegisterDto } from './user.dto';
 
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('users')
 export class UserController {
     constructor(private readonly userService: UserService) {}
 
     @Get()
+    @Roles(Role.Admin)
     async getAllUsers() {
         return this.userService.findAllUsers();
     }
