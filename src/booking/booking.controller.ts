@@ -17,7 +17,7 @@ export class BookingController {
     return this.bookingService.findAll();//done?
   }
 
-  @Delete('/justright/')
+  @Delete('/removeaftertime/')
   scheduled(){
     return this.bookingService.removeOldEntries()
   }
