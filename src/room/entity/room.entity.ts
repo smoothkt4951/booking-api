@@ -22,6 +22,6 @@ export class RoomEntity {
   size: RoomSize;
   @Column('float', { default: 0 })
   price: number;
-  @Column('jsonb', { nullable: true })
-  images?: object[];
+  @Column('simple-array', { nullable: true })
+  images?: string[];
 }

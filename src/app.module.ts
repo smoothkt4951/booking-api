@@ -1,20 +1,19 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { RouterModule } from '@nestjs/core';
+import { ServeStaticModule } from '@nestjs/serve-static';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { join } from 'path';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-<<<<<<< HEAD
-import { RoomModule } from './room/room.module';
-
-@Module({
-  imports: [RoomModule],
-=======
 import { AuthModule } from './auth/auth.module';
+import { RoomModule } from './room/room.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
     AuthModule,
+    RoomModule,
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.DATABASE_HOST,
@@ -25,8 +24,11 @@ import { AuthModule } from './auth/auth.module';
       autoLoadEntities: true,
       synchronize: true,
     }),
+    // ServeStaticModule.forRoot({
+    //   rootPath: join('C:/Users/pc/Desktop/BookingApis', 'uploads'),
+    // }),
+    RouterModule.register([{ path: '/api/rooms', module: RoomModule }]),
   ],
->>>>>>> 73679577c6ffcb63eeb413ccf6d8c7e1fc95d96b
   controllers: [AppController],
   providers: [AppService],
 })

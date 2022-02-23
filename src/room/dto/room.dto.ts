@@ -1,23 +1,29 @@
+import { RoomSize } from '../entity/room.entity';
+import { IsNotEmpty, IsNumber, IsString, IsOptional } from 'class-validator';
 export class CreateRoomDto {
+  @IsNotEmpty()
+  @IsString()
   codeName: string;
-
-  size: string;
-
+  @IsNotEmpty()
+  @IsString()
+  size: RoomSize;
+  @IsNotEmpty()
+  @IsNumber()
   price: number;
-
-  image: string;
 }
 export class UpdateRoomDto {
+  @IsString()
+  @IsOptional()
   codeName: string;
-
-  size: string;
-
+  @IsString()
+  @IsOptional()
+  size: RoomSize;
+  @IsNumber()
+  @IsOptional()
   price: number;
-
-  image: string;
 }
 
-export class RoomResponseRoomDto {
+export class RoomResponseDto {
   codeName: string;
 
   size: string;
@@ -26,5 +32,11 @@ export class RoomResponseRoomDto {
 
   price: number;
 
-  image: string;
+  images: string[];
+}
+export class FileDto {
+  originalname: string;
+  filename: string;
+  size: string;
+  path: string;
 }
