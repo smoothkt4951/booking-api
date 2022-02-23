@@ -18,12 +18,7 @@ export class ImagesHelper {
   }
 
   static fileFilter(req, file, cb) {
-    const mimeTypes = [
-      'image/png',
-      'image/jpeg',
-      'image/svg+xml',
-      'image/webp',
-    ];
+    const mimeTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp'];
     if (mimeTypes.includes(file.mimetype)) {
       cb(null, file);
     } else {

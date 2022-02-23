@@ -13,6 +13,7 @@ import { UserEntity } from './user.entity';
 // import * as streamifier from 'streamifier';
 // import { UploadAvatarDto } from './dto/upload-avatar.dto';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
+import { UpdateUserInfoDto } from 'src/auth/dto/update-userInfo.dto';
 
 @Injectable()
 export class UserService {
@@ -49,7 +50,7 @@ export class UserService {
     return this.userRepository.save(createUser);
   }
 
-  async updateUser(id, body) {
+  async updateUser(id, body: UpdateUserInfoDto) {
     const updateUser = await this.userRepository.update(id, body);
     if (!updateUser) {
       throw new NotFoundException(`Cant update userinfo`);
@@ -65,23 +66,17 @@ export class UserService {
     return removeUser;
   }
   async saveAvatar(avatarUrl, user_id) {
-    // console.log(user_id);
-
-    // const savedAvatar = await getConnection()
-    //   .createQueryBuilder()
-    //   .update(UserEntity)
-    //   .set({ avatarUrl: avatarUrl })
-    //   .where('id = :id', { id: user_id })
-    //   .execute();
-
+    // console.log({ avatarUrl });
     const savedAvatar = await this.userRepository.update(
       { id: user_id },
       { avatarUrl: avatarUrl },
     );
+    // console.log({ savedAvatar });
     if (!savedAvatar) {
       throw new NotFoundException(`Cant update userinfo`);
     }
     return savedAvatar;
+    // return true;
 
     // user_id
     // return avatarUrl;

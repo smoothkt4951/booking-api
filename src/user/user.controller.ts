@@ -20,6 +20,7 @@ import {
   Res,
   Req,
   HttpStatus,
+  Patch,
 } from '@nestjs/common';
 // import multer from 'multer';
 import { CreateUserDto } from 'src/auth/dto/create-user.dto';
@@ -44,7 +45,7 @@ export class UserController {
   }
 
   // user + admin - @UseGuards(JwtAuthGuard)
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   @Get(':id')
   async getUser(@Param('id') id: string) {
     return this.userService.findUserBy(id);
@@ -70,44 +71,7 @@ export class UserController {
     return this.userService.removeUser(id);
   }
 
-  //
-
-  // @Post('/avatar/upload')
-  // @UseInterceptors(FileInterceptor('file', upload.single('file')))
-  // async uploadImage(
-  //   @Session() session,
-  //   @UploadedFile() file,
-  //   @Query(ValidationPipe) uploadAvatarDto: UploadAvatarDto,
-  // ) {
-  //   const result = await this.userService.uploadAvatar(
-  //     session.images,
-  //     file,
-  //     uploadAvatarDto,
-  //   );
-  //   // if (!(result as Product).titleUrl) {
-  //   //   session.images = result;
-  //   // }
-
-  //   return result;
-  // }
-  // @Post('/upload/image')
-  // @UseInterceptors(FileInterceptor('image'))
-  // async uploadedFile(@UploadedFile() file) {
-  //   // const response = {
-  //   //   originalname: file.originalname,
-  //   //   filename: file.filename,
-  //   // };
-  //   console.log(file);
-  //   return file;
-  // }
-
-  // @Post('upload')
-  // @UseInterceptors(FileInterceptor('file'))
-  // uploadFile(@UploadedFile() file: Express.Multer.File) {
-  //   console.log(file);
-  // }
-
-  @Post('avatar/upload')
+  @Patch('avatar/upload/')
   @UseInterceptors(
     FileInterceptor('image', {
       storage: diskStorage({
@@ -118,26 +82,20 @@ export class UserController {
       limits: { fileSize: 1024 * 1024 },
     }),
   )
-  async uploadImage(
-    @UploadedFile() file: Express.Multer.File,
-    // @Req() req,
-    @Res() res,
-    @Body() body,
-  ) {
+  async uploadImage(@UploadedFile() file: Express.Multer.File, @Body() body) {
     console.log({ body });
-    // const file = req.file;
-    console.log(file);
+    console.log(body.user_id);
     if (file) {
       const cloudinaryFile = await this.cloudinaryService.uploadImage(
         `./uploads/${file.filename}`,
+        file,
       );
-      console.log({ cloudinaryFile });
-      return res.status(200);
-      // return this.userService.saveAvatar(cloudinaryFile, body.user_id);
-
-      // res.send(cloudinaryFile.url);
+      // console.log({ cloudinaryFile });
+      // return res.status(200);
+      return this.userService.saveAvatar(cloudinaryFile, body.user_id);
     } else {
-      res.status(HttpStatus.BAD_REQUEST).send(`Cant uploads img`);
+      // res.status(HttpStatus.BAD_REQUEST).send(`Cant uploads img`);
+      return;
     }
   }
 }
