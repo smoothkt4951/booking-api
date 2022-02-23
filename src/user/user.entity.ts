@@ -2,9 +2,9 @@ import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { Exclude } from 'class-transformer';
 
-export enum UserRole {
-    ADMIN = 'admin',
-    CLIENT = 'client',
+export enum Role {
+    User = 'user',
+    Admin = 'admin',
 }
 
 export enum Gender {
@@ -26,10 +26,10 @@ export class UserEntity {
 
     @Column({
         type: 'enum',
-        enum: UserRole,
-        default: UserRole.CLIENT,
+        enum: Role,
+        default: Role.Admin,
     })
-    role: UserRole;
+    role: Role;
 
     @Column({
         type: 'text',
