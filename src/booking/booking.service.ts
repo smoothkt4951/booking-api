@@ -30,31 +30,31 @@ export class BookingService {
   }
 
   async findAll() {
-    var entity_list = await this.repository.find()
+    const entity_list = await this.repository.find()
     return entity_list
   }
 
   async findBookingById(id: string) { //uuid
-    var entity = await this.repository.findOne({id:id})
+    const entity = await this.repository.findOne({id:id})
     if (!entity)
       throw new NotFoundException("not found ")
     return entity
   }
 
   async findBookingByUser(id: string) {      
-    var entity = await this.repository.find({user_id:id}) //can be 1 user book multiple
+    const  entity = await this.repository.find({user_id:id}) //can be 1 user book multiple
     if (!entity)
       throw new NotFoundException("not found ")
     return entity
   }
 
   async update(id: number, dto: UpdateBookingDto) { //Date? need examination
-    var object =new Booking(dto)
+    const object =new Booking(dto)
     return await this.repository.update(id ,object)
   }
 
   async remove(id: number) {
-    var entity = await this.repository.findOne(id)
+    const entity = await this.repository.findOne(id)
     return this.repository.remove(entity);
   }
 }
