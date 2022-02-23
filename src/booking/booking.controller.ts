@@ -17,6 +17,11 @@ export class BookingController {
     return this.bookingService.findAll();//done?
   }
 
+  @Delete('/justright/')
+  scheduled(){
+    return this.bookingService.removeOldEntries()
+  }
+
   @Get(':bookingId')
   findBookingByID(@Param('bookingId') bookingId: string) {
     return this.bookingService.findBookingByBookingId(bookingId);
@@ -36,4 +41,6 @@ export class BookingController {
   remove(@Param('bookingId') id: string) {
     return this.bookingService.removeByBookingId(id);
   }
+
+
 }

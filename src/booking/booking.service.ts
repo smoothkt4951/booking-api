@@ -49,6 +49,11 @@ export class BookingService {
     const entity = await this.findBookingByBookingId(booking_id)
     return this.repository.remove(entity);
   }
+
+  async removeOldEntries() {
+    const date = new Date()
+    return this.repository.removeOld(date)
+  }
 }
 
 
