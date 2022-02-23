@@ -7,13 +7,14 @@ import {
   Param,
   Post,
   Put,
+  Query,
   StreamableFile,
   UploadedFiles,
 } from '@nestjs/common';
 import { UseInterceptors } from '@nestjs/common/decorators/core/use-interceptors.decorator';
 import { FilesInterceptor, MulterModule } from '@nestjs/platform-express';
 import { extname, join } from 'path';
-import { CreateRoomDto, UpdateRoomDto } from './dto/room.dto';
+import { CreateRoomDto, SearchRoomDto, UpdateRoomDto } from './dto/room.dto';
 import { diskStorage } from 'multer';
 import { RoomEntity } from './entity/room.entity';
 import { RoomService } from './room.service';
@@ -90,4 +91,8 @@ export class RoomController {
     }
     return this.roomService.updateRoomImages(roomId, response);
   }
+  // @Get('/pagination/room')
+  // getRoom(@Query() queryParams: SearchRoomDto): Promise<RoomEntity[]> {
+  //   return this.roomService.getRoomSpeEdition(queryParams);
+  // }
 }

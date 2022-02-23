@@ -1,5 +1,11 @@
 import { RoomSize } from '../entity/room.entity';
-import { IsNotEmpty, IsNumber, IsString, IsOptional } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+  IsOptional,
+  Min,
+} from 'class-validator';
 export class CreateRoomDto {
   @IsNotEmpty()
   @IsString()
@@ -39,4 +45,17 @@ export class FileDto {
   filename: string;
   size: string;
   path: string;
+}
+export class SearchRoomDto {
+  @IsOptional()
+  @IsString()
+  keyword: string;
+  @IsOptional()
+  @IsNumber()
+  @Min(1)
+  page: number;
+  @IsOptional()
+  @IsNumber()
+  @Min(1)
+  limit: number;
 }
