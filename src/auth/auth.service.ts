@@ -1,5 +1,7 @@
 import {
   BadRequestException,
+  HttpException,
+  HttpStatus,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -15,6 +17,19 @@ export class AuthService {
     private usersService: UserService,
     private jwtService: JwtService,
   ) {}
+
+  private async validateUser(authLoginDto: AuthLoginDto): Promise<UserEntity> {
+    const { email, password } = authLoginDto;
+
+    const user = await this.usersService.findUserBy({ email });
+    if (!(await user?.validatePassword(password))) {
+      throw new HttpException(
+        'Email or Password is invalid!',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    return user;
+  }
 
   async login(authLoginDto: AuthLoginDto) {
     const user = await this.validateUser(authLoginDto);
@@ -40,15 +55,5 @@ export class AuthService {
       email,
       password,
     });
-  }
-
-  private async validateUser(authLoginDto: AuthLoginDto): Promise<UserEntity> {
-    const { email, password } = authLoginDto;
-
-    const user = await this.usersService.findUserBy({ email });
-    if (!(await user?.validatePassword(password))) {
-      throw new UnauthorizedException();
-    }
-    return user;
   }
 }

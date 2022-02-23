@@ -10,8 +10,6 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { CreateUserDto } from 'src/auth/dto/create-user.dto';
-import { UserEntity } from './user.entity';
-// import { RegisterDto } from './user.dto';
 
 @Controller('users')
 export class UserController {
