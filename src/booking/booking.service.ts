@@ -35,7 +35,7 @@ export class BookingService {
   }
 
   async findBookingById(id: string) { //uuid
-    var entity = await this.repository.findOne({id:id})  //can only return 1/0 
+    var entity = await this.repository.findOne({id:id})
     if (!entity)
       throw new NotFoundException("not found ")
     return entity
@@ -49,7 +49,8 @@ export class BookingService {
   }
 
   async update(id: number, dto: UpdateBookingDto) { //Date? need examination
-    return await this.repository.update(id , dto)
+    var object =new Booking(dto)
+    return await this.repository.update(id ,object)
   }
 
   async remove(id: number) {

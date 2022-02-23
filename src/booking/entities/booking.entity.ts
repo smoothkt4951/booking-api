@@ -1,4 +1,5 @@
 import { Column, Entity, EntityRepository, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { UpdateBookingDto } from "../dto/update-booking.dto";
 @Entity()
 export class Booking {
     
@@ -30,7 +31,6 @@ export class Booking {
     })
     room_id:string 
 
-
     @Column({ type: 'timestamptz' })
     check_in_date : Date;
 
@@ -42,4 +42,11 @@ export class Booking {
 
     @Column()
     totalPrice :number 
-}
+
+    constructor(dto:UpdateBookingDto){
+      this.check_in_date =new Date(Date.parse(dto.check_in_date))
+      this.check_out_date =new Date(Date.parse(dto.check_in_date))
+      this.created_date =new Date(Date.parse(dto.check_in_date))
+      this.totalPrice=this.totalPrice
+    }
+  }
