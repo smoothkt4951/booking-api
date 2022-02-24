@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserDto } from '../auth/dto/create-user.dto';
-import { Repository, getConnection } from 'typeorm';
+import { Repository } from 'typeorm';
 import { UserEntity } from './user.entity';
 // import * as cloudinary from 'cloudinary';
 // import * as streamifier from 'streamifier';
@@ -20,7 +20,7 @@ import { UploadAvatarDto } from './dto/upload-avatar.dto';
 export class UserService {
   constructor(
     @InjectRepository(UserEntity)
-    private readonly userRepository: Repository<UserEntity>,
+    private readonly userRepository:Repository<UserEntity>,
     private readonly cloudinaryService: CloudinaryService,
   ) {}
 

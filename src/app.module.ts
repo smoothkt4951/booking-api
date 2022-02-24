@@ -46,13 +46,13 @@ import { UserModule } from './user/user.module';
       }),
       inject: [ConfigService],
     }),
-    RedisModule.forRoot({
-      readyLog: true,
-      config: {
-        host: 'localhost',
-        port: 6379,
-      },
-    }),
+    // RedisModule.forRoot({
+    //   readyLog: true,
+    //   config: {
+    //     host: 'localhost',
+    //     port: 6379,
+    //   },
+    // }),
   ],
   controllers: [AppController],
   providers: [AppService],
@@ -63,22 +63,22 @@ export class AppModule {
       path: '*',
       method: RequestMethod.ALL,
     });
-    consumer
-      .apply(RedisMiddleware)
-      .exclude(
-        {
-          path: 'auth/login',
-          method: RequestMethod.POST,
-        },
-        {
-          path: 'auth/register',
-          method: RequestMethod.POST,
-        },
-        {
-          path: 'auth/logout',
-          method: RequestMethod.POST,
-        },
-      )
-      .forRoutes('*');
+    // consumer
+    //   .apply(RedisMiddleware)
+    //   .exclude(
+    //     {
+    //       path: 'auth/login',
+    //       method: RequestMethod.POST,
+    //     },
+    //     {
+    //       path: 'auth/register',
+    //       method: RequestMethod.POST,
+    //     },
+    //     {
+    //       path: 'auth/logout',
+    //       method: RequestMethod.POST,
+    //     },
+    //   )
+    //   .forRoutes('*');
   }
 }
