@@ -36,21 +36,38 @@ export const editFileName = (req, file, callback) => {
 @Controller('rooms')
 export class RoomController {
   constructor(private roomService: RoomService) {}
-  // @Get()
-  // getAllRoom(): Promise<RoomEntity[]> {
-  //   return this.roomService.findAll();
-  // }
+
+  @Get('pagination')
+  async getPaginatedRoom(@Query() queryParams: SearchRoomDto) {
+    const builder = await this.roomService.getRoomPagination('room_entity');
+    if (queryParams.keyword) {
+      builder.where('room_entity.codeName LIKE :keyword', {
+        keyword: `%${queryParams.keyword}%`,
+      });
+    }
+    const sort: any = queryParams.sort;
+    if (sort) {
+      builder.orderBy('room_entity.price', sort.toUpperCase());
+    }
+    const page: number = Number(queryParams.page) || 1;
+    const limit: number = Number(queryParams.limit) || 1;
+    const total = await builder.getCount();
+    builder.offset((page - 1) * limit).limit(limit);
+
+    return {
+      data: await builder.getMany(),
+      total,
+      page,
+      last_page: Math.ceil(total / limit),
+    };
+  }
+  @Get('available')
+  getListAvailableRoom(): Promise<RoomEntity[]> {
+    return this.roomService.findAvailableRooms();
+  }
   @Get('/:roomId')
   getRoomById(@Param('roomId') roomId: string): Promise<RoomEntity> {
     return this.roomService.findOne(roomId);
-  }
-  // @Get()
-  // getListAvailableRoom(): Promise<RoomEntity[]> {
-  //   return this.roomService.findAvailableRooms();
-  // }
-  @Post()
-  createRoom(@Body() body: CreateRoomDto): Promise<object> {
-    return this.roomService.createRoom(body);
   }
   @Put('/:roomId')
   updateRoomById(
@@ -91,28 +108,12 @@ export class RoomController {
     }
     return this.roomService.updateRoomImages(roomId, response);
   }
-  @Get('/pagination')
-  async getPaginatedRoom(@Query() queryParams: SearchRoomDto) {
-    const builder = await this.roomService.getRoomPagination('room_entity');
-    if (queryParams.keyword) {
-      builder.where('room_entity.codeName LIKE :keyword', {
-        keyword: `%${queryParams.keyword}%`,
-      });
-    }
-    const sort: any = queryParams.sort;
-    if (sort) {
-      builder.orderBy('room_entity.price', sort.toUpperCase());
-    }
-    const page: number = Number(queryParams.page) || 1;
-    const limit: number = Number(queryParams.limit) || 1;
-    const total = await builder.getCount();
-    builder.offset((page - 1) * limit).limit(limit);
-
-    return {
-      data: await builder.getMany(),
-      total,
-      page,
-      last_page: Math.ceil(total / limit),
-    };
+  @Post()
+  createRoom(@Body() body: CreateRoomDto): Promise<object> {
+    return this.roomService.createRoom(body);
+  }
+  @Get()
+  getAllRoom(): Promise<RoomEntity[]> {
+    return this.roomService.findAll();
   }
 }

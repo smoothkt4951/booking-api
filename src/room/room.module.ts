@@ -16,10 +16,22 @@ import { RequestMethod } from '@nestjs/common/enums/request-method.enum';
 })
 export class RoomModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(RoomsMiddleware).forRoutes(
-      // { path: 'api/rooms/:roomId', method: RequestMethod.GET },
-      { path: 'api/rooms/:roomId', method: RequestMethod.PUT },
-      { path: 'api/rooms/:roomId', method: RequestMethod.DELETE },
-    );
+    consumer
+      .apply(RoomsMiddleware)
+      .exclude(
+        {
+          path: 'api/rooms/pagination',
+          method: RequestMethod.GET,
+        },
+        {
+          path: 'api/rooms/available',
+          method: RequestMethod.GET,
+        },
+      )
+      .forRoutes(
+        { path: 'api/rooms/:roomId', method: RequestMethod.GET },
+        { path: 'api/rooms/:roomId', method: RequestMethod.PUT },
+        { path: 'api/rooms/:roomId', method: RequestMethod.DELETE },
+      );
   }
 }
