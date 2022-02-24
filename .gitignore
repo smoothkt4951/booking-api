@@ -42,3 +42,7 @@ lerna-debug.log*
 
 note.txt
 
+# uploader
+/uploads
+
+

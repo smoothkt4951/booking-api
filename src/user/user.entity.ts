@@ -3,74 +3,76 @@ import * as bcrypt from 'bcrypt';
 import { Exclude } from 'class-transformer';
 
 export enum Role {
-    User = 'user',
-    Admin = 'admin',
+  User = 'user',
+  Admin = 'admin',
 }
 
 export enum Gender {
-    MALE = 'male',
-    FEMALE = 'female',
-    OTHER = 'other',
+  MALE = 'male',
+  FEMALE = 'female',
+  OTHER = 'other',
 }
 @Entity()
 export class UserEntity {
-    @PrimaryGeneratedColumn('uuid')
-    id: string;
+  public constructor(
+    firstname: string,
+    lastname: string,
+    email: string,
+    password: string,
+  ) {
+    this.firstname = firstname;
+    this.lastname = lastname;
+    this.email = email;
+    this.password = password;
+  }
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
-    @Column({ unique: true })
-    email: string;
+  @Column({ unique: true })
+  email: string;
 
-    @Column()
-    @Exclude()
-    password: string;
+  @Column()
+  @Exclude()
+  password: string;
 
-    @Column({
-        type: 'enum',
-        enum: Role,
-        default: Role.User,
-    })
-    role: Role;
+  @Column({
+    type: 'enum',
+    enum: Role,
+    default: Role.User,
+  })
+  role: Role;
 
-    @Column({
-        type: 'text',
-        nullable: true,
-    })
-    firstname: string;
+  @Column({
+    type: 'text',
+    nullable: true,
+  })
+  firstname: string;
 
-    @Column({
-        type: 'text',
-        nullable: true,
-    })
-    lastname: string;
+  @Column({
+    type: 'text',
+    nullable: true,
+  })
+  lastname: string;
 
-    @Column({
-        type: 'enum',
-        enum: Gender,
-        default: Gender.OTHER,
-    })
-    gender: Gender;
+  @Column({
+    type: 'enum',
+    enum: Gender,
+    default: Gender.OTHER,
+  })
+  gender: Gender;
 
-    @Column({ type: 'date', nullable: true, default: null })
-    dateOfBirth: string;
+  @Column({ type: 'date', nullable: true, default: null })
+  dateOfBirth: string;
 
-    public constructor(
-        firstname: string,
-        lastname: string,
-        email: string,
-        password: string,
-    ) {
-        this.firstname = firstname;
-        this.lastname = lastname;
-        this.email = email;
-        this.password = password;
-    }
+  @Column({ nullable: true })
+  avatarUrl: string;
 
-    @BeforeInsert()
-    async hashPassword() {
-        this.password = await bcrypt.hash(this.password, 8);
-    }
+  @BeforeInsert()
+  async hashPassword() {
+    this.password = await bcrypt.hash(this.password, 8);
+  }
 
-    async validatePassword(password: string): Promise<boolean> {
-        return bcrypt.compare(password, this.password);
-    }
+  async validatePassword(password: string): Promise<boolean> {
+    return bcrypt.compare(password, this.password);
+  }
 }
