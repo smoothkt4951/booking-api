@@ -11,9 +11,21 @@ export class CloudinaryService {
         public_id: folderCloud,
       });
       console.log({ uploader });
-      return uploader.url;
+      return uploader;
     } catch (err) {
       console.log(err);
     }
+  }
+
+  deleteOldAvatar(url: string) {
+    return new Promise<void>((resolve, reject) => {
+      const fileId = url.split('/').pop().split('.').shift();
+      v2.uploader.destroy(fileId, {}, (error) => {
+        if (error) {
+          reject(error);
+        }
+        resolve();
+      });
+    });
   }
 }

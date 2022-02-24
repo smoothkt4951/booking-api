@@ -13,24 +13,37 @@ import { UserEntity } from './user.entity';
 // import * as streamifier from 'streamifier';
 // import { UploadAvatarDto } from './dto/upload-avatar.dto';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
-import { UpdateUserInfoDto } from 'src/auth/dto/update-userInfo.dto';
+import { UpdateUserInfoDto } from 'src/user/dto/update-userInfo.dto';
+import { UploadAvatarDto } from './dto/upload-avatar.dto';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
+    private readonly cloudinaryService: CloudinaryService,
   ) {}
 
   async findAllUsers() {
-    const users = await this.userRepository.find();
-    console.log(users);
-    return users;
+    return await this.userRepository.find().catch((err) => {
+      throw new HttpException(
+        {
+          message: err.message,
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    });
   }
 
   async findUserBy(condition) {
-    const user = await this.userRepository.findOne(condition);
-    return user;
+    return await this.userRepository.findOne(condition).catch((err) => {
+      throw new HttpException(
+        {
+          message: err.message,
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    });
   }
 
   async createUser({ firstname, lastname, email, password }: CreateUserDto) {
@@ -43,42 +56,57 @@ export class UserService {
       );
     }
     const createUser = await this.userRepository.create(user);
-    console.log(createUser);
-    if (!createUser) {
-      throw new NotFoundException(`Cant create user`);
-    }
-    return this.userRepository.save(createUser);
+
+    return await this.userRepository.save(createUser).catch((err) => {
+      throw new HttpException(
+        {
+          message: err.message,
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    });
   }
 
   async updateUser(id, body: UpdateUserInfoDto) {
-    const updateUser = await this.userRepository.update(id, body);
-    if (!updateUser) {
-      throw new NotFoundException(`Cant update userinfo`);
-    }
-    return updateUser;
+    return await this.userRepository.update(id, body).catch((err) => {
+      throw new HttpException(
+        {
+          message: err.message,
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    });
   }
 
   async removeUser(id) {
-    const removeUser = await this.userRepository.delete(id);
-    if (!removeUser) {
-      throw new NotFoundException(`Cant rm user`);
-    }
+    const user = await this.userRepository.findOne(id);
+    const removeAvatar = await this.cloudinaryService.deleteOldAvatar(
+      user.avatarUrl,
+    );
+
+    const removeUser = await this.userRepository.delete(id).catch((err) => {
+      throw new HttpException(
+        {
+          message: err.message,
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    });
     return removeUser;
   }
-  async saveAvatar(avatarUrl, user_id) {
+  async saveAvatar(cloudUrl: UploadAvatarDto, user_id) {
     // console.log({ avatarUrl });
-    const savedAvatar = await this.userRepository.update(
-      { id: user_id },
-      { avatarUrl: avatarUrl },
-    );
-    // console.log({ savedAvatar });
-    if (!savedAvatar) {
-      throw new NotFoundException(`Cant update userinfo`);
-    }
-    return savedAvatar;
-    // return true;
+    const savedAvatar = await this.userRepository
+      .update({ id: user_id }, { avatarUrl: cloudUrl.url })
+      .catch((err) => {
+        throw new HttpException(
+          {
+            message: err.message,
+          },
+          HttpStatus.BAD_REQUEST,
+        );
+      });
 
-    // user_id
-    // return avatarUrl;
+    return savedAvatar;
   }
 }
