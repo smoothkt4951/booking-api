@@ -1,4 +1,4 @@
-import { InjectRedis, RedisService } from '@liaoliaots/nestjs-redis';
+import { InjectRedis } from '@liaoliaots/nestjs-redis';
 import {
     Body,
     Controller,
@@ -9,15 +9,13 @@ import {
     Res,
     UseGuards,
 } from '@nestjs/common';
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { Redis } from 'ioredis';
-// import { RedisService } from 'nestjs-redis';
 import { Role } from 'src/user/user.entity';
 import { AuthService } from './auth.service';
 import { AuthLoginDto } from './dto/auth-login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { JwtAuthGuard } from './jwt-auth.guard';
-// import { redisClient } from './redis.client';
 import { Roles } from './roles.decorator';
 import { RolesGuard } from './roles.guard';
 

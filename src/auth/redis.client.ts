@@ -1,9 +1,0 @@
-// import { createClient } from 'redis';
-
-// export const redisClient = createClient();
-// redisClient.on('connect', () => {
-//     console.log('Redis client connected');
-// });
-// redisClient.on('error', (error) => {
-//     console.log('Redis not connected', error);
-// });

@@ -1,16 +1,13 @@
 import { RedisModule } from '@liaoliaots/nestjs-redis';
 import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { APP_GUARD } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
-// import { RedisModule } from 'nestjs-redis';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthMiddleware } from './auth/auth.middleware';
 import { AuthModule } from './auth/auth.module';
 import { RedisMiddleware } from './auth/redis.middleware';
-import { RolesGuard } from './auth/roles.guard';
 import { UserModule } from './user/user.module';
 
 @Module({
@@ -38,13 +35,6 @@ import { UserModule } from './user/user.module';
             }),
             inject: [ConfigService],
         }),
-        // RedisModule.forRootAsync({
-        //     imports: [ConfigModule],
-        //     useFactory: (configService: ConfigService) =>
-        //         configService.get('redis'), // or use async method
-        //     //useFactory: async (configService: ConfigService) => configService.get('redis'),
-        //     inject: [ConfigService],
-        // }),
         RedisModule.forRoot({
             readyLog: true,
             config: {
@@ -58,7 +48,10 @@ import { UserModule } from './user/user.module';
 })
 export class AppModule {
     configure(consumer: MiddlewareConsumer) {
-        consumer.apply(AuthMiddleware).forRoutes('users');
+        consumer.apply(AuthMiddleware).forRoutes({
+            path: '*',
+            method: RequestMethod.ALL,
+        });
         consumer
             .apply(RedisMiddleware)
             .exclude(
