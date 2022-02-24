@@ -10,7 +10,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { Response } from 'express';
-import { Redis } from 'ioredis';
+import { Redis } from 'ioredis/built';
 import { Role } from 'src/user/user.entity';
 import { AuthService } from './auth.service';
 import { AuthLoginDto } from './dto/auth-login.dto';

@@ -40,7 +40,7 @@ export class UserEntity {
     enum: Role,
     default: Role.User,
   })
-  role: Role;
+  role: Role; // note here : conflict resolve see default role of User and Admin, set default to user , change if needed 
 
   @Column({
     type: 'text',

@@ -1,7 +1,6 @@
 import { RedisModule } from '@liaoliaots/nestjs-redis';
 import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { RouterModule } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
 import { MulterModule } from '@nestjs/platform-express';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -11,6 +10,7 @@ import { AuthMiddleware } from './auth/auth.middleware';
 import { AuthModule } from './auth/auth.module';
 import { BookingModule } from './booking/booking.module';
 import { RedisMiddleware } from './auth/redis.middleware';
+import { RoomModule } from './room/room.module';
 import { UserModule } from './user/user.module';
 
 
@@ -35,6 +35,7 @@ import { UserModule } from './user/user.module';
       synchronize: true,
     }),
     UserModule,
+    RoomModule,
     MulterModule.register({
       dest: './uploads',
     }),
