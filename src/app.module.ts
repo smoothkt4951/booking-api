@@ -9,6 +9,7 @@ import { AppService } from './app.service';
 import { AuthMiddleware } from './auth/auth.middleware';
 import { AuthModule } from './auth/auth.module';
 import { RedisMiddleware } from './auth/redis.middleware';
+import { RoomModule } from './room/room.module';
 import { UserModule } from './user/user.module';
 
 @Module({
@@ -29,6 +30,7 @@ import { UserModule } from './user/user.module';
             synchronize: true,
         }),
         UserModule,
+        RoomModule,
         JwtModule.registerAsync({
             imports: [ConfigModule],
             useFactory: async () => ({
