@@ -2,8 +2,8 @@ import { Injectable, NotFoundException, Options } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { BookingRepository } from './booking.repository';
-import { CreateBookingDto } from './dto/create-booking.dto';
-import { UpdateBookingDto } from './dto/update-booking.dto';
+import { CreateBookingDtoRequest } from './dto/create-booking.dto';
+import { UpdateBookingDtoRequest } from './dto/update-booking.dto';
 import { Booking } from './entities/booking.entity';
 
 @Injectable()
@@ -14,7 +14,7 @@ export class BookingService {
     // private roomService:RoomService
 
     ){}
-  async create(dto: CreateBookingDto) {
+  async create(dto: CreateBookingDtoRequest) {
     return await this.repository.create1(dto)
   }
 
@@ -35,12 +35,13 @@ export class BookingService {
 
   async findBookingByUserId(id: string) {      
     const  entity_list = await this.repository.find({user_id:id}) 
+    console.log(!entity_list)
     if (entity_list.length==0)
       throw new NotFoundException("not found")
     return entity_list
   }
 
-  async updateByBookingId(Bookingid: string, dto: UpdateBookingDto) { 
+  async updateByBookingId(Bookingid: string, dto: UpdateBookingDtoRequest) { 
 
     return await this.repository.updateByBookingId(Bookingid ,dto)
   }

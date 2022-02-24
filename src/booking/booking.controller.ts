@@ -1,14 +1,14 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { BookingService } from './booking.service';
-import { CreateBookingDto } from './dto/create-booking.dto';
-import { UpdateBookingDto } from './dto/update-booking.dto';
+import { CreateBookingDtoRequest } from './dto/create-booking.dto';
+import { UpdateBookingDtoRequest } from './dto/update-booking.dto';
 
 @Controller('/booking')
 export class BookingController {
   constructor(private readonly bookingService: BookingService) {}
 
   @Post("/")
-  create(@Body() createBookingDto: CreateBookingDto) {
+  create(@Body() createBookingDto: CreateBookingDtoRequest) {
     return this.bookingService.create(createBookingDto);
   }
 
@@ -33,7 +33,7 @@ export class BookingController {
   }
 
   @Patch(':bookingId')
-  updateById(@Param('bookingId') id: string, @Body() updateBookingDto: UpdateBookingDto) {
+  updateById(@Param('bookingId') id: string, @Body() updateBookingDto: UpdateBookingDtoRequest) {
     return this.bookingService.updateByBookingId(id, updateBookingDto);
   }
 

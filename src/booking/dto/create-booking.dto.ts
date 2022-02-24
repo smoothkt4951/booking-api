@@ -6,28 +6,16 @@ import { IsDate, IsEmail, isNotEmpty, IsNotEmpty, IsOptional } from 'class-valid
 
 
 
-export class CreateBookingDto {
-    @ApiPropertyOptional()
-    @IsOptional()
-    uuid: string;
-
-    @ApiPropertyOptional()
-    @IsOptional()
+export class CreateBookingDtoRequest {
+    @ApiProperty()
     user_id: string;
 
-    @ApiPropertyOptional()
-    @IsOptional()
+    @ApiProperty()
     room_id: string;
 
-    @ApiPropertyOptional({description: 'Date object in JS, converted to timestampz,usig format ISO8601 for transportation with .toISOString() '})
-    @IsOptional()
+    @ApiProperty({description: 'Date object in JS, converted to timestampz,usig format ISO8601 '})
     check_in_date : string; 
     
-    @ApiProperty({description: 'Date object in JS, converted to timestampz,using format ISO8601 for transportation with .toISOString() '})
-    @IsOptional()
+    @ApiProperty({description: 'Date object in JS, converted to timestampz,using format ISO8601 '})
     check_out_date : string;
-  
-    @ApiPropertyOptional()
-    @IsOptional()
-    price: string;
 }

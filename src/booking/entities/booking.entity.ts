@@ -1,8 +1,8 @@
 import { Column, CreateDateColumn, Entity, EntityRepository, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { CreateBookingDto } from "../dto/create-booking.dto";
-import { UpdateBookingDto } from "../dto/update-booking.dto";
+import { CreateBookingDtoRequest } from "../dto/create-booking.dto";
+import { UpdateBookingDtoRequest } from "../dto/update-booking.dto";
 @Entity()
-export class Booking {
+export class BookingEntity {
     
     @PrimaryGeneratedColumn('uuid')
     id : string;
