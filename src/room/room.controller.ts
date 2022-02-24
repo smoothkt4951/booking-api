@@ -37,6 +37,11 @@ export const editFileName = (req, file, callback) => {
 export class RoomController {
   constructor(private roomService: RoomService) {}
 
+  // @Get('ok')
+  // getAllRoom() {
+  //   return this.roomService.getRoomPagination('room_entity');
+  //   // return `no bug`;
+  // }
   @Get('pagination')
   async getPaginatedRoom(@Query() queryParams: SearchRoomDto) {
     const builder = await this.roomService.getRoomPagination('room_entity');
@@ -61,13 +66,14 @@ export class RoomController {
       last_page: Math.ceil(total / limit),
     };
   }
-  @Get('available')
-  getListAvailableRoom(): Promise<RoomEntity[]> {
-    return this.roomService.findAvailableRooms();
-  }
   @Get('/:roomId')
   getRoomById(@Param('roomId') roomId: string): Promise<RoomEntity> {
     return this.roomService.findOne(roomId);
+  }
+
+  @Post()
+  createRoom(@Body() body: CreateRoomDto): Promise<object> {
+    return this.roomService.createRoom(body);
   }
   @Put('/:roomId')
   updateRoomById(
@@ -108,10 +114,10 @@ export class RoomController {
     }
     return this.roomService.updateRoomImages(roomId, response);
   }
-  @Post()
-  createRoom(@Body() body: CreateRoomDto): Promise<object> {
-    return this.roomService.createRoom(body);
-  }
+  // @Post()
+  // createRoom(@Body() body: CreateRoomDto): Promise<object> {
+  //   return this.roomService.createRoom(body);
+  // }
   @Get()
   getAllRoom(): Promise<RoomEntity[]> {
     return this.roomService.findAll();
