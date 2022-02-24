@@ -4,6 +4,7 @@ import { UserEntity } from 'src/user/user.entity';
 import { UploadAvatarDto } from './dto/upload-avatar.dto';
 import { UserService } from './user.service';
 import {
+<<<<<<< HEAD
   Body,
   Controller,
   Delete,
@@ -20,16 +21,36 @@ import {
   Res,
   Req,
   HttpStatus,
+=======
+    Body,
+    Controller,
+    Delete,
+    Get,
+    Param,
+    Post,
+    Put,
+    UseGuards,
+    UseInterceptors,
+>>>>>>> auth
 } from '@nestjs/common';
 // import multer from 'multer';
 import { CreateUserDto } from 'src/auth/dto/create-user.dto';
+<<<<<<< HEAD
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { Express } from 'express';
 // const storage = multer.memoryStorage();
 // const upload = multer({ storage: multer.memoryStorage() });
+=======
+import { Role, UserEntity } from './user.entity';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { RolesGuard } from 'src/auth/roles.guard';
+import { Roles } from 'src/auth/roles.decorator';
+// import { RegisterDto } from './user.dto';
+>>>>>>> auth
 
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('users')
 export class UserController {
   constructor(
@@ -37,11 +58,19 @@ export class UserController {
     private cloudinaryService: CloudinaryService,
   ) {}
 
+<<<<<<< HEAD
   // admin
   @Get()
   async getAllUsers() {
     return this.userService.findAllUsers();
   }
+=======
+    @Get()
+    @Roles(Role.Admin)
+    async getAllUsers() {
+        return this.userService.findAllUsers();
+    }
+>>>>>>> auth
 
   // user + admin - @UseGuards(JwtAuthGuard)
   @UseGuards(JwtAuthGuard)
