@@ -1,7 +1,7 @@
-import { ApiProperty } from "@nestjs/swagger";
-import moment from "moment";
 
-import { Connection, EntityRepository, LessThan, Repository } from "typeorm";
+
+
+import { EntityRepository, LessThan, Repository } from "typeorm";
 import { CreateBookingDtoRequest } from "./dto/create-booking.dto";
 import { UpdateBookingDtoRequest } from "./dto/update-booking.dto";
 import { BookingEntity } from "./entities/booking.entity";
