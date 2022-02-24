@@ -1,3 +1,4 @@
+import { RedisModule } from '@liaoliaots/nestjs-redis';
 import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { RouterModule } from '@nestjs/core';
@@ -8,7 +9,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthMiddleware } from './auth/auth.middleware';
 import { AuthModule } from './auth/auth.module';
-import { JwtStrategy } from './auth/jwt.strategy';
+import { RedisMiddleware } from './auth/redis.middleware';
 import { UserModule } from './user/user.module';
 
 @Module({
@@ -40,6 +41,13 @@ import { UserModule } from './user/user.module';
       }),
       inject: [ConfigService],
     }),
+    RedisModule.forRoot({
+      readyLog: true,
+      config: {
+        host: 'localhost',
+        port: 6379,
+      },
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],
@@ -50,5 +58,22 @@ export class AppModule {
       path: '*',
       method: RequestMethod.ALL,
     });
+    consumer
+      .apply(RedisMiddleware)
+      .exclude(
+        {
+          path: 'auth/login',
+          method: RequestMethod.POST,
+        },
+        {
+          path: 'auth/register',
+          method: RequestMethod.POST,
+        },
+        {
+          path: 'auth/logout',
+          method: RequestMethod.POST,
+        },
+      )
+      .forRoutes('*');
   }
 }

@@ -1,6 +1,5 @@
 import { ImagesHelper } from './../cloudinary/image.helper';
 import { CloudinaryService } from './../cloudinary/cloudinary.service';
-import { UserEntity } from 'src/user/user.entity';
 import { UploadAvatarDto } from './dto/upload-avatar.dto';
 import { UserService } from './user.service';
 import {
@@ -25,13 +24,18 @@ import {
 } from '@nestjs/common';
 // import multer from 'multer';
 import { CreateUserDto } from 'src/auth/dto/create-user.dto';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { Express } from 'express';
 // const storage = multer.memoryStorage();
 // const upload = multer({ storage: multer.memoryStorage() });
+import { Role, UserEntity } from './user.entity';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { RolesGuard } from 'src/auth/roles.guard';
+import { Roles } from 'src/auth/roles.decorator';
+// import { RegisterDto } from './user.dto';
 
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('users')
 export class UserController {
   constructor(
@@ -39,9 +43,8 @@ export class UserController {
     private cloudinaryService: CloudinaryService,
   ) {}
 
-  // admin
-  @UseGuards(JwtAuthGuard)
   @Get()
+  @Roles(Role.Admin)
   async getAllUsers() {
     const users = await this.userService.findAllUsers();
     if (!users) {
@@ -51,9 +54,8 @@ export class UserController {
     return users;
   }
 
-  // user + admin - @UseGuards(JwtAuthGuard)
-  @UseGuards(JwtAuthGuard)
   @Get(':id')
+  @Roles(Role.Admin, Role.User)
   async getUser(@Param('id') id: string) {
     const user = await this.userService.findUserBy(id);
     if (!user) {
@@ -63,8 +65,7 @@ export class UserController {
     return user;
   }
 
-  // admin
-  @UseGuards(JwtAuthGuard)
+  @Roles(Role.Admin)
   @Post()
   async createUser(@Body() body: CreateUserDto) {
     const createdUser = await this.userService.createUser(body);
@@ -75,9 +76,8 @@ export class UserController {
     return createdUser;
   }
 
-  // user
-  @UseGuards(JwtAuthGuard)
   @Put(':id')
+  @Roles(Role.Admin, Role.User)
   async updateUser(@Param('id') id: string, @Body() body: any) {
     const updatedUser = await this.userService.updateUser(id, body);
     if (!updatedUser) {
@@ -86,8 +86,8 @@ export class UserController {
     console.log(updatedUser);
     return updatedUser;
   }
-  // admin
-  @UseGuards(JwtAuthGuard)
+
+  @Roles(Role.Admin)
   @Delete(':id')
   async removeUser(@Param('id') id: string) {
     const removedUser = await this.userService.removeUser(id);
@@ -98,7 +98,7 @@ export class UserController {
     return removedUser;
   }
 
-  @UseGuards(JwtAuthGuard)
+  @Roles(Role.User, Role.Admin)
   @Patch('avatar/upload/')
   @UseInterceptors(
     FileInterceptor('image', {

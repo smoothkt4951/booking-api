@@ -2,9 +2,9 @@ import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { Exclude } from 'class-transformer';
 
-export enum UserRole {
-  ADMIN = 'admin',
-  CLIENT = 'client',
+export enum Role {
+  User = 'user',
+  Admin = 'admin',
 }
 
 export enum Gender {
@@ -25,42 +25,35 @@ export class UserEntity {
     this.email = email;
     this.password = password;
   }
-  // uuid
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  // email
   @Column({ unique: true })
   email: string;
 
-  // password
   @Column()
   @Exclude()
   password: string;
 
-  // userRole
   @Column({
     type: 'enum',
-    enum: UserRole,
-    default: UserRole.CLIENT,
+    enum: Role,
+    default: Role.User,
   })
-  role: UserRole;
+  role: Role;
 
-  // firstname
   @Column({
     type: 'text',
     nullable: true,
   })
   firstname: string;
 
-  // lastname
   @Column({
     type: 'text',
     nullable: true,
   })
   lastname: string;
 
-  // gender
   @Column({
     type: 'enum',
     enum: Gender,
@@ -68,16 +61,11 @@ export class UserEntity {
   })
   gender: Gender;
 
-  // birthday
   @Column({ type: 'date', nullable: true, default: null })
   dateOfBirth: string;
 
-  // avatar
   @Column({ nullable: true })
   avatarUrl: string;
-
-  // @Column({ nullable: true })
-  // avatar: string[];
 
   @BeforeInsert()
   async hashPassword() {
