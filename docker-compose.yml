@@ -1,4 +1,4 @@
-version: '3'
+version: '3.5'
 
 services:
   db:
@@ -7,4 +7,10 @@ services:
     ports: 
       - "5432:5432"
     environment:
-      POSTGRES_PASSWORD: pass123
+      POSTGRES_PASSWORD: root
+  
+  # redis-server:
+  #   image: "redis:alpine"
+  #   command: redis-server
+  #   ports:
+  #     - "6379:6379"
