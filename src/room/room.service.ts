@@ -30,7 +30,9 @@ export class RoomService {
     return await this.roomsRepository.findOne({ id: roomId });
   }
   async findAvailableRooms(): Promise<RoomEntity[]> {
-    return await this.roomsRepository.find({ where: { isVacant: true } });
+    const findAvailableRooms = await this.roomsRepository.find({ where: { isVacant: true } })
+    console.log(findAvailableRooms);
+    return;
   }
   async findOccupiedRooms(): Promise<RoomEntity[]> {
     return await this.roomsRepository.find({ where: { isVacant: false } });
@@ -81,7 +83,7 @@ export class RoomService {
       JSON.stringify({ message: 'The images has been uploaded' }),
     );
   }
-  //   async (roomId: string): Promise<RoomEntity> {
-  //     return await this.roomsRepository.findOne({ id: roomId });
-  //   }
+  async getRoomPagination(alias: string) {
+    return await this.roomsRepository.createQueryBuilder(alias);
+  }
 }
