@@ -81,7 +81,7 @@ export class RoomService {
       JSON.stringify({ message: 'The images has been uploaded' }),
     );
   }
-  //   async (roomId: string): Promise<RoomEntity> {
-  //     return await this.roomsRepository.findOne({ id: roomId });
-  //   }
+  async getRoomPagination(alias: string) {
+    return await this.roomsRepository.createQueryBuilder(alias);
+  }
 }

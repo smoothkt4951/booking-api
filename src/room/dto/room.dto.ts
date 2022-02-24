@@ -51,6 +51,9 @@ export class SearchRoomDto {
   @IsString()
   keyword: string;
   @IsOptional()
+  @IsString()
+  sort: string;
+  @IsOptional()
   @IsNumber()
   @Min(1)
   page: number;

@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { RouterModule } from '@nestjs/core';
-import { ServeStaticModule } from '@nestjs/serve-static';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
 import { AppController } from './app.controller';
@@ -24,10 +23,7 @@ import { RoomModule } from './room/room.module';
       autoLoadEntities: true,
       synchronize: true,
     }),
-    // ServeStaticModule.forRoot({
-    //   rootPath: join('C:/Users/pc/Desktop/BookingApis', 'uploads'),
-    // }),
-    RouterModule.register([{ path: '/api/rooms', module: RoomModule }]),
+    RouterModule.register([{ path: '/api/', module: RoomModule }]),
   ],
   controllers: [AppController],
   providers: [AppService],
