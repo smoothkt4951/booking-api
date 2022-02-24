@@ -51,16 +51,6 @@ export class UserController {
     return users;
   }
 
-  @Get('/test')
-  async test() {
-    const users = await this.userService.findAllUsers();
-    if (!users) {
-      throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
-    }
-    console.log(users);
-    return users;
-  }
-
   // user + admin - @UseGuards(JwtAuthGuard)
   @UseGuards(JwtAuthGuard)
   @Get(':id')

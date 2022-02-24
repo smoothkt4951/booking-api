@@ -80,6 +80,7 @@ export class UserService {
 
   async removeUser(id) {
     const user = await this.userRepository.findOne(id);
+    console.log(user);
     const removeAvatar = await this.cloudinaryService.deleteOldAvatar(
       user.avatarUrl,
     );
