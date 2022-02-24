@@ -1,0 +1,10 @@
+DATABASE_USER=postgres
+DATABASE_PASSWORD=root
+
+=== 
+pgadmin
+
+admin@gmail.com
+root
+
+master pwd: adminroot
