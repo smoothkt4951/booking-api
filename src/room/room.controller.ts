@@ -3,8 +3,12 @@ import {
     Controller,
     Delete,
     Get,
+    HttpException,
+    HttpStatus,
     Inject,
+    NotFoundException,
     Param,
+    ParseUUIDPipe,
     Post,
     Put,
     Query,
@@ -15,7 +19,12 @@ import {
 import { UseInterceptors } from '@nestjs/common/decorators/core/use-interceptors.decorator';
 import { FilesInterceptor, MulterModule } from '@nestjs/platform-express';
 import { extname, join } from 'path';
-import { CreateRoomDto, SearchRoomDto, UpdateRoomDto } from './dto/room.dto';
+import {
+    CreateRoomDto,
+    RoomResponseDto,
+    SearchRoomDto,
+    UpdateRoomDto,
+} from './dto/room.dto';
 import { diskStorage } from 'multer';
 import { RoomEntity } from './entity/room.entity';
 import { RoomService } from './room.service';
@@ -42,7 +51,9 @@ export const editFileName = (req, file, callback) => {
 export class RoomController {
     constructor(private roomService: RoomService) {}
     @Get('pagination')
-    async getPaginatedRoom(@Query() queryParams: SearchRoomDto) {
+    async getPaginatedRoom(
+        @Query() queryParams: SearchRoomDto,
+    ): Promise<object> {
         const builder = await this.roomService.getRoomPagination('room_entity');
         if (queryParams.keyword) {
             builder.where('room_entity.codeName LIKE :keyword', {
@@ -66,22 +77,49 @@ export class RoomController {
         };
     }
     @Get('/:roomId')
-    getRoomById(@Param('roomId') roomId: string): Promise<RoomEntity> {
-        return this.roomService.findOne(roomId);
+    getRoomById(
+        @Param(
+            'roomId',
+            new ParseUUIDPipe({
+                errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE,
+            }),
+        )
+        roomId: string,
+    ): Promise<RoomEntity> {
+        const room = this.roomService.findOne(roomId);
+        if (room) {
+            return room;
+        } else {
+            throw new NotFoundException();
+        }
     }
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles(Role.Admin)
     @Put('/:roomId')
     updateRoomById(
-        @Param('roomId') roomId: string,
+        @Param(
+            'roomId',
+            new ParseUUIDPipe({
+                errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE,
+            }),
+        )
+        roomId: string,
         @Body() body: UpdateRoomDto,
-    ): Promise<any> {
+    ): Promise<string> {
         return this.roomService.updateRoom(roomId, body);
     }
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles(Role.Admin)
     @Delete('/:roomId')
-    deleteRoomById(@Param('roomId') roomId: string): Promise<object> {
+    deleteRoomById(
+        @Param(
+            'roomId',
+            new ParseUUIDPipe({
+                errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE,
+            }),
+        )
+        roomId: string,
+    ): Promise<string> {
         return this.deleteRoomById(roomId);
     }
     @UseGuards(JwtAuthGuard, RolesGuard)
@@ -97,22 +135,32 @@ export class RoomController {
         }),
     )
     async uploadRoomImages(
-        @Param('roomId') roomId: string,
+        @Param(
+            'roomId',
+            new ParseUUIDPipe({
+                errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE,
+            }),
+        )
+        roomId: string,
         @UploadedFiles() files,
     ): Promise<string> {
         const response = [];
-        for (let index = 0; index < files.length; index++) {
-            const file = files[index];
-            const fileReponse = {
-                originalname: file.originalname,
-                filename: file.filename,
-                size: file.size,
-                path: file.path,
-            };
-            let url = await this.roomService.addRoomImagesToCloud(fileReponse);
-            response.push(url);
+        if (files) {
+            for (let index = 0; index < files.length; index++) {
+                const file = files[index];
+                const fileReponse = {
+                    originalname: file.originalname,
+                    filename: file.filename,
+                    size: file.size,
+                    path: file.path,
+                };
+                let url = await this.roomService.addRoomImagesToCloud(
+                    fileReponse,
+                );
+                response.push(url);
+            }
+            return this.roomService.updateRoomImages(roomId, response);
         }
-        return this.roomService.updateRoomImages(roomId, response);
     }
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles(Role.Admin)
@@ -122,6 +170,11 @@ export class RoomController {
     }
     @Get()
     getAllRoom(): Promise<RoomEntity[]> {
-        return this.roomService.findAll();
+        const listRoom = this.roomService.findAll();
+        if (listRoom) {
+            return listRoom;
+        } else {
+            throw new NotFoundException();
+        }
     }
 }
