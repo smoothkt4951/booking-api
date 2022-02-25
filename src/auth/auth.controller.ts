@@ -1,13 +1,13 @@
 import { InjectRedis } from '@liaoliaots/nestjs-redis';
 import {
-    Body,
-    Controller,
-    Get,
-    HttpException,
-    Post,
-    Req,
-    Res,
-    UseGuards,
+  Body,
+  Controller,
+  Get,
+  HttpException,
+  Post,
+  Req,
+  Res,
+  UseGuards,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { Redis } from 'ioredis/built';
@@ -22,44 +22,44 @@ import { RolesGuard } from './guards/roles.guard';
 
 @Controller('auth')
 export class AuthController {
-    constructor(
-        private readonly authService: AuthService,
-        // private readonly redisService: RedisService,
-        @InjectRedis() private readonly redisClient: Redis,
-    ) {}
+  constructor(
+    private readonly authService: AuthService,
+    // private readonly redisService: RedisService,
+    @InjectRedis() private readonly redisClient: Redis,
+  ) {}
 
-    @Post('login')
-    @Public()
-    async login(@Body() authLoginDto: AuthLoginDto) {
-        return this.authService.login(authLoginDto);
-    }
+  @Post('login')
+  @Public()
+  async login(@Body() authLoginDto: AuthLoginDto) {
+    return this.authService.login(authLoginDto);
+  }
 
-    @Post('register')
-    @Public()
-    async register(@Body() authRegisterDto: RegisterDto) {
-        return this.authService.register(authRegisterDto);
-    }
+  @Post('register')
+  @Public()
+  async register(@Body() authRegisterDto: RegisterDto) {
+    return this.authService.register(authRegisterDto);
+  }
 
-    @Get('')
-    @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles(Role.Admin)
-    async test(@Req() req) {
-        return req.user;
-    }
+  @Get('')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.Admin)
+  async test(@Req() req) {
+    return req.user;
+  }
 
-    @Post('logout')
-    async logout(@Body('token') token: string, @Res() res: Response) {
-        // const token = req.headers.authorization.split(' ')[1];
-        // const redisClient = await this.redisService.getClient();
-        try {
-            // console.log(token);
-            await this.redisClient.lpush('token', token);
-            return res.status(200).json({
-                status: 200,
-                data: 'You are logged out',
-            });
-        } catch (error) {
-            throw new HttpException('Server logout error', 500);
-        }
+  @Post('logout')
+  async logout(@Body('token') token: string, @Res() res: Response) {
+    // const token = req.headers.authorization.split(' ')[1];
+    // const redisClient = await this.redisService.getClient();
+    try {
+      // console.log(token);
+      await this.redisClient.lpush('token', token);
+      return res.status(200).json({
+        status: 200,
+        data: 'You are logged out',
+      });
+    } catch (error) {
+      throw new HttpException('Server logout error', 500);
     }
+  }
 }
