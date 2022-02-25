@@ -10,21 +10,21 @@ import { IsDate, IsNotEmpty, isNotEmpty } from "class-validator";
 export class CreateBookingDtoRequest {
     @ApiProperty()
     @IsNotEmpty()
-    user_id: string;
+    readonly user_id: string;
     
     @IsNotEmpty()
     @ApiProperty()
-    room_id: string;
+    readonly room_id: string;
 
     @Type(() => Date)
     @IsDate()
     @IsNotEmpty()
     @ApiProperty({description: 'Date object in JS, converted to timestampz,usig format ISO8601 '})
-    check_in_date : Date; 
+    readonly check_in_date : Date; 
     
     @Type(() => Date)
     @IsDate()
     @IsNotEmpty()
     @ApiProperty({description: 'Date object in JS, converted to timestampz,using format ISO8601 '})
-    check_out_date : Date;
+    readonly check_out_date : Date;
 }
