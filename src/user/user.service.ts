@@ -1,17 +1,8 @@
-import { Observable } from 'rxjs';
-import {
-  HttpException,
-  HttpStatus,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserDto } from '../auth/dto/create-user.dto';
-import { Repository, getConnection } from 'typeorm';
+import { Repository } from 'typeorm';
 import { UserEntity } from './user.entity';
-// import * as cloudinary from 'cloudinary';
-// import * as streamifier from 'streamifier';
-// import { UploadAvatarDto } from './dto/upload-avatar.dto';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { UpdateUserInfoDto } from 'src/user/dto/update-userInfo.dto';
 import { UploadAvatarDto } from './dto/upload-avatar.dto';
@@ -49,12 +40,6 @@ export class UserService {
         return user;
       });
     return userOnly;
-
-    // const userOnly = await allUsers.map((user) => {
-    //   console.log(user.role);
-    //   return user.role === 'user' ? user : false;
-    // });
-    // return userOnly;
   }
 
   async findAllUsers() {
@@ -118,9 +103,7 @@ export class UserService {
   async removeUser(id) {
     const user = await this.userRepository.findOne(id);
     console.log(user);
-    const removeAvatar = await this.cloudinaryService.deleteOldAvatar(
-      user.avatarUrl,
-    );
+    await this.cloudinaryService.deleteOldAvatar(user.avatarUrl);
 
     const removeUser = await this.userRepository.delete(id).catch((err) => {
       throw new HttpException(
@@ -133,7 +116,6 @@ export class UserService {
     return removeUser;
   }
   async saveAvatar(cloudUrl: UploadAvatarDto, user_id) {
-    // console.log({ avatarUrl });
     const savedAvatar = await this.userRepository
       .update({ id: user_id }, { avatarUrl: cloudUrl.url })
       .catch((err) => {

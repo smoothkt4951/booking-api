@@ -1,6 +1,5 @@
 import { ImagesHelper } from './../cloudinary/image.helper';
 import { CloudinaryService } from './../cloudinary/cloudinary.service';
-import { UploadAvatarDto } from './dto/upload-avatar.dto';
 import { UserService } from './user.service';
 import {
   Body,
@@ -12,30 +11,21 @@ import {
   Put,
   UseGuards,
   UseInterceptors,
-  Session,
   UploadedFile,
-  Query,
   ValidationPipe,
-  Res,
-  Req,
   HttpException,
   HttpStatus,
   Patch,
   UsePipes,
 } from '@nestjs/common';
-// import multer from 'multer';
 import { CreateUserDto } from 'src/auth/dto/create-user.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { Express } from 'express';
-// const storage = multer.memoryStorage();
-// const upload = multer({ storage: multer.memoryStorage() });
-import { Role, UserEntity } from './user.entity';
+import { Role } from './user.entity';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/roles.guard';
 import { Roles } from 'src/auth/roles.decorator';
-// import { RegisterDto } from './user.dto';
-
 @UseGuards(JwtAuthGuard, RolesGuard)
 @UsePipes(ValidationPipe)
 @Controller('users')
@@ -46,7 +36,6 @@ export class UserController {
   ) {}
 
   @Get()
-  // @Roles(Role.Admin)
   async getAllUsers() {
     const users = await this.userService.findAllUsers();
     if (!users) {
