@@ -15,7 +15,7 @@ export class BookingController {
 
   @Post("/")
   create(@Body() createBookingDto: CreateBookingDtoRequest) {
-    return this.bookingService.create(createBookingDto,this.connection);
+    return this.bookingService.createWithTimesheet(createBookingDto,this.connection);
   }
 
   @Get("/")
@@ -43,7 +43,6 @@ export class BookingController {
     return this.bookingService.removeByBookingId(id);
   }
   @Delete('intervalDelete')  //admin related duty, should be transferred to controller Admin
-
   intervalRemove(){
     return this.bookingService.removeOldEntries()
   }

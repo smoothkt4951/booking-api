@@ -16,6 +16,7 @@ import { UserModule } from 'src/user/user.module';
     ],
     controllers: [RoomController],
     providers: [RoomService],
+    exports:[RoomService]
 })
 export class RoomModule implements NestModule {
     configure(consumer: MiddlewareConsumer) {

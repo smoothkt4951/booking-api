@@ -1,7 +1,7 @@
 import { Exclude } from "class-transformer";
 import { RoomEntity } from "src/room/entity/room.entity";
 import { UserEntity } from "src/user/user.entity";
-import { BeforeInsert, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { BeforeInsert, BeforeUpdate, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class BookingEntity {
@@ -44,5 +44,10 @@ export class BookingEntity {
     @BeforeInsert()
     async addBookingId(){
         this.booking_id= this.UserID+this.RoomID+this.check_in_date
+    }
+
+    @BeforeUpdate()
+    async changeBookingId(){
+      this.booking_id= this.UserID+this.RoomID+this.check_in_date
     }
   }

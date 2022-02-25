@@ -11,29 +11,9 @@ import { BookingEntity } from "./entities/booking.entity";
 
 @EntityRepository(BookingEntity)
 export class BookingRepository extends Repository<BookingEntity> {
-    async removeOld(date:Date): Promise<any> {
-        var list =await this.find({
-         where: { 
-             check_out_date:  LessThan(date) },
-      });
-      for (const entity of list ){
-          this.remove(entity)
-      }
-    }
+    
 
-    async create1(dto:CreateBookingDtoRequest){
-        dto = this.addPrice(dto)
-        const entity=this.create({...dto})
-        return this.save(entity)
-    }
-    async updateByBookingId(id: string, dto: UpdateBookingDtoRequest) {
-        dto = this.addPrice(dto)
-        const entity = await this.findOne({booking_id:id})
-        return this.update(entity,dto)
-     }
-
-
-
+ 
 
 
 //miscellaneous
