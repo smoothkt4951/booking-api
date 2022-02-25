@@ -1,6 +1,8 @@
-import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { BeforeInsert, Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { Exclude } from 'class-transformer';
+import { BookingEntity } from 'src/booking/entities/booking.entity';
+import { RoomEntity } from 'src/room/entity/room.entity';
 
 export enum Role {
   User = 'user',
@@ -27,6 +29,9 @@ export class UserEntity {
   }
   @PrimaryGeneratedColumn('uuid')
   id: string;
+
+  @OneToMany(type=>BookingEntity,booking=>booking.User)
+  BookedRoom: RoomEntity[];
 
   @Column({ unique: true })
   email: string;

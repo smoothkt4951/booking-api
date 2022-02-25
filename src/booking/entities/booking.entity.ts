@@ -1,10 +1,12 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { RoomEntity } from "src/room/entity/room.entity";
+import { UserEntity } from "src/user/user.entity";
+import { BeforeInsert, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class BookingEntity {
     
     @PrimaryGeneratedColumn('uuid')
-    id : string;
+    uuid : string;
 
     @Column({
       type:'text',
@@ -13,23 +15,17 @@ export class BookingEntity {
     })
     booking_id:string
 
-    // @ManyToOne(type => User, { primary: true }) foreign keys , awaiting merging
-    // @JoinColumn({ name: "user_id" })
-    //   user_id: User;
-    @Column({
-      type:"text", 
-      primary: true,
-    })
-    user_id:string
+    @Column({type:"text",nullable:true})
+    UserID:string
+    @ManyToOne(type => UserEntity)
+    @JoinColumn({ name: "UserID" })
+    User: UserEntity;
 
-    // @OneToOne(type => Room, { primary: true }) foreign keys
-    // @JoinColumn({ name: "room_id" })
-    //   room_id:Room;
-    @Column({
-      type:"text", 
-      primary: true,
-    })
-    room_id:string 
+    @Column({type:"text",nullable:true})
+    RoomID : string;
+    @ManyToOne(type=> RoomEntity)
+    @JoinColumn({name:"RoomID"})
+    Room : RoomEntity
 
     @Column({ type: 'timestamptz' })
     check_in_date : Date;
@@ -42,5 +38,8 @@ export class BookingEntity {
     @Column({type:'float',nullable:true})
     totalPrice :number 
 
-    days:number
+    @BeforeInsert()
+    async addBookingId(){
+        this.booking_id= this.UserID+this.RoomID+this.check_in_date
+    }
   }

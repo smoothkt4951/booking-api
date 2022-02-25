@@ -34,7 +34,7 @@ export class BookingService {
   }
 
   async findBookingByUserId(id: string) {      
-    const  entity_list = await this.repository.find({user_id:id}) 
+    const  entity_list = await this.repository.find()//{user_id:id} 
     console.log(!entity_list)
     if (entity_list.length==0)
       throw new NotFoundException("not found")
