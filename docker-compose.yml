@@ -9,8 +9,14 @@ services:
         environment:
             POSTGRES_PASSWORD: root
 
-    # redis-server:
-    #   image: "redis:alpine"
-    #   command: redis-server
-    #   ports:
-    #     - "6379:6379"
+    redis:
+        image: redis:alpine
+        container_name: 'my_redis'
+        ports:
+            - '6379:6379'
+        restart: always # "unless-stopped" or "always"
+        # ## UNCOMMENT THESE LINES IF WE USE CUSTOM REDIS CONFIG ##
+        # volumes:
+        #   - ./redis.conf:/usr/local/etc/redis/redis.conf
+        #   - ./data:/data
+        # command: ["redis-server", "/usr/local/etc/redis/redis.conf"]
