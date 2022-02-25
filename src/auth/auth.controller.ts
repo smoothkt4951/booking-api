@@ -24,7 +24,7 @@ export class AuthController {
   constructor(
     private readonly authService: AuthService,
     // private readonly redisService: RedisService,
-    @InjectRedis() private readonly redisClient: Redis,
+    //@InjectRedis() private readonly redisClient: Redis,
   ) {}
 
   @Post('login')
@@ -44,19 +44,19 @@ export class AuthController {
     return req.user;
   }
 
-  @Post('logout')
-  async logout(@Body('token') token: string, @Res() res: Response) {
-    // const token = req.headers.authorization.split(' ')[1];
-    // const redisClient = await this.redisService.getClient();
-    try {
-      // console.log(token);
-      await this.redisClient.lpush('token', token);
-      return res.status(200).json({
-        status: 200,
-        data: 'You are logged out',
-      });
-    } catch (error) {
-      throw new HttpException('Server logout error', 500);
-    }
-  }
+  // @Post('logout')
+  // async logout(@Body('token') token: string, @Res() res: Response) {
+  //   // const token = req.headers.authorization.split(' ')[1];
+  //   // const redisClient = await this.redisService.getClient();
+  //   try {
+  //     // console.log(token);
+  //     await this.redisClient.lpush('token', token);
+  //     return res.status(200).json({
+  //       status: 200,
+  //       data: 'You are logged out',
+  //     });
+  //   } catch (error) {
+  //     throw new HttpException('Server logout error', 500);
+  //   }
+  // }
 }

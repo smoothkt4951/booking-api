@@ -7,11 +7,12 @@ import { RoomEntity } from './entity/room.entity';
 import { RoomsMiddleware } from './middleware/room.middleware';
 import { RequestMethod } from '@nestjs/common/enums/request-method.enum';
 import { UserService } from '../user/user.service';
+import { UserModule } from 'src/user/user.module';
 @Module({
     imports: [
         MulterModule.register({ dest: './uploads' }),
         TypeOrmModule.forFeature([RoomEntity]),
-        UserService,
+        UserModule,//https://stackoverflow.com/questions/62579054/nestjs-cant-resolve-dependencies-of-xmodel
     ],
     controllers: [RoomController],
     providers: [RoomService],

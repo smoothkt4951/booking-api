@@ -1,6 +1,5 @@
-import { ApiProperty, ApiPropertyOptional, PartialType } from "@nestjs/swagger";
-import { BookingEntity } from "../entities/booking.entity";
-import { IsDate, IsEmail, isNotEmpty, IsNotEmpty, IsOptional } from 'class-validator';
+import { ApiProperty} from "@nestjs/swagger";
+
 
 
 

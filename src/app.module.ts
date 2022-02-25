@@ -20,10 +20,11 @@ import { UserModule } from './user/user.module';
     ConfigModule.forRoot({
       isGlobal: true,
       // isGlobal property to true so this module is loaded on every other module (if you don’t set this, you’ll have to add the ConfigModule to the imports of every module where you have to use the .env information).
-    }),
-    AuthModule,
+    }),    
     AuthModule,
     BookingModule,
+    UserModule,
+    RoomModule,
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.DATABASE_HOST,
@@ -34,8 +35,6 @@ import { UserModule } from './user/user.module';
       autoLoadEntities: true,
       synchronize: true,
     }),
-    UserModule,
-    RoomModule,
     MulterModule.register({
       dest: './uploads',
     }),

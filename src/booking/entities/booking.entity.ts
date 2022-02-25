@@ -1,6 +1,5 @@
-import { Column, CreateDateColumn, Entity, EntityRepository, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { CreateBookingDtoRequest } from "../dto/create-booking.dto";
-import { UpdateBookingDtoRequest } from "../dto/update-booking.dto";
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm";
+
 @Entity()
 export class BookingEntity {
     
