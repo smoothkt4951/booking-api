@@ -1,3 +1,4 @@
+import { Exclude } from "class-transformer";
 import { RoomEntity } from "src/room/entity/room.entity";
 import { UserEntity } from "src/user/user.entity";
 import { BeforeInsert, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
@@ -17,12 +18,14 @@ export class BookingEntity {
 
     @Column({type:"text",nullable:true})
     UserID:string
+    @Exclude()
     @ManyToOne(type => UserEntity)
     @JoinColumn({ name: "UserID" })
     User: UserEntity;
 
     @Column({type:"text",nullable:true})
     RoomID : string;
+    @Exclude()
     @ManyToOne(type=> RoomEntity)
     @JoinColumn({name:"RoomID"})
     Room : RoomEntity

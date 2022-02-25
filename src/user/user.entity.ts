@@ -31,7 +31,7 @@ export class UserEntity {
   id: string;
 
   @OneToMany(type=>BookingEntity,booking=>booking.User)
-  BookedRoom: RoomEntity[];
+  Room: RoomEntity[];
 
   @Column({ unique: true })
   email: string;
