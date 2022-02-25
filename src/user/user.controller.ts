@@ -1,3 +1,6 @@
+import { Roles } from 'src/auth/decorators/roles.decorator';
+// import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+// import { Roles } from 'src/auth/decorator/roles.decorator';
 import { ImagesHelper } from './../cloudinary/image.helper';
 import { CloudinaryService } from './../cloudinary/cloudinary.service';
 import { UserService } from './user.service';
@@ -22,10 +25,10 @@ import { CreateUserDto } from 'src/auth/dto/create-user.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { Express } from 'express';
+import { RolesGuard } from '../auth/roles.guard';
 import { Role } from './user.entity';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { RolesGuard } from 'src/auth/roles.guard';
-import { Roles } from 'src/auth/roles.decorator';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+
 @UseGuards(JwtAuthGuard, RolesGuard)
 @UsePipes(ValidationPipe)
 @Controller('users')
@@ -36,6 +39,7 @@ export class UserController {
   ) {}
 
   @Get()
+  @Roles(Role.Admin)
   async getAllUsers() {
     const users = await this.userService.findAllUsers();
     if (!users) {

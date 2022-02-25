@@ -13,11 +13,12 @@ import { Response } from 'express';
 import { Redis } from 'ioredis';
 import { Role } from 'src/user/user.entity';
 import { AuthService } from './auth.service';
+import { Public } from './decorators/public.decorator';
 import { AuthLoginDto } from './dto/auth-login.dto';
 import { RegisterDto } from './dto/register.dto';
-import { JwtAuthGuard } from './jwt-auth.guard';
-import { Roles } from './roles.decorator';
-import { RolesGuard } from './roles.guard';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { Roles } from './decorators/roles.decorator';
+import { RolesGuard } from './guards/roles.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -28,11 +29,13 @@ export class AuthController {
   ) {}
 
   @Post('login')
+  @Public()
   async login(@Body() authLoginDto: AuthLoginDto) {
     return this.authService.login(authLoginDto);
   }
 
   @Post('register')
+  @Public()
   async register(@Body() authRegisterDto: RegisterDto) {
     return this.authService.register(authRegisterDto);
   }
