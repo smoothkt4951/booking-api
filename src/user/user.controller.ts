@@ -21,6 +21,7 @@ import {
   HttpException,
   HttpStatus,
   Patch,
+  UsePipes,
 } from '@nestjs/common';
 // import multer from 'multer';
 import { CreateUserDto } from 'src/auth/dto/create-user.dto';
@@ -36,6 +37,7 @@ import { Roles } from 'src/auth/roles.decorator';
 // import { RegisterDto } from './user.dto';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
+@UsePipes(ValidationPipe)
 @Controller('users')
 export class UserController {
   constructor(
@@ -44,7 +46,7 @@ export class UserController {
   ) {}
 
   @Get()
-  @Roles(Role.Admin)
+  // @Roles(Role.Admin)
   async getAllUsers() {
     const users = await this.userService.findAllUsers();
     if (!users) {
@@ -67,7 +69,7 @@ export class UserController {
 
   @Roles(Role.Admin)
   @Post()
-  async createUser(@Body() body: CreateUserDto) {
+  async createUser(@Body(ValidationPipe) body: CreateUserDto) {
     const createdUser = await this.userService.createUser(body);
     if (!createdUser) {
       throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
@@ -78,7 +80,7 @@ export class UserController {
 
   @Put(':id')
   @Roles(Role.Admin, Role.User)
-  async updateUser(@Param('id') id: string, @Body() body: any) {
+  async updateUser(@Param('id') id: string, @Body(ValidationPipe) body: any) {
     const updatedUser = await this.userService.updateUser(id, body);
     if (!updatedUser) {
       throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
@@ -110,7 +112,10 @@ export class UserController {
       limits: { fileSize: 1024 * 1024 },
     }),
   )
-  async uploadImage(@UploadedFile() file: Express.Multer.File, @Body() body) {
+  async uploadImage(
+    @UploadedFile() file: Express.Multer.File,
+    @Body(ValidationPipe) body,
+  ) {
     console.log({ body });
     console.log(body.user_id);
     if (file) {

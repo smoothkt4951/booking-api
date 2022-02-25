@@ -2,6 +2,18 @@ import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { Exclude } from 'class-transformer';
 
+import {
+  IsEmail,
+  IsString,
+  MinLength,
+  MaxLength,
+  Matches,
+  IsEnum,
+  IsDate,
+  MaxDate,
+  IsNotEmpty,
+} from 'class-validator';
+
 export enum Role {
   User = 'user',
   Admin = 'admin',
@@ -28,13 +40,22 @@ export class UserEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
+  @IsEmail({ message: `This is not an email` })
+  @IsNotEmpty({ message: `Email can not empty` })
   @Column({ unique: true })
   email: string;
 
+  @IsString()
+  @MinLength(6, { message: `Password must be at least 6 characters` })
+  @MaxLength(20)
+  @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, {
+    message: 'password too weak',
+  })
   @Column()
   @Exclude()
   password: string;
 
+  @IsEnum(['admin', 'user'])
   @Column({
     type: 'enum',
     enum: Role,
@@ -42,18 +63,25 @@ export class UserEntity {
   })
   role: Role;
 
+  @IsString()
+  @MinLength(2, { message: `Firstname must be at least 2 characters` })
+  @MaxLength(20)
   @Column({
     type: 'text',
     nullable: true,
   })
   firstname: string;
 
+  @IsString()
+  @MinLength(2, { message: `Lastname must be at least 2 characters` })
+  @MaxLength(20)
   @Column({
     type: 'text',
     nullable: true,
   })
   lastname: string;
 
+  @IsEnum(['male', 'female', 'other'])
   @Column({
     type: 'enum',
     enum: Gender,
@@ -61,6 +89,8 @@ export class UserEntity {
   })
   gender: Gender;
 
+  @IsDate()
+  @MaxDate(new Date())
   @Column({ type: 'date', nullable: true, default: null })
   dateOfBirth: string;
 

@@ -24,8 +24,32 @@ export class UserService {
     private readonly cloudinaryService: CloudinaryService,
   ) {}
 
+  async getUserRole(id: string) {
+    try {
+      const user = await this.userRepository.findOne(id);
+      console.log(typeof user.role);
+      const userRole = user.role;
+      return userRole;
+    } catch (err) {
+      throw new HttpException(
+        {
+          message: err.message,
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  async userOnly(allUsers) {
+    const userOnly = await allUsers.map((user) => {
+      console.log(user.role);
+      return user.role === 'user' ? user : false;
+    });
+    return userOnly;
+  }
+
   async findAllUsers() {
-    return await this.userRepository.find().catch((err) => {
+    const allUsers = await this.userRepository.find().catch((err) => {
       throw new HttpException(
         {
           message: err.message,
@@ -33,6 +57,10 @@ export class UserService {
         HttpStatus.BAD_REQUEST,
       );
     });
+    const usersOnly = await this.userOnly(allUsers);
+
+    console.log(usersOnly);
+    return usersOnly;
   }
 
   async findUserBy(condition) {
