@@ -41,11 +41,20 @@ export class UserService {
   }
 
   async userOnly(allUsers) {
-    const userOnly = await allUsers.map((user) => {
-      console.log(user.role);
-      return user.role === 'user' ? user : false;
-    });
+    const userOnly = await allUsers
+      .filter((user) => {
+        return user.role === 'user' ? true : false;
+      })
+      .map((user) => {
+        return user;
+      });
     return userOnly;
+
+    // const userOnly = await allUsers.map((user) => {
+    //   console.log(user.role);
+    //   return user.role === 'user' ? user : false;
+    // });
+    // return userOnly;
   }
 
   async findAllUsers() {
