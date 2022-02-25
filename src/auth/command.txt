@@ -1,0 +1,9 @@
+npm i bcrypt
+npm i -D @types/bcrypt
+npm i class-validator
+yarn add @nestjs/passport @nestjs/jwt passport passport-jwt
+yarn add @types/passport-jwt -D
+npm i --save redis@^3
+npm install nestjs-redis --save
+npm install --save @liaoliaots/nestjs-redis ioredis
+npm install --save-dev @types/ioredis
