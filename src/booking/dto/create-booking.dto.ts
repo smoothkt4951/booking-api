@@ -1,5 +1,6 @@
 import { ApiProperty} from "@nestjs/swagger";
-import { IsNotEmpty, isNotEmpty } from "class-validator";
+import { Type } from "class-transformer";
+import { IsDate, IsNotEmpty, isNotEmpty } from "class-validator";
 
 
 
@@ -15,11 +16,15 @@ export class CreateBookingDtoRequest {
     @ApiProperty()
     room_id: string;
 
+    @Type(() => Date)
+    @IsDate()
     @IsNotEmpty()
     @ApiProperty({description: 'Date object in JS, converted to timestampz,usig format ISO8601 '})
-    check_in_date : string; 
+    check_in_date : Date; 
     
+    @Type(() => Date)
+    @IsDate()
     @IsNotEmpty()
     @ApiProperty({description: 'Date object in JS, converted to timestampz,using format ISO8601 '})
-    check_out_date : string;
+    check_out_date : Date;
 }

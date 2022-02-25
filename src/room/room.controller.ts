@@ -70,7 +70,7 @@ export class RoomController {
         return this.roomService.findOne(roomId);
     }
     @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles(Role.Admin)
+    @Roles(Role.Admin, Role.User)
     @Put('/:roomId')
     updateRoomById(
         @Param('roomId') roomId: string,
@@ -79,13 +79,13 @@ export class RoomController {
         return this.roomService.updateRoom(roomId, body);
     }
     @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles(Role.Admin)
+    @Roles(Role.Admin, Role.User)
     @Delete('/:roomId')
     deleteRoomById(@Param('roomId') roomId: string): Promise<object> {
         return this.deleteRoomById(roomId);
     }
     @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles(Role.Admin)
+    @Roles(Role.Admin, Role.User)
     @Post('/images/:roomId')
     @UseInterceptors(
         FilesInterceptor('image', 20, {
@@ -115,7 +115,7 @@ export class RoomController {
         return this.roomService.updateRoomImages(roomId, response);
     }
     @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles(Role.Admin)
+    @Roles(Role.Admin,Role.User)
     @Post()
     createRoom(@Body() body: CreateRoomDto): Promise<object> {
         return this.roomService.createRoom(body);

@@ -23,13 +23,16 @@ export class BookingService {
     return Math.ceil((new Date(dto.check_out_date).getTime()-new Date(dto.check_in_date).getTime())/(3600*24*1000))*entity.price
  }
   
+
+
+  
   async createWithTimesheet(dto: CreateBookingDtoRequest,connection:Connection){
     const room_entity:RoomEntity=await this.roomService.findOne(dto.room_id)
     const user_entity:UserEntity=await this.userService.findUserBy({id:dto.user_id});
     let timesheet= await this.getRoomTimesheet(room_entity.id)
     const res = await this.checkTimesheetInsertion(timesheet,dto.check_in_date,dto.check_out_date)
     if (res){
-      const entity  = this.repository.create({"Room":room_entity,"User":user_entity,"check_in_date":dto.check_in_date,"check_out_date":dto.check_out_date,"totalPrice":this.priceCalculation(room_entity,dto)})
+      const entity  = this.repository.create({"Room":room_entity,"User":user_entity,...dto,"totalPrice":this.priceCalculation(room_entity,dto)})
       console.log(entity)
       return this.repository.save(entity)
     }
@@ -50,7 +53,7 @@ export class BookingService {
       try{
         return await connection.manager.transaction(async entityManager => { 
           await entityManager.update(RoomEntity,room_entity,{isVacant:false})
-          const entity  = this.repository.create({"Room":room_entity,"User":user_entity,"check_in_date":dto.check_in_date,"check_out_date":dto.check_out_date,"totalPrice":this.priceCalculation(room_entity,dto)})
+          const entity  = this.repository.create({"Room":room_entity,"User":user_entity,...dto,"totalPrice":this.priceCalculation(room_entity,dto)})
           return entityManager.save(entity)
         })
       }
@@ -123,30 +126,38 @@ export class BookingService {
   }
 
   async updateByBookingId(Bookingid: string, dto: UpdateBookingDtoRequest) { 
+    if (!Object.keys(dto).length){
+      throw new HttpException(
+        {
+          message: "No body found"
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
     const booking_entity = await this.findBookingByBookingId(Bookingid)
-
-    let dummydto:UpdateBookingDtoRequest = JSON.parse(JSON.stringify(dto)) 
-    if (!dto.check_in_date){
-      dummydto.check_in_date=booking_entity.check_in_date.toISOString()
-    }
-    if (!dto.check_out_date){
-      dummydto.check_out_date=booking_entity.check_out_date.toISOString()
-    }
-    let  target_room_entity = await this.roomService.findOne(dto.room_id)
-    let target_timesheet = await this.getRoomTimesheet(target_room_entity.id)
-
-
-    if (!target_room_entity){//không dổi phòng 
-      target_room_entity=await this.roomService.findOne(booking_entity.RoomID)
-      let target_timesheet:Array<Date> = await this.getRoomTimesheet(target_room_entity.id)
-      target_timesheet=target_timesheet.filter(date => (date!== booking_entity.check_in_date)||(date!== booking_entity.check_out_date))
+    let dummydto= JSON.parse(JSON.stringify(dto)) 
+    for (var field in dto){
+      if(!dto[field]){dummydto[field]=booking_entity[field]}
     }
     
-    if (await this.checkTimesheetInsertion(target_timesheet,dummydto.check_in_date,dummydto.check_out_date)){
-      const price =Math.ceil((new Date(dto.check_out_date).getTime()-new Date(dto.check_in_date).getTime())/(3600*24*1000))*target_room_entity.price
-       this.repository.update(booking_entity,{...dummydto,totalPrice:price,})
+    let  target_room_entity = await this.roomService.findOne(dto.room_id)
+    let target_timesheet:Array<Date>
+    if (!target_room_entity){//không dổi phòng 
+      target_room_entity=await this.roomService.findOne(dummydto.RoomID)
+      target_timesheet= await this.getRoomTimesheet(target_room_entity.id)
+      target_timesheet=target_timesheet.filter(date => (date!== dummydto.check_in_date)||(date!== dummydto.check_out_date))
     }
-    else throw Error ("room occupied during required time interval ")
+    else {target_timesheet = await this.getRoomTimesheet(target_room_entity.id)}
+    
+    if (await this.checkTimesheetInsertion(target_timesheet,dummydto.check_in_date,dummydto.check_out_date)){
+       await this.repository.update(booking_entity,{...dummydto,totalPrice:this.priceCalculation(target_room_entity,dummydto)})
+    }
+    else throw  new HttpException(
+      {
+        message: "Room is already booked for this time interval"
+      },
+      HttpStatus.GONE,
+    );
   }
 
   async removeByBookingId(booking_id: string) {
@@ -183,14 +194,11 @@ export class BookingService {
     return timesheet
   }
 
-  async checkTimesheetInsertion(timesheet:Array<Date>,chIn:string,chOut:string){
-    
-    const in_date = new Date(chIn)
-    const out_date = new Date(chOut)
-    timesheet.push(in_date,out_date)
+  async checkTimesheetInsertion(timesheet:Array<Date>,chIn:Date,chOut:Date){
+    timesheet.push(chIn,chOut)
     timesheet.sort()
-    const diff = timesheet.indexOf(in_date)-timesheet.indexOf(out_date)
-    if (diff == -1 && timesheet.indexOf(in_date)%2==0){
+    const diff = timesheet.indexOf(chIn)-timesheet.indexOf(chOut)
+    if (diff == -1 && timesheet.indexOf(chIn)%2==0){
         return true
     }
     else return false

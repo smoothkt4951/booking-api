@@ -44,7 +44,7 @@ export class UserController {
   ) {}
 
   @Get()
-  @Roles(Role.Admin)
+  @Roles(Role.Admin, Role.User)
   async getAllUsers() {
     const users = await this.userService.findAllUsers();
     if (!users) {
@@ -65,7 +65,7 @@ export class UserController {
     return user;
   }
 
-  @Roles(Role.Admin)
+  @Roles(Role.Admin, Role.User)
   @Post()
   async createUser(@Body() body: CreateUserDto) {
     const createdUser = await this.userService.createUser(body);
@@ -87,7 +87,7 @@ export class UserController {
     return updatedUser;
   }
 
-  @Roles(Role.Admin)
+  @Roles(Role.Admin, Role.User)
   @Delete(':id')
   async removeUser(@Param('id') id: string) {
     const removedUser = await this.userService.removeUser(id);
