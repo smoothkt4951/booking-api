@@ -1,13 +1,15 @@
 import { RedisModule } from '@liaoliaots/nestjs-redis';
 import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { APP_GUARD } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { AuthMiddleware } from './auth/auth.middleware';
+import { AuthMiddleware } from './auth/middlewares/auth.middleware';
 import { AuthModule } from './auth/auth.module';
-import { RedisMiddleware } from './auth/redis.middleware';
+import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
+import { RedisMiddleware } from './auth/middlewares/redis.middleware';
 import { UserModule } from './user/user.module';
 
 @Module({
@@ -44,7 +46,13 @@ import { UserModule } from './user/user.module';
         }),
     ],
     controllers: [AppController],
-    providers: [AppService],
+    providers: [
+        AppService,
+        {
+            provide: APP_GUARD,
+            useClass: JwtAuthGuard,
+        },
+    ],
 })
 export class AppModule {
     configure(consumer: MiddlewareConsumer) {

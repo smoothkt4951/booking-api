@@ -12,9 +12,9 @@ import {
 } from '@nestjs/common';
 import { CreateUserDto } from 'src/auth/dto/create-user.dto';
 import { Role, UserEntity } from './user.entity';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { RolesGuard } from 'src/auth/roles.guard';
-import { Roles } from 'src/auth/roles.decorator';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { RolesGuard } from 'src/auth/guards/roles.guard';
+import { Roles } from 'src/auth/decorators/roles.decorator';
 // import { RegisterDto } from './user.dto';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
