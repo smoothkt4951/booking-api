@@ -10,6 +10,7 @@ import { AppService } from './app.service';
 import { AuthMiddleware } from './auth/auth.middleware';
 import { AuthModule } from './auth/auth.module';
 import { RedisMiddleware } from './auth/redis.middleware';
+import { LoggingMiddleware } from './common/middleware/logging.middleware';
 import { UserModule } from './user/user.module';
 
 @Module({
@@ -75,5 +76,8 @@ export class AppModule {
         },
       )
       .forRoutes('*');
+    consumer
+      .apply(LoggingMiddleware)
+      .forRoutes({ path: '*', method: RequestMethod.ALL });
   }
 }
