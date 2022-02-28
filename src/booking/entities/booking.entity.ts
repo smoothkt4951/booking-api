@@ -1,6 +1,6 @@
 import { Exclude } from 'class-transformer'
-import { RoomEntity } from 'src/room/entity/room.entity'
-import { UserEntity } from 'src/user/user.entity'
+import { RoomEntity } from '../../room/entity/room.entity'
+import { UserEntity } from '../../user/user.entity'
 import {
   BeforeInsert,
   BeforeUpdate,
@@ -13,7 +13,9 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm'
 
-// @Exclusion(`USING gist ("RoomID" WITH =, tsrange("check_in_date", "check_out_date") WITH &&)`)//bad one
+@Exclusion(
+  `USING gist ("RoomID" WITH =, tstzrange("check_in_date", "check_out_date") WITH &&)`,
+)
 @Entity()
 export class BookingEntity {
   @PrimaryGeneratedColumn('uuid')

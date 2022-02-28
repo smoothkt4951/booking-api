@@ -12,8 +12,8 @@ import { UserEntity } from './user.entity'
 // import * as cloudinary from 'cloudinary';
 // import * as streamifier from 'streamifier';
 // import { UploadAvatarDto } from './dto/upload-avatar.dto';
-import { CloudinaryService } from 'src/cloudinary/cloudinary.service'
-import { UpdateUserInfoDto } from 'src/user/dto/update-userInfo.dto'
+import { CloudinaryService } from '../cloudinary/cloudinary.service'
+import { UpdateUserInfoDto } from '../user/dto/update-userInfo.dto'
 import { UploadAvatarDto } from './dto/upload-avatar.dto'
 
 @Injectable()
@@ -36,14 +36,15 @@ export class UserService {
   }
 
   async findUserBy(condition) {
-    return await this.userRepository.findOne(condition).catch((err) => {
-      throw new HttpException(
-        {
-          message: err.message,
-        },
-        HttpStatus.BAD_REQUEST,
-      )
-    })
+    return await this.userRepository.findOne(condition)
+    // .catch((err) => {
+    //   throw new HttpException(
+    //     {
+    //       message: err.message,
+    //     },
+    //     HttpStatus.BAD_REQUEST,
+    //   )
+    // })
   }
 
   async createUser({ firstname, lastname, email, password }: CreateUserDto) {

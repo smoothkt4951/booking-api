@@ -23,16 +23,16 @@ import {
   Patch,
 } from '@nestjs/common'
 // import multer from 'multer';
-import { CreateUserDto } from 'src/auth/dto/create-user.dto'
+import { CreateUserDto } from '../auth/dto/create-user.dto'
 import { FileInterceptor } from '@nestjs/platform-express'
 import { diskStorage } from 'multer'
 import { Express } from 'express'
 // const storage = multer.memoryStorage();
 // const upload = multer({ storage: multer.memoryStorage() });
 import { Role, UserEntity } from './user.entity'
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard'
-import { RolesGuard } from 'src/auth/roles.guard'
-import { Roles } from 'src/auth/roles.decorator'
+import { JwtAuthGuard } from '../auth/jwt-auth.guard'
+import { RolesGuard } from '../auth/roles.guard'
+import { Roles } from '../auth/roles.decorator'
 // import { RegisterDto } from './user.dto';
 
 @UseGuards(JwtAuthGuard, RolesGuard)

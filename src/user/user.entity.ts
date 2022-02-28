@@ -7,8 +7,8 @@ import {
 } from 'typeorm'
 import * as bcrypt from 'bcrypt'
 import { Exclude } from 'class-transformer'
-import { BookingEntity } from 'src/booking/entities/booking.entity'
-import { RoomEntity } from 'src/room/entity/room.entity'
+import { BookingEntity } from '../booking/entities/booking.entity'
+import { RoomEntity } from '../room/entity/room.entity'
 
 export enum Role {
   User = 'user',

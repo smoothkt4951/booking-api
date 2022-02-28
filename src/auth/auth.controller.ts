@@ -22,10 +22,8 @@ import { RolesGuard } from './roles.guard'
 @Controller('auth')
 export class AuthController {
   constructor(
-    private readonly authService: AuthService,
-  ) // private readonly redisService: RedisService,
-  //@InjectRedis() private readonly redisClient: Redis,
-  {}
+    private readonly authService: AuthService, // private readonly redisService: RedisService, //@InjectRedis() private readonly redisClient: Redis,
+  ) {}
 
   @Post('login')
   async login(@Body() authLoginDto: AuthLoginDto) {

@@ -7,7 +7,7 @@ import { RoomEntity } from './entity/room.entity'
 import { RoomsMiddleware } from './middleware/room.middleware'
 import { RequestMethod } from '@nestjs/common/enums/request-method.enum'
 import { UserService } from '../user/user.service'
-import { UserModule } from 'src/user/user.module'
+import { UserModule } from '../user/user.module'
 @Module({
   imports: [
     MulterModule.register({ dest: './uploads' }),

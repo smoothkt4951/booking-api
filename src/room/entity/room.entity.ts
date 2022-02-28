@@ -1,4 +1,4 @@
-import { BookingEntity } from 'src/booking/entities/booking.entity'
+import { BookingEntity } from '../../booking/entities/booking.entity'
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm'
 
 export enum RoomSize {

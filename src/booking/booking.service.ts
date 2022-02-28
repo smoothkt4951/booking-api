@@ -3,29 +3,27 @@ import {
   HttpStatus,
   Injectable,
   NotFoundException,
-  Options,
 } from '@nestjs/common'
-import { InjectRepository } from '@nestjs/typeorm'
-import e from 'express'
-import { stringify } from 'querystring'
-import { RoomEntity } from 'src/room/entity/room.entity'
-import { RoomService } from 'src/room/room.service'
-import { UserEntity } from 'src/user/user.entity'
-import { UserService } from 'src/user/user.service'
+import { RoomEntity } from '../room/entity/room.entity'
+import { RoomService } from '../room/room.service'
+import { UserEntity } from '../user/user.entity'
+import { UserService } from '../user/user.service'
 import { Connection, LessThan, Repository } from 'typeorm'
-import { BookingRepository } from './booking.repository'
 import { CreateBookingDtoRequest } from './dto/create-booking.dto'
 import { UpdateBookingDtoRequest } from './dto/update-booking.dto'
+import { InjectRepository } from '@nestjs/typeorm'
 import { BookingEntity } from './entities/booking.entity'
+import { type } from 'os'
 
 @Injectable()
 export class BookingService {
   constructor(
-    private repository: BookingRepository,
+    @InjectRepository(BookingEntity)
+    private repository: Repository<BookingEntity>,
     private userService: UserService,
     private roomService: RoomService,
   ) {}
-  priceCalculation(entity: RoomEntity, dto) {
+  priceCalculation(entity: RoomEntity, dto:Partial<BookingEntity>) {
     return (
       Math.ceil(
         (new Date(dto.check_out_date).getTime() -
@@ -35,10 +33,7 @@ export class BookingService {
     )
   }
 
-  async createWithTimesheet(
-    dto: CreateBookingDtoRequest,
-    connection: Connection, 
-  ) {
+  async createWithTimesheet(dto: CreateBookingDtoRequest) {
     const room_entity: RoomEntity = await this.roomService.findOne(dto.room_id)
     const user_entity: UserEntity = await this.userService.findUserBy({
       id: dto.user_id,
@@ -56,48 +51,15 @@ export class BookingService {
         ...dto,
         totalPrice: this.priceCalculation(room_entity, dto),
       })
-      console.log(entity)
-      return this.repository.save(entity)
-    } else
-      throw new HttpException(
-        {
-          message: 'Room is already booked for this time interval ',
-        },
-        HttpStatus.GONE,
-      )
-  }
 
-  async create(dto: CreateBookingDtoRequest, connection: Connection) {
-    const room_entity: RoomEntity = await this.roomService.findOne(dto.room_id)
-    const user_entity: UserEntity = await this.userService.findUserBy({
-      id: dto.user_id,
-    })
-    if (room_entity.isVacant) {
-      try {
-        return await connection.manager.transaction(async (entityManager) => {
-          await entityManager.update(RoomEntity, room_entity, {
-            isVacant: false,
-          })
-          const entity = this.repository.create({
-            Room: room_entity,
-            User: user_entity,
-            ...dto,
-            totalPrice: this.priceCalculation(room_entity, dto),
-          })
-          return entityManager.save(entity)
-        })
-      } catch (err) {
-        throw new HttpException(
-          {
-            message: err.message,
-          },
-          HttpStatus.BAD_REQUEST,
-        )
-      }
+      const res = await this.repository.save(entity)
+      console.log('=====')
+      console.log(typeof res)
+      return res
     } else
       throw new HttpException(
         {
-          message: 'Room is already booked for this time interval',
+          message: 'Room is already booked for this time interval ', // kinda scuffed, how about acquire/ locking when someone is doing an order?
         },
         HttpStatus.GONE,
       )
@@ -109,14 +71,13 @@ export class BookingService {
         {
           message: err.message,
         },
-        HttpStatus.INTERNAL_SERVER_ERROR,
+        HttpStatus.BAD_REQUEST,
       )
     })
     return entity_list
   }
 
   async findBookingByBookingId(id: string) {
-    //uuid
     const entity = await this.repository
       .findOneOrFail({ booking_id: id })
       .catch((err) => {
@@ -179,7 +140,6 @@ export class BookingService {
     let target_room_entity = await this.roomService.findOne(dto.room_id)
     let target_timesheet: Array<Date>
     if (!target_room_entity) {
-      //không dổi phòng
       target_room_entity = await this.roomService.findOne(dummydto.RoomID)
       target_timesheet = await this.getRoomTimesheet(target_room_entity.id)
       target_timesheet = target_timesheet.filter(
@@ -251,12 +211,17 @@ export class BookingService {
     timesheet: Array<Date>,
     chIn: Date,
     chOut: Date,
-  ) {
+  ):Promise<boolean> {
     timesheet.push(chIn, chOut)
-    timesheet.sort()
+    timesheet.sort(function (a, b) {
+      const date1 = a.getTime()
+      const date2 = b.getTime()
+      return date1 - date2
+    })
     const diff = timesheet.indexOf(chIn) - timesheet.indexOf(chOut)
     if (diff == -1 && timesheet.indexOf(chIn) % 2 == 0) {
       return true
-    } else return false
+    }  
+    return false
   }
 }
