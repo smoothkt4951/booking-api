@@ -23,7 +23,7 @@ export class BookingService {
     private userService: UserService,
     private roomService: RoomService,
   ) {}
-  priceCalculation(entity: RoomEntity, dto:Partial<BookingEntity>) {
+  priceCalculation(entity: RoomEntity, dto: Partial<BookingEntity>) {
     return (
       Math.ceil(
         (new Date(dto.check_out_date).getTime() -
@@ -211,7 +211,7 @@ export class BookingService {
     timesheet: Array<Date>,
     chIn: Date,
     chOut: Date,
-  ):Promise<boolean> {
+  ): Promise<boolean> {
     timesheet.push(chIn, chOut)
     timesheet.sort(function (a, b) {
       const date1 = a.getTime()
@@ -221,7 +221,7 @@ export class BookingService {
     const diff = timesheet.indexOf(chIn) - timesheet.indexOf(chOut)
     if (diff == -1 && timesheet.indexOf(chIn) % 2 == 0) {
       return true
-    }  
+    }
     return false
   }
 }
