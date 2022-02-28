@@ -1,6 +1,8 @@
+import { Roles } from 'src/auth/decorators/roles.decorator';
+// import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+// import { Roles } from 'src/auth/decorator/roles.decorator';
 import { ImagesHelper } from './../cloudinary/image.helper';
 import { CloudinaryService } from './../cloudinary/cloudinary.service';
-import { UploadAvatarDto } from './dto/upload-avatar.dto';
 import { UserService } from './user.service';
 import {
   Body,
@@ -12,28 +14,23 @@ import {
   Put,
   UseGuards,
   UseInterceptors,
-  Session,
   UploadedFile,
-  Query,
   ValidationPipe,
-  Res,
-  Req,
+  HttpException,
   HttpStatus,
+  Patch,
+  UsePipes,
 } from '@nestjs/common';
-// import multer from 'multer';
 import { CreateUserDto } from 'src/auth/dto/create-user.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { Express } from 'express';
-// const storage = multer.memoryStorage();
-// const upload = multer({ storage: multer.memoryStorage() });
-import { Role, UserEntity } from './user.entity';
+import { RolesGuard } from '../auth/roles.guard';
+import { Role } from './user.entity';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { RolesGuard } from 'src/auth/guards/roles.guard';
-import { Roles } from 'src/auth/decorators/roles.decorator';
-// import { RegisterDto } from './user.dto';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
+@UsePipes(ValidationPipe)
 @Controller('users')
 export class UserController {
   constructor(
@@ -41,77 +38,63 @@ export class UserController {
     private cloudinaryService: CloudinaryService,
   ) {}
 
-    @Get()
-    @Roles(Role.Admin)
-    async getAllUsers() {
-        return this.userService.findAllUsers();
+  @Get()
+  @Roles(Role.Admin)
+  async getAllUsers() {
+    const users = await this.userService.findAllUsers();
+    if (!users) {
+      throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
     }
+    console.log(users);
+    return users;
+  }
 
-  // user + admin - @UseGuards(JwtAuthGuard)
-  @UseGuards(JwtAuthGuard)
   @Get(':id')
+  @Roles(Role.Admin, Role.User)
   async getUser(@Param('id') id: string) {
-    return this.userService.findUserBy(id);
+    const user = await this.userService.findUserBy(id);
+    if (!user) {
+      throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
+    }
+    console.log(user);
+    return user;
   }
 
-  // admin
-  @UseGuards(JwtAuthGuard)
+  @Roles(Role.Admin)
   @Post()
-  async createUser(@Body() body: CreateUserDto) {
-    return this.userService.createUser(body);
+  async createUser(@Body(ValidationPipe) body: CreateUserDto) {
+    const createdUser = await this.userService.createUser(body);
+    if (!createdUser) {
+      throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
+    }
+    console.log(createdUser);
+    return createdUser;
   }
 
-  // admin
-  @UseGuards(JwtAuthGuard)
   @Put(':id')
-  async updateUser(@Param('id') id: string, @Body() body: any) {
-    return this.userService.updateUser(id, body);
+  @Roles(Role.Admin, Role.User)
+  async updateUser(@Param('id') id: string, @Body(ValidationPipe) body: any) {
+    const updatedUser = await this.userService.updateUser(id, body);
+    if (!updatedUser) {
+      throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
+    }
+    console.log(updatedUser);
+    return updatedUser;
   }
-  // admin
-  @UseGuards(JwtAuthGuard)
+
+  @Roles(Role.Admin)
   @Delete(':id')
   async removeUser(@Param('id') id: string) {
-    return this.userService.removeUser(id);
+    const removedUser = await this.userService.removeUser(id);
+    if (!removedUser) {
+      throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
+    }
+    console.log(removedUser);
+    return removedUser;
   }
 
-  //
-
-  // @Post('/avatar/upload')
-  // @UseInterceptors(FileInterceptor('file', upload.single('file')))
-  // async uploadImage(
-  //   @Session() session,
-  //   @UploadedFile() file,
-  //   @Query(ValidationPipe) uploadAvatarDto: UploadAvatarDto,
-  // ) {
-  //   const result = await this.userService.uploadAvatar(
-  //     session.images,
-  //     file,
-  //     uploadAvatarDto,
-  //   );
-  //   // if (!(result as Product).titleUrl) {
-  //   //   session.images = result;
-  //   // }
-
-  //   return result;
-  // }
-  // @Post('/upload/image')
-  // @UseInterceptors(FileInterceptor('image'))
-  // async uploadedFile(@UploadedFile() file) {
-  //   // const response = {
-  //   //   originalname: file.originalname,
-  //   //   filename: file.filename,
-  //   // };
-  //   console.log(file);
-  //   return file;
-  // }
-
-  // @Post('upload')
-  // @UseInterceptors(FileInterceptor('file'))
-  // uploadFile(@UploadedFile() file: Express.Multer.File) {
-  //   console.log(file);
-  // }
-
-  @Post('avatar/upload')
+  @Roles(Role.User, Role.Admin)
+  @Patch('avatar/upload/')
   @UseInterceptors(
     FileInterceptor('image', {
       storage: diskStorage({
@@ -124,24 +107,29 @@ export class UserController {
   )
   async uploadImage(
     @UploadedFile() file: Express.Multer.File,
-    // @Req() req,
-    @Res() res,
-    @Body() body,
+    @Body(ValidationPipe) body,
   ) {
     console.log({ body });
-    // const file = req.file;
-    console.log(file);
+    console.log(body.user_id);
     if (file) {
-      const cloudinaryFile = await this.cloudinaryService.uploadImage(
-        `./uploads/${file.filename}`,
-      );
+      const cloudinaryFile = await this.cloudinaryService
+        .uploadImage(`./uploads/${file.filename}`, file)
+        .catch((err) => {
+          throw new HttpException(
+            {
+              message: err.message,
+            },
+            HttpStatus.BAD_REQUEST,
+          );
+        });
       console.log({ cloudinaryFile });
-      return res.status(200);
-      // return this.userService.saveAvatar(cloudinaryFile, body.user_id);
-
-      // res.send(cloudinaryFile.url);
+      const cloudUrl = {
+        url: cloudinaryFile.url,
+        original_filename: cloudinaryFile.original_filename,
+      };
+      return this.userService.saveAvatar(cloudUrl, body.user_id);
     } else {
-      res.status(HttpStatus.BAD_REQUEST).send(`Cant uploads img`);
+      throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
     }
   }
 }

@@ -3,93 +3,92 @@ import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
-import { MulterModule } from '@nestjs/platform-express';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthMiddleware } from './auth/middlewares/auth.middleware';
 import { AuthModule } from './auth/auth.module';
-import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { RedisMiddleware } from './auth/middlewares/redis.middleware';
 import { UserModule } from './user/user.module';
+import { LoggingMiddleware } from './common/middleware/logging.middleware';
 
 @Module({
-    imports: [
-        ConfigModule.forRoot({
-            isGlobal: true,
-            // isGlobal property to true so this module is loaded on every other module (if you don’t set this, you’ll have to add the ConfigModule to the imports of every module where you have to use the .env information).
-        }),
-        AuthModule,
-        TypeOrmModule.forRoot({
-            type: 'postgres',
-            host: process.env.DATABASE_HOST || 'db_local',
-            port: 5432 || +process.env.DATABASE_PORT,
-            username: process.env.DATABASE_USER,
-            password: process.env.DATABASE_PASSWORD,
-            database: process.env.DATABASE_NAME,
-            autoLoadEntities: true,
-            synchronize: true,
-        }),
-        UserModule,
-        JwtModule.registerAsync({
-            imports: [ConfigModule],
-            useFactory: async () => ({
-                secret: process.env.JWT_SECRET,
-            }),
-            inject: [ConfigService],
-        }),
-        RedisModule.forRoot({
-            readyLog: true,
-            config: {
-                host: process.env.REDIS_HOST || 'my_redis',
-                port: +process.env.REDIS_PORT,
-                password: process.env.REDIS_PASSWORD,
-            },
-        }),
-    ],
-    controllers: [AppController],
-    providers: [
-        AppService,
-        // {
-        //     provide: APP_GUARD,
-        //     useClass: JwtAuthGuard,
-        // },
-    ],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      // isGlobal property to true so this module is loaded on every other module (if you don’t set this, you’ll have to add the ConfigModule to the imports of every module where you have to use the .env information).
+    }),
+    AuthModule,
+    TypeOrmModule.forRoot({
+      type: 'postgres',
+      host: process.env.DATABASE_HOST || 'db_local',
+      port: 5432 || +process.env.DATABASE_PORT,
+      username: process.env.DATABASE_USER,
+      password: process.env.DATABASE_PASSWORD,
+      database: process.env.DATABASE_NAME,
+      autoLoadEntities: true,
+      synchronize: true,
+    }),
+    UserModule,
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      useFactory: async () => ({
+        secret: process.env.JWT_SECRET,
+      }),
+      inject: [ConfigService],
+    }),
+    RedisModule.forRoot({
+      readyLog: true,
+      config: {
+        host: process.env.REDIS_HOST || 'my_redis',
+        port: +process.env.REDIS_PORT,
+        password: process.env.REDIS_PASSWORD,
+      },
+    }),
+  ],
+  controllers: [AppController],
+  providers: [
+    AppService,
+    // {
+    //     provide: APP_GUARD,
+    //     useClass: JwtAuthGuard,
+    // },
+  ],
 })
 export class AppModule {
-    configure(consumer: MiddlewareConsumer) {
-        consumer
-            .apply(AuthMiddleware)
-            .exclude(
-                {
-                    path: 'auth/login',
-                    method: RequestMethod.POST,
-                },
-                {
-                    path: 'auth/register',
-                    method: RequestMethod.POST,
-                },
-            )
-            .forRoutes({
-                path: '*',
-                method: RequestMethod.ALL,
-            });
-        consumer
-            .apply(RedisMiddleware)
-            .exclude(
-                {
-                    path: 'auth/login',
-                    method: RequestMethod.POST,
-                },
-                {
-                    path: 'auth/register',
-                    method: RequestMethod.POST,
-                },
-                {
-                    path: 'auth/logout',
-                    method: RequestMethod.POST,
-                },
-            )
-            .forRoutes('*');
-    }
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(AuthMiddleware)
+      .exclude(
+        {
+          path: 'auth/login',
+          method: RequestMethod.POST,
+        },
+        {
+          path: 'auth/register',
+          method: RequestMethod.POST,
+        },
+      )
+      .forRoutes({
+        path: '*',
+        method: RequestMethod.ALL,
+      });
+    consumer
+      .apply(RedisMiddleware)
+      .exclude(
+        {
+          path: 'auth/login',
+          method: RequestMethod.POST,
+        },
+        {
+          path: 'auth/register',
+          method: RequestMethod.POST,
+        },
+        {
+          path: 'auth/logout',
+          method: RequestMethod.POST,
+        },
+      )
+      .forRoutes('*');
+  }
 }

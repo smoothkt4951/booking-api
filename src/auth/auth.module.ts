@@ -12,22 +12,23 @@ import { AuthService } from './auth.service';
 import { JwtStrategy } from './jwt.strategy';
 
 @Module({
-    imports: [
-        PassportModule,
-        JwtModule.registerAsync({
-            imports: [ConfigModule],
-            useFactory: async () => ({
-                secret: process.env.JWT_SECRET,
-                signOptions: {
-                    expiresIn: process.env.JWT_EXPIRATION_TIME,
-                },
-            }),
-            inject: [ConfigService],
-        }),
-        TypeOrmModule.forFeature([UserEntity]),
-        UserModule,
-    ],
-    controllers: [AuthController],
-    providers: [AuthService, UserService, JwtStrategy],
+  imports: [
+    PassportModule,
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      useFactory: async () => ({
+        secret: process.env.JWT_SECRET,
+        signOptions: {
+          expiresIn: process.env.JWT_EXPIRATION_TIME,
+        },
+      }),
+      inject: [ConfigService],
+    }),
+    TypeOrmModule.forFeature([UserEntity]),
+    UserModule,
+    CloudinaryModule,
+  ],
+  controllers: [AuthController],
+  providers: [AuthService, UserService, JwtStrategy],
 })
 export class AuthModule {}
