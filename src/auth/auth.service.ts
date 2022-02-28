@@ -6,8 +6,8 @@ import {
     UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { UserEntity } from 'src/user/user.entity';
-import { UserService } from 'src/user/user.service';
+import { UserEntity } from '../user/user.entity';
+import { UserService } from '../user/user.service';
 import { AuthLoginDto } from './dto/auth-login.dto';
 import { RegisterDto } from './dto/register.dto';
 

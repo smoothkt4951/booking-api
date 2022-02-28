@@ -21,7 +21,7 @@ import { UserModule } from './user/user.module';
         AuthModule,
         TypeOrmModule.forRoot({
             type: 'postgres',
-            host: 'db_local' || process.env.DATABASE_HOST,
+            host: process.env.DATABASE_HOST || 'db_local',
             port: 5432 || +process.env.DATABASE_PORT,
             username: process.env.DATABASE_USER,
             password: process.env.DATABASE_PASSWORD,
@@ -40,7 +40,7 @@ import { UserModule } from './user/user.module';
         RedisModule.forRoot({
             readyLog: true,
             config: {
-                host: 'my_redis' || process.env.REDIS_HOST,
+                host: process.env.REDIS_HOST || 'my_redis',
                 port: +process.env.REDIS_PORT,
                 password: process.env.REDIS_PASSWORD,
             },

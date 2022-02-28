@@ -18,6 +18,7 @@ export class UserService {
 
     async findAllUsers() {
         const users = await this.userRepository.find();
+        console.log(users);
         return users;
     }
 
@@ -36,6 +37,7 @@ export class UserService {
             );
         }
         const createUser = await this.userRepository.create(user);
+        console.log(createUser);
         if (!createUser) {
             throw new NotFoundException(`Cant create user`);
         }
