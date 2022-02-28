@@ -1,6 +1,8 @@
+import { Roles } from 'src/auth/decorators/roles.decorator'
+// import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+// import { Roles } from 'src/auth/decorator/roles.decorator';
 import { ImagesHelper } from './../cloudinary/image.helper'
 import { CloudinaryService } from './../cloudinary/cloudinary.service'
-import { UploadAvatarDto } from './dto/upload-avatar.dto'
 import { UserService } from './user.service'
 import {
   Body,
@@ -12,30 +14,23 @@ import {
   Put,
   UseGuards,
   UseInterceptors,
-  Session,
   UploadedFile,
-  Query,
   ValidationPipe,
-  Res,
-  Req,
   HttpException,
   HttpStatus,
   Patch,
+  UsePipes,
 } from '@nestjs/common'
-// import multer from 'multer';
-import { CreateUserDto } from '../auth/dto/create-user.dto'
+import { CreateUserDto } from 'src/auth/dto/create-user.dto'
 import { FileInterceptor } from '@nestjs/platform-express'
 import { diskStorage } from 'multer'
 import { Express } from 'express'
-// const storage = multer.memoryStorage();
-// const upload = multer({ storage: multer.memoryStorage() });
-import { Role, UserEntity } from './user.entity'
-import { JwtAuthGuard } from '../auth/jwt-auth.guard'
-import { RolesGuard } from '../auth/roles.guard'
-import { Roles } from '../auth/roles.decorator'
-// import { RegisterDto } from './user.dto';
+import { Role } from './user.entity'
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard'
+import { RolesGuard } from 'src/auth/guards/roles.guard'
 
 @UseGuards(JwtAuthGuard, RolesGuard)
+@UsePipes(ValidationPipe)
 @Controller('users')
 export class UserController {
   constructor(
@@ -50,7 +45,7 @@ export class UserController {
     if (!users) {
       throw new HttpException('Forbidden', HttpStatus.FORBIDDEN)
     }
-    console.log(users)
+    // console.log(users);
     return users
   }
 
@@ -61,13 +56,13 @@ export class UserController {
     if (!user) {
       throw new HttpException('Forbidden', HttpStatus.FORBIDDEN)
     }
-    console.log(user)
+    // console.log(user);
     return user
   }
 
   @Roles(Role.Admin, Role.User)
   @Post()
-  async createUser(@Body() body: CreateUserDto) {
+  async createUser(@Body(ValidationPipe) body: CreateUserDto) {
     const createdUser = await this.userService.createUser(body)
     if (!createdUser) {
       throw new HttpException('Forbidden', HttpStatus.FORBIDDEN)
@@ -78,7 +73,7 @@ export class UserController {
 
   @Put(':id')
   @Roles(Role.Admin, Role.User)
-  async updateUser(@Param('id') id: string, @Body() body: any) {
+  async updateUser(@Param('id') id: string, @Body(ValidationPipe) body: any) {
     const updatedUser = await this.userService.updateUser(id, body)
     if (!updatedUser) {
       throw new HttpException('Forbidden', HttpStatus.FORBIDDEN)
@@ -110,7 +105,10 @@ export class UserController {
       limits: { fileSize: 1024 * 1024 },
     }),
   )
-  async uploadImage(@UploadedFile() file: Express.Multer.File, @Body() body) {
+  async uploadImage(
+    @UploadedFile() file: Express.Multer.File,
+    @Body(ValidationPipe) body,
+  ) {
     console.log({ body })
     console.log(body.user_id)
     if (file) {
