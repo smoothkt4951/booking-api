@@ -2,7 +2,7 @@ import { CloudinaryModule } from 'src/cloudinary/cloudinary.module';
 import { UserEntity } from 'src/user/user.entity';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { UserService } from './user.service';
+import { UserService } from '../user.service';
 
 describe('UserService', () => {
   let userService: UserService;

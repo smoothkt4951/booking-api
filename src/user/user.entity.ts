@@ -27,11 +27,13 @@ export enum Gender {
 @Entity()
 export class UserEntity {
   public constructor(
-    firstname: string,
-    lastname: string,
-    email: string,
-    password: string,
+    id?: string,
+    firstname?: string,
+    lastname?: string,
+    email?: string,
+    password?: string,
   ) {
+    this.id = id;
     this.firstname = firstname;
     this.lastname = lastname;
     this.email = email;
@@ -59,7 +61,7 @@ export class UserEntity {
   @Column({
     type: 'enum',
     enum: Role,
-    default: Role.Admin,
+    default: Role.User,
   })
   role: Role;
 
@@ -105,4 +107,9 @@ export class UserEntity {
   async validatePassword(password: string): Promise<boolean> {
     return bcrypt.compare(password, this.password);
   }
+}
+
+export interface User {
+  id?: string;
+  email?: string;
 }

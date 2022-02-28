@@ -1,7 +1,9 @@
+import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
+import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { RedisModule } from '@liaoliaots/nestjs-redis';
 import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { APP_GUARD } from '@nestjs/core';
+// import { APP_GUARD } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
@@ -30,6 +32,7 @@ import { LoggingMiddleware } from './common/middleware/logging.middleware';
       synchronize: true,
     }),
     UserModule,
+    CloudinaryModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
       useFactory: async () => ({
@@ -47,6 +50,8 @@ import { LoggingMiddleware } from './common/middleware/logging.middleware';
   ],
   controllers: [AppController],
   providers: [
+    CloudinaryService,
+
     AppService,
     // {
     //     provide: APP_GUARD,

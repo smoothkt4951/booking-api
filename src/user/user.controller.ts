@@ -25,9 +25,10 @@ import { CreateUserDto } from 'src/auth/dto/create-user.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { Express } from 'express';
-import { RolesGuard } from '../auth/roles.guard';
+
 import { Role } from './user.entity';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { RolesGuard } from 'src/auth/guards/roles.guard';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @UsePipes(ValidationPipe)
@@ -45,7 +46,7 @@ export class UserController {
     if (!users) {
       throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
     }
-    console.log(users);
+    // console.log(users);
     return users;
   }
 
@@ -56,7 +57,7 @@ export class UserController {
     if (!user) {
       throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
     }
-    console.log(user);
+    // console.log(user);
     return user;
   }
 
