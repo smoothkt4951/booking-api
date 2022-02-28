@@ -1,20 +1,11 @@
-import { Observable } from 'rxjs'
-import {
-  HttpException,
-  HttpStatus,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common'
-import { InjectRepository } from '@nestjs/typeorm'
-import { CreateUserDto } from '../auth/dto/create-user.dto'
-import { Repository } from 'typeorm'
-import { UserEntity } from './user.entity'
-// import * as cloudinary from 'cloudinary';
-// import * as streamifier from 'streamifier';
-// import { UploadAvatarDto } from './dto/upload-avatar.dto';
-import { CloudinaryService } from '../cloudinary/cloudinary.service'
-import { UpdateUserInfoDto } from '../user/dto/update-userInfo.dto'
-import { UploadAvatarDto } from './dto/upload-avatar.dto'
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { CreateUserDto } from '../auth/dto/create-user.dto';
+import { Repository } from 'typeorm';
+import { UserEntity } from './user.entity';
+import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
+import { UpdateUserInfoDto } from 'src/user/dto/update-userInfo.dto';
+import { UploadAvatarDto } from './dto/upload-avatar.dto';
 
 @Injectable()
 export class UserService {
@@ -24,19 +15,50 @@ export class UserService {
     private readonly cloudinaryService: CloudinaryService,
   ) {}
 
-  async findAllUsers() {
-    return await this.userRepository.find().catch((err) => {
+  async getUserRole(id: string) {
+    try {
+      const user = await this.userRepository.findOne(id);
+      console.log(typeof user.role);
+      const userRole = user.role;
+      return userRole;
+    } catch (err) {
       throw new HttpException(
         {
           message: err.message,
         },
         HttpStatus.BAD_REQUEST,
-      )
-    })
+      );
+    }
+  }
+
+  async userOnly(allUsers) {
+    const userOnly = await allUsers
+      .filter((user) => {
+        return user.role === 'user' ? true : false;
+      })
+      .map((user) => {
+        return user;
+      });
+    return userOnly;
+  }
+
+  async findAllUsers() {
+    const allUsers = await this.userRepository.find().catch((err) => {
+      throw new HttpException(
+        {
+          message: err.message,
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    });
+    const usersOnly = await this.userOnly(allUsers);
+
+    console.log(usersOnly);
+    return usersOnly;
   }
 
   async findUserBy(condition) {
-    return await this.userRepository.findOne(condition)
+    return await this.userRepository.findOne(condition);
     // .catch((err) => {
     //   throw new HttpException(
     //     {
@@ -80,11 +102,9 @@ export class UserService {
   }
 
   async removeUser(id) {
-    const user = await this.userRepository.findOne(id)
-    console.log(user)
-    const removeAvatar = await this.cloudinaryService.deleteOldAvatar(
-      user.avatarUrl,
-    )
+    const user = await this.userRepository.findOne(id);
+    console.log(user);
+    await this.cloudinaryService.deleteOldAvatar(user.avatarUrl);
 
     const removeUser = await this.userRepository.delete(id).catch((err) => {
       throw new HttpException(
@@ -97,7 +117,6 @@ export class UserService {
     return removeUser
   }
   async saveAvatar(cloudUrl: UploadAvatarDto, user_id) {
-    // console.log({ avatarUrl });
     const savedAvatar = await this.userRepository
       .update({ id: user_id }, { avatarUrl: cloudUrl.url })
       .catch((err) => {

@@ -1,0 +1,57 @@
+version: '3'
+
+volumes:
+  postgres_data_local: {}
+
+services:
+  db:
+    image: postgres
+    container_name: db_local
+    restart: always
+    ports: 
+      - '5432:5432'
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=postgres
+    volumes:
+      - postgres_data_local:/var/lib/postgresql/data
+    networks:
+      - booking-api
+  
+  api: 
+    build: .
+    image: booking_api
+    container_name: booking_api
+    restart: always
+    depends_on: 
+      - db
+      - redis
+    links:
+      - db
+      - redis
+    environment:
+      - DATABASE_USER=postgres
+      - DATABASE_PASSWORD=root
+      - DATABASE_NAME=postgres
+      - DATABASE_PORT=5432
+    env_file:
+      - .env
+    ports: 
+      - '3000:3000'
+    networks:
+      - booking-api
+  
+  redis: 
+    restart: always
+    image: redis:alpine
+    container_name: "my_redis"
+    ports:
+      - "6379:6379"
+    command: 'redis-server --requirepass redispass'
+    networks:
+      - booking-api
+
+networks:
+  booking-api: 
+    driver: bridge
