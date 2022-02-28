@@ -24,7 +24,6 @@ import { RolesGuard } from './guards/roles.guard';
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
-    // private readonly redisService: RedisService,
     @InjectRedis() private readonly redisClient: Redis,
   ) {}
 
