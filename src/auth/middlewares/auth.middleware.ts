@@ -35,8 +35,9 @@ export class AuthMiddleware implements NestMiddleware {
       req.user = user;
       next();
     } catch (error) {
-      req.user = null;
-      next();
+      res.status(500).send({
+        msg: 'Cannot decode token! Something went wrong',
+      });
     }
   }
 }

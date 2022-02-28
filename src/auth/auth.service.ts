@@ -17,24 +17,12 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  private async validateUser(authLoginDto: AuthLoginDto): Promise<UserEntity> {
-    const { email, password } = authLoginDto;
-
-    const user = await this.usersService.findUserBy({ email });
-    if (!(await user?.validatePassword(password))) {
-      throw new HttpException(
-        'Email or Password is invalid!',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-    return user;
-  }
-
-  async login(authLoginDto: AuthLoginDto) {
+  async login(authLoginDto: AuthLoginDto): Promise<{ access_token: string }> {
     const user = await this.validateUser(authLoginDto);
 
     const payload = {
       userId: user.id,
+      userRole: user.role,
     };
 
     return {
@@ -42,7 +30,7 @@ export class AuthService {
     };
   }
 
-  async register(registerDto: RegisterDto) {
+  async register(registerDto: RegisterDto): Promise<UserEntity> {
     if (registerDto.password !== registerDto.passwordConfirm) {
       throw new BadRequestException('Password do not match!');
     }
@@ -54,5 +42,18 @@ export class AuthService {
       email,
       password,
     });
+  }
+
+  private async validateUser(authLoginDto: AuthLoginDto): Promise<UserEntity> {
+    const { email, password } = authLoginDto;
+
+    const user = await this.usersService.findUserBy({ email });
+    if (!(await user?.validatePassword(password))) {
+      throw new HttpException(
+        'Email or Password is invalid!',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    return user;
   }
 }
