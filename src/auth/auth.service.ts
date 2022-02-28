@@ -1,8 +1,8 @@
 import {
-    BadRequestException,
-    HttpException,
-    HttpStatus,
-    Injectable,
+  BadRequestException,
+  HttpException,
+  HttpStatus,
+  Injectable,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserEntity } from '../user/user.entity';
@@ -12,49 +12,47 @@ import { RegisterDto } from './dto/register.dto';
 
 @Injectable()
 export class AuthService {
-    constructor(
-        private usersService: UserService,
-        private jwtService: JwtService,
-    ) {}
+  constructor(
+    private usersService: UserService,
+    private jwtService: JwtService,
+  ) {}
 
-    private async validateUser(
-        authLoginDto: AuthLoginDto,
-    ): Promise<UserEntity> {
-        const { email, password } = authLoginDto;
+  private async validateUser(authLoginDto: AuthLoginDto): Promise<UserEntity> {
+    const { email, password } = authLoginDto;
 
-        const user = await this.usersService.findUserBy({ email });
-        if (!(await user?.validatePassword(password))) {
-            throw new HttpException(
-                'Email or Password is invalid!',
-                HttpStatus.BAD_REQUEST,
-            );
-        }
-        return user;
+    const user = await this.usersService.findUserBy({ email });
+    if (!(await user?.validatePassword(password))) {
+      throw new HttpException(
+        'Email or Password is invalid!',
+        HttpStatus.BAD_REQUEST,
+      );
     }
+    return user;
+  }
 
-    async login(authLoginDto: AuthLoginDto) {
-        const user = await this.validateUser(authLoginDto);
+  async login(authLoginDto: AuthLoginDto) {
+    const user = await this.validateUser(authLoginDto);
 
-        const payload = {
-            userId: user.id,
-        };
+    const payload = {
+      userId: user.id,
+    };
 
-        return {
-            access_token: this.jwtService.sign(payload),
-        };
+    return {
+      access_token: this.jwtService.sign(payload),
+    };
+  }
+
+  async register(registerDto: RegisterDto) {
+    if (registerDto.password !== registerDto.passwordConfirm) {
+      throw new BadRequestException('Password do not match!');
     }
+    const { firstname, lastname, email, password } = registerDto;
 
-    async register(registerDto: RegisterDto) {
-        if (registerDto.password !== registerDto.passwordConfirm) {
-            throw new BadRequestException('Password do not match!');
-        }
-        const { firstname, lastname, email, password } = registerDto;
-
-        return this.usersService.createUser({
-            firstname,
-            lastname,
-            email,
-            password,
-        });
-    }
+    return this.usersService.createUser({
+      firstname,
+      lastname,
+      email,
+      password,
+    });
+  }
 }

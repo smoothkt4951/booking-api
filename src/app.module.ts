@@ -6,11 +6,14 @@ import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { AuthMiddleware } from './auth/middlewares/auth.middleware';
+
 import { AuthModule } from './auth/auth.module';
 import { RedisMiddleware } from './auth/middlewares/redis.middleware';
 import { UserModule } from './user/user.module';
 import { LoggingMiddleware } from './common/middleware/logging.middleware';
+import { AuthMiddleware } from './auth/middlewares/auth.middleware';
+import { BookingModule } from './booking/booking.module';
+import { RoomModule } from './room/room.module';
 
 @Module({
   imports: [
@@ -19,6 +22,9 @@ import { LoggingMiddleware } from './common/middleware/logging.middleware';
       // isGlobal property to true so this module is loaded on every other module (if you don’t set this, you’ll have to add the ConfigModule to the imports of every module where you have to use the .env information).
     }),
     AuthModule,
+    BookingModule,
+    UserModule,
+    RoomModule,
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.DATABASE_HOST || 'db_local',

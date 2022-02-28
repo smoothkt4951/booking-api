@@ -1,6 +1,14 @@
-import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  BeforeInsert,
+  Column,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { Exclude } from 'class-transformer';
+import { BookingEntity } from '../booking/entities/booking.entity';
+import { RoomEntity } from '../room/entity/room.entity';
 
 import {
   IsEmail,
@@ -40,6 +48,9 @@ export class UserEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
+  @OneToMany((type) => BookingEntity, (booking) => booking.User)
+  Room: RoomEntity[];
+
   @IsEmail({ message: `This is not an email` })
   @IsNotEmpty({ message: `Email can not empty` })
   @Column({ unique: true })
@@ -61,7 +72,7 @@ export class UserEntity {
     enum: Role,
     default: Role.Admin,
   })
-  role: Role;
+  role: Role; // note here : conflict resolve see default role of User and Admin, set default to user , change if needed
 
   @IsString()
   @MinLength(2, { message: `Firstname must be at least 2 characters` })
