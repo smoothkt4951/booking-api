@@ -21,8 +21,8 @@ import { UserModule } from './user/user.module';
         AuthModule,
         TypeOrmModule.forRoot({
             type: 'postgres',
-            host: process.env.DATABASE_HOST,
-            port: +process.env.DATABASE_PORT,
+            host: 'db_local' || process.env.DATABASE_HOST,
+            port: 5432 || +process.env.DATABASE_PORT,
             username: process.env.DATABASE_USER,
             password: process.env.DATABASE_PASSWORD,
             database: process.env.DATABASE_NAME,
@@ -40,8 +40,9 @@ import { UserModule } from './user/user.module';
         RedisModule.forRoot({
             readyLog: true,
             config: {
-                host: 'localhost',
-                port: 6379,
+                host: 'my_redis' || process.env.REDIS_HOST,
+                port: +process.env.REDIS_PORT,
+                password: process.env.REDIS_PASSWORD,
             },
         }),
     ],
@@ -56,10 +57,22 @@ import { UserModule } from './user/user.module';
 })
 export class AppModule {
     configure(consumer: MiddlewareConsumer) {
-        consumer.apply(AuthMiddleware).forRoutes({
-            path: '*',
-            method: RequestMethod.ALL,
-        });
+        consumer
+            .apply(AuthMiddleware)
+            .exclude(
+                {
+                    path: 'auth/login',
+                    method: RequestMethod.POST,
+                },
+                {
+                    path: 'auth/register',
+                    method: RequestMethod.POST,
+                },
+            )
+            .forRoutes({
+                path: '*',
+                method: RequestMethod.ALL,
+            });
         consumer
             .apply(RedisMiddleware)
             .exclude(

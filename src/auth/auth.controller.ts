@@ -9,7 +9,7 @@ import {
     Res,
     UseGuards,
 } from '@nestjs/common';
-import { Response } from 'express';
+import { Response, Request } from 'express';
 import { Redis } from 'ioredis';
 import { Role } from 'src/user/user.entity';
 import { AuthService } from './auth.service';
@@ -48,9 +48,8 @@ export class AuthController {
     }
 
     @Post('logout')
-    async logout(@Body('token') token: string, @Res() res: Response) {
-        // const token = req.headers.authorization.split(' ')[1];
-        // const redisClient = await this.redisService.getClient();
+    async logout(@Req() req: Request, @Res() res: Response) {
+        const token = req.headers.authorization.split(' ')[1];
         try {
             // console.log(token);
             await this.redisClient.lpush('token', token);

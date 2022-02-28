@@ -15,6 +15,7 @@ services:
     ports:
       - "6379:6379"
     restart: always     # "unless-stopped" or "always"
+    command: 'redis-server --requirepass redispass'
     # ## UNCOMMENT THESE LINES IF WE USE CUSTOM REDIS CONFIG ##
     # volumes:
     #   - ./redis.conf:/usr/local/etc/redis/redis.conf    
