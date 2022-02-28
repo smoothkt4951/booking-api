@@ -3,10 +3,10 @@ import {
   HttpStatus,
   Injectable,
   NestMiddleware,
-} from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import { NextFunction, Request, Response } from 'express';
-import { UserService } from 'src/user/user.service';
+} from '@nestjs/common'
+import { JwtService } from '@nestjs/jwt'
+import { NextFunction, Request, Response } from 'express'
+import { UserService } from 'src/user/user.service'
 
 @Injectable()
 export class AuthMiddleware implements NestMiddleware {
@@ -18,27 +18,27 @@ export class AuthMiddleware implements NestMiddleware {
     // console.log('authMiddle', req.headers);
 
     if (!req.headers.authorization) {
-      req.user = null;
-      next();
-      return;
+      req.user = null
+      next()
+      return
     }
 
-    const token = req.headers.authorization.split(' ')[1];
+    const token = req.headers.authorization.split(' ')[1]
 
     try {
-      const decode = this.jwtService.verify(token);
-      console.log('decode', decode);
-      const { userId } = decode;
+      const decode = this.jwtService.verify(token)
+      console.log('decode', decode)
+      const { userId } = decode
 
-      const user = await this.userService.findUserBy({ userId });
+      const user = await this.userService.findUserBy({ userId })
       if (!user) {
-        throw new HttpException('User not found.', HttpStatus.UNAUTHORIZED);
+        throw new HttpException('User not found.', HttpStatus.UNAUTHORIZED)
       }
-      req.user = user;
-      next();
+      req.user = user
+      next()
     } catch (error) {
-      req.user = null;
-      next();
+      req.user = null
+      next()
     }
   }
 }

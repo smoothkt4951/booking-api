@@ -1,18 +1,18 @@
-import { IsNotEmpty, IsEnum, IsDate, MaxDate } from 'class-validator';
-import { Gender } from 'src/user/user.entity';
+import { IsNotEmpty, IsEnum, IsDate, MaxDate } from 'class-validator'
+import { Gender } from 'src/user/user.entity'
 
 export class UpdateUserInfoDto {
   @IsNotEmpty()
-  firstname: string;
+  firstname: string
 
   @IsNotEmpty()
-  lastname: string;
+  lastname: string
 
   @IsEnum(['male', 'female', 'other'])
   @IsNotEmpty()
-  gender: Gender;
+  gender: Gender
 
   @IsDate()
   @MaxDate(new Date())
-  dayOfBirth: string;
+  dayOfBirth: string
 }

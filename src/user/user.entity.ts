@@ -1,8 +1,14 @@
-import { BeforeInsert, Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import * as bcrypt from 'bcrypt';
-import { Exclude } from 'class-transformer';
-import { BookingEntity } from 'src/booking/entities/booking.entity';
-import { RoomEntity } from 'src/room/entity/room.entity';
+import {
+  BeforeInsert,
+  Column,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm'
+import * as bcrypt from 'bcrypt'
+import { Exclude } from 'class-transformer'
+import { BookingEntity } from 'src/booking/entities/booking.entity'
+import { RoomEntity } from 'src/room/entity/room.entity'
 
 export enum Role {
   User = 'user',
@@ -22,62 +28,62 @@ export class UserEntity {
     email: string,
     password: string,
   ) {
-    this.firstname = firstname;
-    this.lastname = lastname;
-    this.email = email;
-    this.password = password;
+    this.firstname = firstname
+    this.lastname = lastname
+    this.email = email
+    this.password = password
   }
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id: string
 
-  @OneToMany(type=>BookingEntity,booking=>booking.User)
-  Room: RoomEntity[];
+  @OneToMany((type) => BookingEntity, (booking) => booking.User)
+  Room: RoomEntity[]
 
   @Column({ unique: true })
-  email: string;
+  email: string
 
   @Column()
   @Exclude()
-  password: string;
+  password: string
 
   @Column({
     type: 'enum',
     enum: Role,
     default: Role.User,
   })
-  role: Role; // note here : conflict resolve see default role of User and Admin, set default to user , change if needed 
+  role: Role // note here : conflict resolve see default role of User and Admin, set default to user , change if needed
 
   @Column({
     type: 'text',
     nullable: true,
   })
-  firstname: string;
+  firstname: string
 
   @Column({
     type: 'text',
     nullable: true,
   })
-  lastname: string;
+  lastname: string
 
   @Column({
     type: 'enum',
     enum: Gender,
     default: Gender.OTHER,
   })
-  gender: Gender;
+  gender: Gender
 
   @Column({ type: 'date', nullable: true, default: null })
-  dateOfBirth: string;
+  dateOfBirth: string
 
   @Column({ nullable: true })
-  avatarUrl: string;
+  avatarUrl: string
 
   @BeforeInsert()
   async hashPassword() {
-    this.password = await bcrypt.hash(this.password, 8);
+    this.password = await bcrypt.hash(this.password, 8)
   }
 
   async validatePassword(password: string): Promise<boolean> {
-    return bcrypt.compare(password, this.password);
+    return bcrypt.compare(password, this.password)
   }
 }

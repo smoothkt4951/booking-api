@@ -1,64 +1,64 @@
-import { RoomSize } from '../entity/room.entity';
+import { RoomSize } from '../entity/room.entity'
 import {
   IsNotEmpty,
   IsNumber,
   IsString,
   IsOptional,
   Min,
-} from 'class-validator';
+} from 'class-validator'
 export class CreateRoomDto {
   @IsNotEmpty()
   @IsString()
-  codeName: string;
+  codeName: string
   @IsNotEmpty()
   @IsString()
-  size: RoomSize;
+  size: RoomSize
   @IsNotEmpty()
   @IsNumber()
-  price: number;
+  price: number
 }
 export class UpdateRoomDto {
   @IsString()
   @IsOptional()
-  codeName: string;
+  codeName: string
   @IsString()
   @IsOptional()
-  size: RoomSize;
+  size: RoomSize
   @IsNumber()
   @IsOptional()
-  price: number;
+  price: number
 }
 
 export class RoomResponseDto {
-  codeName: string;
+  codeName: string
 
-  size: string;
+  size: string
 
-  isVacant: boolean;
+  isVacant: boolean
 
-  price: number;
+  price: number
 
-  images: string[];
+  images: string[]
 }
 export class FileDto {
-  originalname: string;
-  filename: string;
-  size: string;
-  path: string;
+  originalname: string
+  filename: string
+  size: string
+  path: string
 }
 export class SearchRoomDto {
   @IsOptional()
   @IsString()
-  keyword: string;
+  keyword: string
   @IsOptional()
   @IsString()
-  sort: string;
+  sort: string
   @IsOptional()
   @IsNumber()
   @Min(1)
-  page: number;
+  page: number
   @IsOptional()
   @IsNumber()
   @Min(1)
-  limit: number;
+  limit: number
 }
