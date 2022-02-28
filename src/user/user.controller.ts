@@ -25,7 +25,6 @@ import { CreateUserDto } from 'src/auth/dto/create-user.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { Express } from 'express';
-
 import { Role } from './user.entity';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
@@ -40,7 +39,7 @@ export class UserController {
   ) {}
 
   @Get()
-  @Roles(Role.Admin)
+  @Roles(Role.Admin, Role.User)
   async getAllUsers() {
     const users = await this.userService.findAllUsers();
     if (!users) {
@@ -61,7 +60,7 @@ export class UserController {
     return user;
   }
 
-  @Roles(Role.Admin)
+  @Roles(Role.Admin, Role.User)
   @Post()
   async createUser(@Body(ValidationPipe) body: CreateUserDto) {
     const createdUser = await this.userService.createUser(body);
@@ -83,7 +82,7 @@ export class UserController {
     return updatedUser;
   }
 
-  @Roles(Role.Admin)
+  @Roles(Role.Admin, Role.User)
   @Delete(':id')
   async removeUser(@Param('id') id: string) {
     const removedUser = await this.userService.removeUser(id);

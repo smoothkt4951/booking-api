@@ -58,14 +58,15 @@ export class UserService {
   }
 
   async findUserBy(condition) {
-    return await this.userRepository.findOne(condition).catch((err) => {
-      throw new HttpException(
-        {
-          message: err.message,
-        },
-        HttpStatus.BAD_REQUEST,
-      );
-    });
+    return await this.userRepository.findOne(condition);
+    // .catch((err) => {
+    //   throw new HttpException(
+    //     {
+    //       message: err.message,
+    //     },
+    //     HttpStatus.BAD_REQUEST,
+    //   )
+    // })
   }
 
   async createUser({ firstname, lastname, email, password }: CreateUserDto) {

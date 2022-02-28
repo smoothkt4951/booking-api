@@ -1,4 +1,4 @@
-import { InjectRedis } from '@liaoliaots/nestjs-redis';
+import { InjectRedis } from '@liaoliaots/nestjs-redis'
 import {
   Body,
   Controller,
@@ -9,7 +9,7 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
-import { Response } from 'express';
+import { Response, Request } from 'express';
 import { Redis } from 'ioredis';
 import { Role } from 'src/user/user.entity';
 import { AuthService } from './auth.service';
@@ -23,34 +23,31 @@ import { RolesGuard } from './guards/roles.guard';
 @Controller('auth')
 export class AuthController {
   constructor(
-    private readonly authService: AuthService,
-    // private readonly redisService: RedisService,
-    @InjectRedis() private readonly redisClient: Redis,
+    private readonly authService: AuthService, // private readonly redisService: RedisService, //@InjectRedis() private readonly redisClient: Redis,
   ) {}
 
   @Post('login')
   @Public()
   async login(@Body() authLoginDto: AuthLoginDto) {
-    return this.authService.login(authLoginDto);
+    return this.authService.login(authLoginDto)
   }
 
   @Post('register')
   @Public()
   async register(@Body() authRegisterDto: RegisterDto) {
-    return this.authService.register(authRegisterDto);
+    return this.authService.register(authRegisterDto)
   }
 
   @Get('')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.Admin)
   async test(@Req() req) {
-    return req.user;
+    return req.user
   }
 
   @Post('logout')
-  async logout(@Body('token') token: string, @Res() res: Response) {
-    // const token = req.headers.authorization.split(' ')[1];
-    // const redisClient = await this.redisService.getClient();
+  async logout(@Req() req: Request, @Res() res: Response) {
+    const token = req.headers.authorization.split(' ')[1];
     try {
       // console.log(token);
       await this.redisClient.lpush('token', token);

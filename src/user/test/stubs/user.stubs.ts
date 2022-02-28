@@ -1,4 +1,4 @@
-import { Gender, Role, UserEntity } from 'src/user/user.entity';
+import { Gender, Role } from 'src/user/user.entity';
 
 export const UserStub = {
   user: {
@@ -75,15 +75,3 @@ export const UserStub = {
     },
   ],
 } as const;
-
-// export const userStub = {
-//   id: '77b07646-e2ff-436c-a06a-21c110ad9d89',
-//   email: 'test@example.com',
-//   firstname: 'testerfirstname',
-//   lastname: 'testerlastname',
-//   password: '123456',
-//   role: Role.User,
-//   gender: Gender.OTHER,
-//   avatarUrl: '',
-//   dateOfBirth: '',
-// };

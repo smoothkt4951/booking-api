@@ -18,9 +18,7 @@ export class AuthMiddleware implements NestMiddleware {
     console.log('authMiddle', req.headers);
 
     if (!req.headers.authorization) {
-      req.user = null;
-      next();
-      return;
+      throw new HttpException('Error', HttpStatus.UNAUTHORIZED);
     }
 
     const token = req.headers.authorization.split(' ')[1];
@@ -37,8 +35,9 @@ export class AuthMiddleware implements NestMiddleware {
       req.user = user;
       next();
     } catch (error) {
-      req.user = null;
-      next();
+      res.status(500).send({
+        msg: 'Cannot decode token! Something went wrong',
+      });
     }
   }
 }
