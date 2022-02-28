@@ -1,4 +1,4 @@
-import { InjectRedis } from '@liaoliaots/nestjs-redis'
+import { InjectRedis } from '@liaoliaots/nestjs-redis';
 import {
   Body,
   Controller,
@@ -23,26 +23,27 @@ import { RolesGuard } from './guards/roles.guard';
 @Controller('auth')
 export class AuthController {
   constructor(
-    private readonly authService: AuthService, // private readonly redisService: RedisService, //@InjectRedis() private readonly redisClient: Redis,
+    private readonly authService: AuthService,
+    @InjectRedis() private readonly redisClient: Redis,
   ) {}
 
   @Post('login')
   @Public()
   async login(@Body() authLoginDto: AuthLoginDto) {
-    return this.authService.login(authLoginDto)
+    return this.authService.login(authLoginDto);
   }
 
   @Post('register')
   @Public()
   async register(@Body() authRegisterDto: RegisterDto) {
-    return this.authService.register(authRegisterDto)
+    return this.authService.register(authRegisterDto);
   }
 
   @Get('')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.Admin)
   async test(@Req() req) {
-    return req.user
+    return req.user;
   }
 
   @Post('logout')
