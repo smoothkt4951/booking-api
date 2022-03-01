@@ -55,14 +55,6 @@ export class UserEntity {
   @Exclude()
   password: string;
 
-<<<<<<< HEAD
-    @Column({
-        type: 'enum',
-        enum: Role,
-        default: Role.Admin,
-    })
-    role: Role;
-=======
   @IsEnum(['admin', 'user'])
   @Column({
     type: 'enum',
@@ -70,7 +62,6 @@ export class UserEntity {
     default: Role.Admin,
   })
   role: Role;
->>>>>>> dev
 
   @IsString()
   @MinLength(2, { message: `Firstname must be at least 2 characters` })

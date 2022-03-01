@@ -29,12 +29,8 @@ import { RolesGuard } from '../auth/roles.guard';
 import { Role } from './user.entity';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
-<<<<<<< HEAD
-// @UseGuards(JwtAuthGuard, RolesGuard)
-=======
 @UseGuards(JwtAuthGuard, RolesGuard)
 @UsePipes(ValidationPipe)
->>>>>>> dev
 @Controller('users')
 export class UserController {
   constructor(

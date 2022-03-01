@@ -668,7 +668,7 @@
     "lodash" "4.17.21"
     "uuid" "8.3.2"
 
-"@nestjs/core@^6.0.0 || ^7.0.0 || ^8.0.0", "@nestjs/core@^8.0.0", "@nestjs/core@8.x || 7.x":
+"@nestjs/core@^8.0.0", "@nestjs/core@8.x || 7.x":
   "integrity" "sha512-tdZkhqopd5xSVjogezpP4tPZWntyUNzwOGrVJCQ3RMVH12oxyDMpaMtDnCNvV7cSyoSyHzepMh5nCgLsZ/c88w=="
   "resolved" "https://registry.npmjs.org/@nestjs/core/-/core-8.3.1.tgz"
   "version" "8.3.1"
@@ -715,13 +715,6 @@
     "fs-extra" "10.0.0"
     "jsonc-parser" "3.0.0"
     "pluralize" "8.0.0"
-
-"@nestjs/serve-static@^2.2.2":
-  "integrity" "sha512-3Mr+Q/npS3N7iGoF3Wd6Lj9QcjMGxbNrSqupi5cviM0IKrZ1BHl5qekW95rWYNATAVqoTmjGROAq+nKKpuUagQ=="
-  "resolved" "https://registry.npmjs.org/@nestjs/serve-static/-/serve-static-2.2.2.tgz"
-  "version" "2.2.2"
-  dependencies:
-    "path-to-regexp" "0.1.7"
 
 "@nestjs/testing@^8.0.0":
   "integrity" "sha512-QZ7WwXYpUpfuyLddFwPSkJOWbpTUCtxvY2P9DjxcEsafmxaCeEURBM0DjaKcSwsTvyg9WIew803zViJO5NklPA=="
@@ -1980,8 +1973,6 @@
   "resolved" "https://registry.npmjs.org/cloudinary-core/-/cloudinary-core-2.12.3.tgz"
   "version" "2.12.3"
 
-<<<<<<< HEAD
-=======
 "cloudinary@^1.28.1":
   "integrity" "sha512-iCSgX/GjyNRYUf/1kQgyLl8UdhPKUWIxsAvCD0qjUcnnIZqHk5tJQmCt5YpGh/r1tVdKa4TV/iDB12S33Zjy0w=="
   "resolved" "https://registry.npmjs.org/cloudinary/-/cloudinary-1.28.1.tgz"
@@ -1990,11 +1981,11 @@
     "cloudinary-core" "^2.10.2"
     "core-js" "3.6.5"
     "lodash" "^4.17.11"
+    "proxy-agent" "^5.0.0"
     "q" "^1.5.1"
   optionalDependencies:
     "proxy-agent" "^5.0.0"
 
->>>>>>> dev
 "cluster-key-slot@^1.1.0":
   "integrity" "sha512-2Nii8p3RwAPiFwsnZvukotvow2rIHM+yQ6ZcBXGHdniadkYGZYiGmkHJIbZPIV9nfv7m/U1IPMVVcAhoWFeklw=="
   "resolved" "https://registry.npmjs.org/cluster-key-slot/-/cluster-key-slot-1.1.0.tgz"
@@ -2506,10 +2497,7 @@
     "estraverse" "^4.2.0"
     "esutils" "^2.0.2"
     "optionator" "^0.8.1"
-<<<<<<< HEAD
     "source-map" "~0.6.1"
-=======
->>>>>>> dev
   optionalDependencies:
     "source-map" "~0.6.1"
 
@@ -3013,13 +3001,10 @@
   "resolved" "https://registry.npmjs.org/fs.realpath/-/fs.realpath-1.0.0.tgz"
   "version" "1.0.0"
 
-"ftp@^0.3.10":
-  "integrity" "sha1-kZfYYa2BQvPmPVqDv+TFn3MwiF0="
-  "resolved" "https://registry.npmjs.org/ftp/-/ftp-0.3.10.tgz"
-  "version" "0.3.10"
-  dependencies:
-    "readable-stream" "1.1.x"
-    "xregexp" "2.0.0"
+"fsevents@^2.3.2", "fsevents@~2.3.2":
+  "integrity" "sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA=="
+  "resolved" "https://registry.npmjs.org/fsevents/-/fsevents-2.3.2.tgz"
+  "version" "2.3.2"
 
 "ftp@^0.3.10":
   "integrity" "sha1-kZfYYa2BQvPmPVqDv+TFn3MwiF0="
@@ -4159,11 +4144,8 @@
   "integrity" "sha1-h3Gq4HmbZAdrdmQPygWPnBDjPss="
   "resolved" "https://registry.npmjs.org/jsonfile/-/jsonfile-4.0.0.tgz"
   "version" "4.0.0"
-<<<<<<< HEAD
   dependencies:
     "graceful-fs" "^4.1.6"
-=======
->>>>>>> dev
   optionalDependencies:
     "graceful-fs" "^4.1.6"
 
