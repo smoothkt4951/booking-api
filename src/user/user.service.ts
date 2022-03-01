@@ -3,8 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserDto } from '../auth/dto/create-user.dto';
 import { Repository } from 'typeorm';
 import { UserEntity } from './user.entity';
-import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
-import { UpdateUserInfoDto } from 'src/user/dto/update-userInfo.dto';
+import { CloudinaryService } from '../cloudinary/cloudinary.service';
+import { UpdateUserInfoDto } from '../user/dto/update-userInfo.dto';
 import { UploadAvatarDto } from './dto/upload-avatar.dto';
 
 @Injectable()
