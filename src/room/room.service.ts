@@ -19,8 +19,7 @@ cloud.config({
 @Injectable()
 export class RoomService {
   constructor(
-    @InjectRepository(RoomEntity)
-    private roomsRepository: Repository<RoomEntity>,
+    @InjectRepository(RoomEntity) private roomsRepository: Repository<RoomEntity>,
   ) {}
 
   async findAll(): Promise<RoomEntity[]> {

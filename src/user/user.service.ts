@@ -10,8 +10,7 @@ import { UploadAvatarDto } from './dto/upload-avatar.dto';
 @Injectable()
 export class UserService {
   constructor(
-    @InjectRepository(UserEntity)
-    private readonly userRepository: Repository<UserEntity>,
+    @InjectRepository(UserEntity) private readonly userRepository: Repository<UserEntity>,
     private readonly cloudinaryService: CloudinaryService,
   ) {}
 

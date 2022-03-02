@@ -18,8 +18,7 @@ import { type } from 'os'
 @Injectable()
 export class BookingService {
   constructor(
-    @InjectRepository(BookingEntity)
-    private repository: Repository<BookingEntity>,
+    @InjectRepository(BookingEntity) private repository: Repository<BookingEntity>,
     private userService: UserService,
     private roomService: RoomService,
   ) {}

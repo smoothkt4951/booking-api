@@ -19,10 +19,11 @@ import { CreateRoomDto, SearchRoomDto, UpdateRoomDto } from './dto/room.dto'
 import { diskStorage } from 'multer'
 import { RoomEntity } from './entity/room.entity'
 import { RoomService } from './room.service'
-import { JwtAuthGuard } from '../auth/jwt-auth.guard'
-import { RolesGuard } from '../auth/roles.guard'
-import { Roles } from '../auth/roles.decorator'
+
 import { Role } from '../user/user.entity'
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard'
+import { RolesGuard } from 'src/auth/guards/roles.guard'
+import { Roles } from 'src/auth/decorators/roles.decorator'
 export const imageFileFilter = (req, file, callback) => {
   if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
     return callback(new Error('Only image files are allowed!'), false)
