@@ -52,7 +52,8 @@ export class AuthService {
       throw new HttpException(
         'Email or Password is invalid!',
         HttpStatus.BAD_REQUEST,
-      )
+      );
+      return null;
     }
     return user
   }

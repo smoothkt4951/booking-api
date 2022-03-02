@@ -1,7 +1,7 @@
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { RedisModule } from '@liaoliaots/nestjs-redis';
-import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 // import { APP_GUARD } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
@@ -38,14 +38,6 @@ import { RoomModule } from './room/room.module';
       synchronize: true,
     }),
     UserModule,
-    CloudinaryModule,
-    JwtModule.registerAsync({
-      imports: [ConfigModule],
-      useFactory: async () => ({
-        secret: process.env.JWT_SECRET,
-      }),
-      inject: [ConfigService],
-    }),
     RedisModule.forRoot({
       readyLog: true,
       config: {
@@ -60,13 +52,9 @@ import { RoomModule } from './room/room.module';
     CloudinaryService,
 
     AppService,
-    // {
-    //     provide: APP_GUARD,
-    //     useClass: JwtAuthGuard,
-    // },
   ],
 })
-export class AppModule {
+export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(AuthMiddleware)
