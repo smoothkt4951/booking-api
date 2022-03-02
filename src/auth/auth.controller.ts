@@ -9,8 +9,8 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
-import { Response } from 'express';
-import { Redis } from 'ioredis/built';
+import { Response, Request } from 'express';
+import { Redis } from 'ioredis';
 import { Role } from 'src/user/user.entity';
 import { AuthService } from './auth.service';
 import { Public } from './decorators/public.decorator';
@@ -24,7 +24,6 @@ import { RolesGuard } from './guards/roles.guard';
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
-    // private readonly redisService: RedisService,
     @InjectRedis() private readonly redisClient: Redis,
   ) {}
 
@@ -48,9 +47,8 @@ export class AuthController {
   }
 
   @Post('logout')
-  async logout(@Body('token') token: string, @Res() res: Response) {
-    // const token = req.headers.authorization.split(' ')[1];
-    // const redisClient = await this.redisService.getClient();
+  async logout(@Req() req: Request, @Res() res: Response) {
+    const token = req.headers.authorization.split(' ')[1];
     try {
       // console.log(token);
       await this.redisClient.lpush('token', token);

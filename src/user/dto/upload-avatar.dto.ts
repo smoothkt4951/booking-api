@@ -1,4 +1,4 @@
 export class UploadAvatarDto {
-  url: string;
-  original_filename?: string;
+  url: string
+  original_filename?: string
 }

@@ -1,16 +1,15 @@
-import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { CreateUserDto } from '../auth/dto/create-user.dto';
-import { Repository } from 'typeorm';
-import { UserEntity } from './user.entity';
-import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
-import { UpdateUserInfoDto } from './dto/update-userInfo.dto';
-import { UploadAvatarDto } from './dto/upload-avatar.dto';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common'
+import { InjectRepository } from '@nestjs/typeorm'
+import { CreateUserDto } from '../auth/dto/create-user.dto'
+import { Repository } from 'typeorm'
+import { UserEntity } from './user.entity'
+import { CloudinaryService } from '../cloudinary/cloudinary.service'
+import { UpdateUserInfoDto } from '../user/dto/update-userInfo.dto'
+import { UploadAvatarDto } from './dto/upload-avatar.dto'
 
 @Injectable()
 export class UserService {
   constructor(
-    @Inject('CLOUD_SERVICE')
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
     private readonly cloudinaryService: CloudinaryService,
@@ -18,29 +17,29 @@ export class UserService {
 
   async getUserRole(id: string) {
     try {
-      const user = await this.userRepository.findOne(id);
-      console.log(typeof user.role);
-      const userRole = user.role;
-      return userRole;
+      const user = await this.userRepository.findOne(id)
+      console.log(typeof user.role)
+      const userRole = user.role
+      return userRole
     } catch (err) {
       throw new HttpException(
         {
           message: err.message,
         },
         HttpStatus.BAD_REQUEST,
-      );
+      )
     }
   }
 
   async userOnly(allUsers) {
     const userOnly = await allUsers
       .filter((user) => {
-        return user.role === 'user' ? true : false;
+        return user.role === 'user' ? true : false
       })
       .map((user) => {
-        return user;
-      });
-    return userOnly;
+        return user
+      })
+    return userOnly
   }
 
   async findAllUsers() {
@@ -50,35 +49,36 @@ export class UserService {
           message: err.message,
         },
         HttpStatus.BAD_REQUEST,
-      );
-    });
-    const usersOnly = await this.userOnly(allUsers);
+      )
+    })
+    const usersOnly = await this.userOnly(allUsers)
 
-    console.log(usersOnly);
-    return usersOnly;
+    console.log(usersOnly)
+    return usersOnly
   }
 
   async findUserBy(condition) {
-    return await this.userRepository.findOne(condition).catch((err) => {
-      throw new HttpException(
-        {
-          message: err.message,
-        },
-        HttpStatus.BAD_REQUEST,
-      );
-    });
+    return await this.userRepository.findOne(condition)
+    // .catch((err) => {
+    //   throw new HttpException(
+    //     {
+    //       message: err.message,
+    //     },
+    //     HttpStatus.BAD_REQUEST,
+    //   )
+    // })
   }
 
   async createUser({ firstname, lastname, email, password }: CreateUserDto) {
-    const user = new UserEntity(firstname, lastname, email, password);
-    const userEmail = await this.findUserBy({ email });
+    const user = new UserEntity(firstname, lastname, email, password)
+    const userEmail = await this.findUserBy({ email })
     if (userEmail) {
       throw new HttpException(
         'Email are taken!',
         HttpStatus.UNPROCESSABLE_ENTITY,
-      );
+      )
     }
-    const createUser = await this.userRepository.create(user);
+    const createUser = await this.userRepository.create(user)
 
     return await this.userRepository.save(createUser).catch((err) => {
       throw new HttpException(
@@ -86,8 +86,8 @@ export class UserService {
           message: err.message,
         },
         HttpStatus.BAD_REQUEST,
-      );
-    });
+      )
+    })
   }
 
   async updateUser(id, body: UpdateUserInfoDto) {
@@ -97,14 +97,14 @@ export class UserService {
           message: err.message,
         },
         HttpStatus.BAD_REQUEST,
-      );
-    });
+      )
+    })
   }
 
   async removeUser(id) {
-    const user = await this.userRepository.findOne(id);
-    console.log(user);
-    await this.cloudinaryService.deleteOldAvatar(user.avatarUrl);
+    const user = await this.userRepository.findOne(id)
+    console.log(user)
+    await this.cloudinaryService.deleteOldAvatar(user.avatarUrl)
 
     const removeUser = await this.userRepository.delete(id).catch((err) => {
       throw new HttpException(
@@ -112,9 +112,9 @@ export class UserService {
           message: err.message,
         },
         HttpStatus.BAD_REQUEST,
-      );
-    });
-    return removeUser;
+      )
+    })
+    return removeUser
   }
   async saveAvatar(cloudUrl: UploadAvatarDto, user_id) {
     const savedAvatar = await this.userRepository
@@ -125,9 +125,9 @@ export class UserService {
             message: err.message,
           },
           HttpStatus.BAD_REQUEST,
-        );
-      });
+        )
+      })
 
-    return savedAvatar;
+    return savedAvatar
   }
 }
