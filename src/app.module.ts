@@ -13,6 +13,7 @@ import { RedisMiddleware } from './auth/middlewares/redis.middleware';
 import { UserModule } from './user/user.module';
 import { LoggingMiddleware } from './common/middleware/logging.middleware';
 import { RoomModule } from './room/room.module';
+import { CloudinaryModule } from './cloudinary/cloudinary.module';
 
 @Module({
   imports: [
@@ -56,7 +57,6 @@ import { RoomModule } from './room/room.module';
     //     useClass: JwtAuthGuard,
     // },
   ],
-
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {
