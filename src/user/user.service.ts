@@ -3,15 +3,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserDto } from '../auth/dto/create-user.dto';
 import { Repository } from 'typeorm';
 import { UserEntity } from './user.entity';
-import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
-import { UpdateUserInfoDto } from 'src/user/dto/update-userInfo.dto';
+import { CloudinaryService } from '../cloudinary/cloudinary.service';
+import { UpdateUserInfoDto } from '../user/dto/update-userInfo.dto';
 import { UploadAvatarDto } from './dto/upload-avatar.dto';
 
 @Injectable()
 export class UserService {
   constructor(
-    @InjectRepository(UserEntity)
-    private readonly userRepository: Repository<UserEntity>,
+    @InjectRepository(UserEntity) private readonly userRepository: Repository<UserEntity>,
     private readonly cloudinaryService: CloudinaryService,
   ) {}
 
@@ -58,14 +57,15 @@ export class UserService {
   }
 
   async findUserBy(condition) {
-    return await this.userRepository.findOne(condition).catch((err) => {
-      throw new HttpException(
-        {
-          message: err.message,
-        },
-        HttpStatus.BAD_REQUEST,
-      );
-    });
+    return await this.userRepository.findOne(condition);
+    // .catch((err) => {
+    //   throw new HttpException(
+    //     {
+    //       message: err.message,
+    //     },
+    //     HttpStatus.BAD_REQUEST,
+    //   )
+    // })
   }
 
   async createUser({ firstname, lastname, email, password }: CreateUserDto) {
