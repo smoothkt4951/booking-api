@@ -6,7 +6,7 @@ import { CloudinaryService } from './cloudinary.service'
 import { UserModule } from 'src/user/user.module'
 
 @Module({
-  imports: [UserModule],
+  // imports: [UserModule],
   providers: [
     CloudinaryProvider,
     CloudinaryService,

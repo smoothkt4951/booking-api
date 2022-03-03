@@ -11,6 +11,7 @@ import { UserService } from '../user/user.service';
 import { UserModule } from 'src/user/user.module';
 import { AuthModule } from 'src/auth/auth.module';
 import { UserEntity } from 'src/user/user.entity';
+import { CloudinaryModule } from 'src/cloudinary/cloudinary.module';
 @Module({
   imports: [
     MulterModule.register({ dest: './uploads' }),
@@ -18,6 +19,7 @@ import { UserEntity } from 'src/user/user.entity';
     TypeOrmModule.forFeature([UserEntity]),
     UserModule,
     AuthModule,
+    CloudinaryModule
   ],
   controllers: [RoomController],
   providers: [RoomService, UserService],
