@@ -1,6 +1,7 @@
 import { JwtService } from '@nestjs/jwt'
 import { Test, TestingModule } from '@nestjs/testing'
 import { getRepositoryToken } from '@nestjs/typeorm'
+import { CloudinaryService } from 'src/cloudinary/cloudinary.service'
 import { Repository } from 'typeorm'
 import { UserEntity } from '../user/user.entity'
 import { UserService } from '../user/user.service'
@@ -28,6 +29,7 @@ describe('AuthService', () => {
       providers: [
         AuthService,
         UserService,
+        CloudinaryService,
         {
           provide: JwtService,
           useValue: mockedJwtService,

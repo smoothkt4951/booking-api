@@ -19,7 +19,9 @@ import { RegisterDto } from './dto/register.dto'
 import { JwtAuthGuard } from './guards/jwt-auth.guard'
 import { Roles } from './decorators/roles.decorator'
 import { RolesGuard } from './guards/roles.guard'
+import { ApiBadRequestResponse, ApiInternalServerErrorResponse, ApiResponse, ApiTags, ApiUnprocessableEntityResponse } from '@nestjs/swagger'
 
+@ApiTags('Authentication')
 @Controller('auth')
 export class AuthController {
   constructor(
@@ -27,25 +29,28 @@ export class AuthController {
     @InjectRedis() private readonly redisClient: Redis,
   ) {}
 
+  @ApiBadRequestResponse()
   @Post('login')
   @Public()
   async login(@Body() authLoginDto: AuthLoginDto) {
     return this.authService.login(authLoginDto)
   }
 
+  @ApiUnprocessableEntityResponse()
   @Post('register')
   @Public()
   async register(@Body() authRegisterDto: RegisterDto) {
     return this.authService.register(authRegisterDto)
   }
 
-  @Get('')
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.Admin)
-  async test(@Req() req) {
-    return req.user
-  }
+  // @Get('')
+  // @UseGuards(JwtAuthGuard, RolesGuard)
+  // @Roles(Role.Admin)
+  // async test(@Req() req) {
+  //   return req.user
+  // }
 
+  @ApiInternalServerErrorResponse()
   @Post('logout')
   async logout(@Req() req: Request, @Res() res: Response) {
     const token = req.headers.authorization.split(' ')[1]

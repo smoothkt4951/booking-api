@@ -28,7 +28,9 @@ import { Express } from 'express'
 import { Role } from './user.entity'
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard'
 import { RolesGuard } from 'src/auth/guards/roles.guard'
+import { ApiTags } from '@nestjs/swagger'
 
+@ApiTags('User')
 @UseGuards(JwtAuthGuard, RolesGuard)
 @UsePipes(ValidationPipe)
 @Controller('users')

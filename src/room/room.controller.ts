@@ -23,6 +23,7 @@ import { CreateRoomDto, SearchRoomDto, UpdateRoomDto } from './dto/room.dto';
 import { diskStorage } from 'multer';
 import { RoomEntity } from './entity/room.entity';
 import { RoomService } from './room.service';
+import { ApiTags } from '@nestjs/swagger';
 
 // import { RolesGuard } from 'src/auth/roles.guard';
 
@@ -44,6 +45,8 @@ export const editFileName = (req, file, callback) => {
     .join('');
   callback(null, `${name}-${randomName}${fileExtName}`);
 };
+
+@ApiTags('Room')
 @Controller('rooms')
 export class RoomController {
   constructor(private roomService: RoomService) {}
