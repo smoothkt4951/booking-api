@@ -43,7 +43,13 @@ export class UserController {
   async getAllUsers() {
     const users = await this.userService.findAllUsers()
     if (!users) {
-      throw new HttpException('Forbidden', HttpStatus.FORBIDDEN)
+      throw new HttpException(
+        {
+          status: HttpStatus.FORBIDDEN,
+          error: 'Cant find All Users',
+        },
+        HttpStatus.FORBIDDEN,
+      )
     }
     // console.log(users);
     return users
@@ -54,7 +60,13 @@ export class UserController {
   async getUser(@Param('id') id: string) {
     const user = await this.userService.findUserBy(id)
     if (!user) {
-      throw new HttpException('Forbidden', HttpStatus.FORBIDDEN)
+      throw new HttpException(
+        {
+          status: HttpStatus.FORBIDDEN,
+          error: 'Cant get User Infomations',
+        },
+        HttpStatus.FORBIDDEN,
+      )
     }
     // console.log(user);
     return user
@@ -65,7 +77,13 @@ export class UserController {
   async createUser(@Body(ValidationPipe) body: CreateUserDto) {
     const createdUser = await this.userService.createUser(body)
     if (!createdUser) {
-      throw new HttpException('Forbidden', HttpStatus.FORBIDDEN)
+      throw new HttpException(
+        {
+          status: HttpStatus.FORBIDDEN,
+          error: 'Cant create user',
+        },
+        HttpStatus.FORBIDDEN,
+      )
     }
     console.log(createdUser)
     return createdUser
@@ -76,7 +94,13 @@ export class UserController {
   async updateUser(@Param('id') id: string, @Body(ValidationPipe) body: any) {
     const updatedUser = await this.userService.updateUser(id, body)
     if (!updatedUser) {
-      throw new HttpException('Forbidden', HttpStatus.FORBIDDEN)
+      throw new HttpException(
+        {
+          status: HttpStatus.FORBIDDEN,
+          error: 'Cant update user info',
+        },
+        HttpStatus.FORBIDDEN,
+      )
     }
     console.log(updatedUser)
     return updatedUser
@@ -87,7 +111,13 @@ export class UserController {
   async removeUser(@Param('id') id: string) {
     const removedUser = await this.userService.removeUser(id)
     if (!removedUser) {
-      throw new HttpException('Forbidden', HttpStatus.FORBIDDEN)
+      throw new HttpException(
+        {
+          status: HttpStatus.FORBIDDEN,
+          error: 'Cant remove user',
+        },
+        HttpStatus.FORBIDDEN,
+      )
     }
     console.log(removedUser)
     return removedUser
@@ -129,7 +159,13 @@ export class UserController {
       }
       return this.userService.saveAvatar(cloudUrl, body.user_id)
     } else {
-      throw new HttpException('Forbidden', HttpStatus.FORBIDDEN)
+      throw new HttpException(
+        {
+          status: HttpStatus.FORBIDDEN,
+          error: 'Cant uploads user avatar',
+        },
+        HttpStatus.FORBIDDEN,
+      )
     }
   }
 }

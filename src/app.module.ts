@@ -37,7 +37,7 @@ import { RoomModule } from './room/room.module';
       autoLoadEntities: true,
       synchronize: true,
     }),
-    UserModule,
+
     RedisModule.forRoot({
       readyLog: true,
       config: {
@@ -50,7 +50,6 @@ import { RoomModule } from './room/room.module';
   controllers: [AppController],
   providers: [
     CloudinaryService,
-
     AppService,
   ],
 })

@@ -1,23 +1,14 @@
-import { UpdateUserInfoDto } from 'src/user/dto/update-userInfo.dto';
-// import { userStub } from './stubs/user.stubs';
-// import { User } from './../user.entity';
-import { CloudinaryModule } from 'src/cloudinary/cloudinary.module';
+import { CloudinaryModule } from './../../cloudinary/cloudinary.module';
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserEntity } from '../user.entity';
 import { UserService } from '../user.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserController } from '../user.controller';
-// import { usersAllStub } from './stubs/user.stubs';
-
 import { DeleteResult, UpdateResult } from 'typeorm';
-
-// import { TypeOrmModule } from '@nestjs/typeorm';
-// jest.mock('./user.service');
-// jest.mock('./../cloudinary/cloudinary.module');
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { UserStub } from './stubs/user.stubs';
-import { CreateUserDto } from 'src/auth/dto/create-user.dto';
+import { CreateUserDto } from '../../auth/dto/create-user.dto';
+import { UpdateUserInfoDto } from '../dto/update-userInfo.dto';
 
 jest.mock('./mocks/user.repository.mock');
 describe('UserController', () => {
@@ -41,12 +32,7 @@ describe('UserController', () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [CloudinaryModule],
       controllers: [UserController],
-      // providers: [UserService],
       providers: [
-        {
-          provide: JwtAuthGuard,
-          useValue: jest.fn().mockImplementation(() => true),
-        },
         {
           provide: getRepositoryToken(UserEntity),
           useClass: Repository,

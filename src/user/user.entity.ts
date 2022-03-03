@@ -35,13 +35,11 @@ export enum Gender {
 @Entity()
 export class UserEntity {
   public constructor(
-    id?: string,
     firstname?: string,
     lastname?: string,
     email?: string,
     password?: string,
   ) {
-    this.id = id;
     this.firstname = firstname;
     this.lastname = lastname;
     this.email = email;

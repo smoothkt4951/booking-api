@@ -1,3 +1,4 @@
+import { CloudinaryModule } from 'src/cloudinary/cloudinary.module';
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { RoomController } from './room.controller';
 import { RoomService } from './room.service';
@@ -18,6 +19,7 @@ import { UserEntity } from 'src/user/user.entity';
     TypeOrmModule.forFeature([UserEntity]),
     UserModule,
     AuthModule,
+    CloudinaryModule
   ],
   controllers: [RoomController],
   providers: [RoomService, UserService],

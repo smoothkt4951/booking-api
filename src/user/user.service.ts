@@ -77,8 +77,10 @@ export class UserService {
         HttpStatus.UNPROCESSABLE_ENTITY,
       )
     }
+
     const createUser = await this.userRepository.create(user)
 
+    // console.log(createUser);
     return await this.userRepository.save(createUser).catch((err) => {
       throw new HttpException(
         {
