@@ -1,9 +1,9 @@
-import { Roles } from 'src/auth/decorators/roles.decorator';
+import { Roles } from 'src/auth/decorators/roles.decorator'
 // import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 // import { Roles } from 'src/auth/decorator/roles.decorator';
-import { ImagesHelper } from './../cloudinary/image.helper';
-import { CloudinaryService } from './../cloudinary/cloudinary.service';
-import { UserService } from './user.service';
+import { ImagesHelper } from './../cloudinary/image.helper'
+import { CloudinaryService } from './../cloudinary/cloudinary.service'
+import { UserService } from './user.service'
 import {
   Body,
   Controller,
@@ -20,14 +20,14 @@ import {
   HttpStatus,
   Patch,
   UsePipes,
-} from '@nestjs/common';
-import { CreateUserDto } from 'src/auth/dto/create-user.dto';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-import { Express } from 'express';
-import { RolesGuard } from '../auth/roles.guard';
-import { Role } from './user.entity';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+} from '@nestjs/common'
+import { CreateUserDto } from 'src/auth/dto/create-user.dto'
+import { FileInterceptor } from '@nestjs/platform-express'
+import { diskStorage } from 'multer'
+import { Express } from 'express'
+import { Role } from './user.entity'
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard'
+import { RolesGuard } from 'src/auth/guards/roles.guard'
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @UsePipes(ValidationPipe)
@@ -39,58 +39,58 @@ export class UserController {
   ) {}
 
   @Get()
-  @Roles(Role.Admin)
+  @Roles(Role.Admin, Role.User)
   async getAllUsers() {
-    const users = await this.userService.findAllUsers();
+    const users = await this.userService.findAllUsers()
     if (!users) {
-      throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
+      throw new HttpException('Forbidden', HttpStatus.FORBIDDEN)
     }
-    console.log(users);
-    return users;
+    // console.log(users);
+    return users
   }
 
   @Get(':id')
   @Roles(Role.Admin, Role.User)
   async getUser(@Param('id') id: string) {
-    const user = await this.userService.findUserBy(id);
+    const user = await this.userService.findUserBy(id)
     if (!user) {
-      throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
+      throw new HttpException('Forbidden', HttpStatus.FORBIDDEN)
     }
-    console.log(user);
-    return user;
+    // console.log(user);
+    return user
   }
 
-  @Roles(Role.Admin)
+  @Roles(Role.Admin, Role.User)
   @Post()
   async createUser(@Body(ValidationPipe) body: CreateUserDto) {
-    const createdUser = await this.userService.createUser(body);
+    const createdUser = await this.userService.createUser(body)
     if (!createdUser) {
-      throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
+      throw new HttpException('Forbidden', HttpStatus.FORBIDDEN)
     }
-    console.log(createdUser);
-    return createdUser;
+    console.log(createdUser)
+    return createdUser
   }
 
   @Put(':id')
   @Roles(Role.Admin, Role.User)
   async updateUser(@Param('id') id: string, @Body(ValidationPipe) body: any) {
-    const updatedUser = await this.userService.updateUser(id, body);
+    const updatedUser = await this.userService.updateUser(id, body)
     if (!updatedUser) {
-      throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
+      throw new HttpException('Forbidden', HttpStatus.FORBIDDEN)
     }
-    console.log(updatedUser);
-    return updatedUser;
+    console.log(updatedUser)
+    return updatedUser
   }
 
-  @Roles(Role.Admin)
+  @Roles(Role.Admin, Role.User)
   @Delete(':id')
   async removeUser(@Param('id') id: string) {
-    const removedUser = await this.userService.removeUser(id);
+    const removedUser = await this.userService.removeUser(id)
     if (!removedUser) {
-      throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
+      throw new HttpException('Forbidden', HttpStatus.FORBIDDEN)
     }
-    console.log(removedUser);
-    return removedUser;
+    console.log(removedUser)
+    return removedUser
   }
 
   @Roles(Role.User, Role.Admin)
@@ -109,8 +109,8 @@ export class UserController {
     @UploadedFile() file: Express.Multer.File,
     @Body(ValidationPipe) body,
   ) {
-    console.log({ body });
-    console.log(body.user_id);
+    console.log({ body })
+    console.log(body.user_id)
     if (file) {
       const cloudinaryFile = await this.cloudinaryService
         .uploadImage(`./uploads/${file.filename}`, file)
@@ -120,16 +120,16 @@ export class UserController {
               message: err.message,
             },
             HttpStatus.BAD_REQUEST,
-          );
-        });
-      console.log({ cloudinaryFile });
+          )
+        })
+      console.log({ cloudinaryFile })
       const cloudUrl = {
         url: cloudinaryFile.url,
         original_filename: cloudinaryFile.original_filename,
-      };
-      return this.userService.saveAvatar(cloudUrl, body.user_id);
+      }
+      return this.userService.saveAvatar(cloudUrl, body.user_id)
     } else {
-      throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
+      throw new HttpException('Forbidden', HttpStatus.FORBIDDEN)
     }
   }
 }

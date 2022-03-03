@@ -11,21 +11,20 @@ import {
   FileDto,
   RoomResponseDto,
   UpdateRoomDto,
-} from './dto/room.dto';
-import { RoomEntity } from './entity/room.entity';
-import { unlinkSync } from 'fs';
-import { v2 } from 'cloudinary';
-const cloud = v2;
+} from './dto/room.dto'
+import { RoomEntity } from './entity/room.entity'
+import { unlinkSync } from 'fs'
+import { v2 } from 'cloudinary'
+const cloud = v2
 cloud.config({
   cloud_name: 'hkt-dev',
   api_key: '496229631921393',
   api_secret: 'kGNgnP5EKj2FHqyKnJO_9EnEjzI',
-});
+})
 @Injectable()
 export class RoomService {
   constructor(
-    @InjectRepository(RoomEntity)
-    private roomsRepository: Repository<RoomEntity>,
+    @InjectRepository(RoomEntity) private roomsRepository: Repository<RoomEntity>,
   ) {}
 
   async findAll(): Promise<RoomEntity[]> {
@@ -75,7 +74,7 @@ export class RoomService {
   async updateRoom(roomId: string, payload: UpdateRoomDto): Promise<string> {
     let updatedRoom = this.findOne(roomId);
     if (updatedRoom === undefined) {
-      throw new NotFoundException();
+      throw new NotFoundException()
     }
     try {
       await this.roomsRepository.update(roomId, payload);
@@ -93,24 +92,24 @@ export class RoomService {
     }
   }
   async addRoomImagesToCloud(fileRes: FileDto): Promise<string> {
-    const fileName = fileRes.filename.split('.')[0];
-    const folderCloud = `Test/${fileName}`;
-    let URL: string;
+    const fileName = fileRes.filename.split('.')[0]
+    const folderCloud = `Test/${fileName}`
+    let URL: string
     URL = await cloud.uploader
       .upload(fileRes.path, { public_id: folderCloud })
       .then(async (result: any) => {
-        unlinkSync(fileRes.path);
-        return result.url;
+        unlinkSync(fileRes.path)
+        return result.url
       })
       .catch((err: any) => {
-        console.log(err);
-      });
-    return URL;
+        console.log(err)
+      })
+    return URL
   }
   async updateRoomImages(roomId: string, imgArr: string[]): Promise<string> {
     let room = await this.roomsRepository.findOne(roomId);
     if (room === undefined) {
-      throw new NotFoundException();
+      throw new NotFoundException()
     }
     try {
       let joinArr: string[];

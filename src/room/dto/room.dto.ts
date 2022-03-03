@@ -1,4 +1,4 @@
-import { RoomSize } from '../entity/room.entity';
+import { RoomSize } from '../entity/room.entity'
 import {
     IsNotEmpty,
     IsNumber,

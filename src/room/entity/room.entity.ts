@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { BookingEntity } from '../../booking/entities/booking.entity'
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm'
 
 export enum RoomSize {
     SINGLE = 'single',
@@ -8,20 +9,26 @@ export enum RoomSize {
 
 @Entity()
 export class RoomEntity {
-    @PrimaryGeneratedColumn('uuid')
-    id: string;
-    @Column()
-    codeName: string;
-    @Column('boolean', { default: true })
-    isVacant: boolean;
-    @Column({
-        type: 'enum',
-        enum: RoomSize,
-        default: RoomSize.SINGLE,
-    })
-    size: RoomSize;
-    @Column('float', { default: 0 })
-    price: number;
-    @Column('simple-array', { nullable: true })
-    images?: string[];
+  @PrimaryGeneratedColumn('uuid')
+  @OneToMany((type) => BookingEntity, (booking) => booking.Room)
+  id: string
+
+  @Column()
+  codeName: string
+
+  @Column('boolean', { default: true })
+  isVacant: boolean
+
+  @Column({
+    type: 'enum',
+    enum: RoomSize,
+    default: RoomSize.SINGLE,
+  })
+  size: RoomSize
+
+  @Column('float', { default: 0 })
+  price: number
+
+  @Column('simple-array', { nullable: true })
+  images?: string[]
 }
