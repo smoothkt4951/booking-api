@@ -5,7 +5,7 @@ import {
   Injectable,
 } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
-import { UserEntity } from '../user/user.entity'
+import { User, UserEntity } from '../user/user.entity'
 import { UserService } from '../user/user.service'
 import { AuthLoginDto } from './dto/auth-login.dto'
 import { RegisterDto } from './dto/register.dto'
@@ -17,7 +17,9 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async login(authLoginDto: AuthLoginDto): Promise<{ access_token: string }> {
+  async login(
+    authLoginDto: AuthLoginDto,
+  ): Promise<{  id: string; role: string; access_token: string  }> {
     const user = await this.validateUser(authLoginDto)
 
     const payload = {
@@ -26,7 +28,9 @@ export class AuthService {
     }
 
     return {
-      access_token: this.jwtService.sign(payload),
+        id: user.id,
+        role: user.role,
+        access_token: this.jwtService.sign(payload),
     }
   }
 
@@ -52,8 +56,8 @@ export class AuthService {
       throw new HttpException(
         'Email or Password is invalid!',
         HttpStatus.BAD_REQUEST,
-      );
-      return null;
+      )
+      return null
     }
     return user
   }
