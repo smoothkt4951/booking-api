@@ -31,15 +31,15 @@ export class BookingEntity {
   @Column({ type: 'text', nullable: false })
   UserID: string
   @Exclude()
-  @ManyToOne((type) => UserEntity)
+  @ManyToOne((type) => UserEntity, {onDelete: 'CASCADE'})
   @JoinColumn({ name: 'UserID' })
   User: UserEntity
 
   @Column({ type: 'text', nullable: false })
   RoomID: string
   @Exclude()
-  @ManyToOne((type) => RoomEntity)
-  @JoinColumn({ name: 'RoomID' })
+  @ManyToOne((type) => RoomEntity ,{onDelete: 'CASCADE'}) 
+  @JoinColumn({ name: 'RoomID', })
   Room: RoomEntity
 
   @Column({ type: 'timestamptz' ,nullable:false})
