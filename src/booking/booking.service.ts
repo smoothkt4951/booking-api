@@ -52,8 +52,10 @@ export class BookingService {
       })
 
       const res = await this.repository.save(entity)
-      console.log('=====')
-      console.log(typeof res)
+      // console.log('=====')
+      // console.log(typeof res)
+      delete res.User
+      delete res.Room
       return res
     } else
       throw new HttpException(
