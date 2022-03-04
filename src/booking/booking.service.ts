@@ -33,6 +33,14 @@ export class BookingService {
   }
 
   async createWithTimesheet(dto: CreateBookingDtoRequest) {
+    console.log(dto.check_in_date,dto.check_out_date)
+    if (dto.check_in_date.getTime()===dto.check_out_date.getTime()){
+      throw new HttpException(
+        {
+          message: 'Cannot check in and check out at the same time ', // kinda scuffed, how about acquire/ locking when someone is doing an order?
+        },
+        HttpStatus.GONE)
+      }
     const room_entity: RoomEntity = await this.roomService.findOne(dto.room_id)
     const user_entity: UserEntity = await this.userService.findUserBy({
       id: dto.user_id,
@@ -43,6 +51,7 @@ export class BookingService {
       dto.check_in_date,
       dto.check_out_date,
     )
+    console.log(res)
     if (res) {
       const entity = this.repository.create({
         Room: room_entity,
@@ -52,8 +61,6 @@ export class BookingService {
       })
 
       const res = await this.repository.save(entity)
-      // console.log('=====')
-      // console.log(typeof res)
       delete res.User
       delete res.Room
       return res
@@ -214,11 +221,13 @@ export class BookingService {
     chOut: Date,
   ): Promise<boolean> {
     timesheet.push(chIn, chOut)
+    
     timesheet.sort(function (a, b) {
       const date1 = a.getTime()
       const date2 = b.getTime()
       return date1 - date2
     })
+    console.log(timesheet)
     const diff = timesheet.indexOf(chIn) - timesheet.indexOf(chOut)
     if (diff == -1 && timesheet.indexOf(chIn) % 2 == 0) {
       return true
