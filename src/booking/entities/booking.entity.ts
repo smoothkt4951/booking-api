@@ -28,24 +28,24 @@ export class BookingEntity {
   })
   booking_id: string
 
-  @Column({ type: 'text', nullable: true })
+  @Column({ type: 'text', nullable: false })
   UserID: string
   @Exclude()
-  @ManyToOne((type) => UserEntity)
+  @ManyToOne((type) => UserEntity, {onDelete: 'CASCADE'})
   @JoinColumn({ name: 'UserID' })
   User: UserEntity
 
-  @Column({ type: 'text', nullable: true })
+  @Column({ type: 'text', nullable: false })
   RoomID: string
   @Exclude()
-  @ManyToOne((type) => RoomEntity)
-  @JoinColumn({ name: 'RoomID' })
+  @ManyToOne((type) => RoomEntity ,{onDelete: 'CASCADE'}) 
+  @JoinColumn({ name: 'RoomID', })
   Room: RoomEntity
 
-  @Column({ type: 'timestamptz' })
+  @Column({ type: 'timestamptz' ,nullable:false})
   check_in_date: Date
 
-  @Column({ type: 'timestamptz' }) //check out date and check in date can be swapped to tsrange type
+  @Column({ type: 'timestamptz' ,nullable:false}) //check out date and check in date can be swapped to tsrange type
   check_out_date: Date
   @CreateDateColumn({ type: 'timestamptz' })
   created_date: Date

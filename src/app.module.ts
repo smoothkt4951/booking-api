@@ -1,25 +1,21 @@
-import { RedisModule } from '@liaoliaots/nestjs-redis'
-import {
-  MiddlewareConsumer,
-  Module,
-  NestModule,
-  RequestMethod,
-} from '@nestjs/common'
-import { ConfigModule, ConfigService } from '@nestjs/config'
+import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
+import { CloudinaryModule } from './cloudinary/cloudinary.module';
+import { RedisModule } from '@liaoliaots/nestjs-redis';
+import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 // import { APP_GUARD } from '@nestjs/core';
-import { JwtModule } from '@nestjs/jwt'
-import { TypeOrmModule } from '@nestjs/typeorm'
-import { join } from 'path'
-import { AppController } from './app.controller'
-import { AppService } from './app.service'
+import { JwtModule } from '@nestjs/jwt';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
 
-import { AuthModule } from './auth/auth.module'
-import { RedisMiddleware } from './auth/middlewares/redis.middleware'
-import { UserModule } from './user/user.module'
-import { LoggingMiddleware } from './common/middleware/logging.middleware'
-import { AuthMiddleware } from './auth/middlewares/auth.middleware'
-import { BookingModule } from './booking/booking.module'
-import { RoomModule } from './room/room.module'
+import { AuthModule } from './auth/auth.module';
+import { RedisMiddleware } from './auth/middlewares/redis.middleware';
+import { UserModule } from './user/user.module';
+import { LoggingMiddleware } from './common/middleware/logging.middleware';
+import { AuthMiddleware } from './auth/middlewares/auth.middleware';
+import { BookingModule } from './booking/booking.module';
+import { RoomModule } from './room/room.module';
 
 @Module({
   imports: [
@@ -41,14 +37,6 @@ import { RoomModule } from './room/room.module'
       autoLoadEntities: true,
       synchronize: true,
     }),
-    UserModule,
-    // JwtModule.registerAsync({
-    //   imports: [ConfigModule],
-    //   useFactory: async () => ({
-    //     secret: process.env.JWT_SECRET,
-    //   }),
-    //   inject: [ConfigService],
-    // }),
     RedisModule.forRoot({
       readyLog: true,
       config: {
@@ -59,7 +47,10 @@ import { RoomModule } from './room/room.module'
     }),
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    CloudinaryService,
+    AppService,
+  ],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

@@ -4,11 +4,11 @@ import {
   Entity,
   OneToMany,
   PrimaryGeneratedColumn,
-} from 'typeorm'
-import * as bcrypt from 'bcrypt'
-import { Exclude } from 'class-transformer'
-import { BookingEntity } from '../booking/entities/booking.entity'
-import { RoomEntity } from '../room/entity/room.entity'
+} from 'typeorm';
+import * as bcrypt from 'bcrypt';
+import { Exclude } from 'class-transformer';
+import { BookingEntity } from 'src/booking/entities/booking.entity';
+import { RoomEntity } from '../room/entity/room.entity';
 
 import {
   IsEmail,
@@ -35,10 +35,10 @@ export enum Gender {
 @Entity()
 export class UserEntity {
   public constructor(
-    firstname: string,
-    lastname: string,
-    email: string,
-    password: string,
+    firstname?: string,
+    lastname?: string,
+    email?: string,
+    password?: string,
   ) {
     this.firstname = firstname
     this.lastname = lastname
@@ -50,6 +50,8 @@ export class UserEntity {
 
   @OneToMany((type) => BookingEntity, (booking) => booking.User)
   Room: RoomEntity[]
+
+ 
 
   @IsEmail({ message: `This is not an email` })
   @IsNotEmpty({ message: `Email can not empty` })
@@ -116,4 +118,9 @@ export class UserEntity {
   async validatePassword(password: string): Promise<boolean> {
     return bcrypt.compare(password, this.password)
   }
+}
+
+export interface User {
+  id?: string;
+  email?: string;
 }

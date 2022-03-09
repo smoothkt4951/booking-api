@@ -1,0 +1,23 @@
+version: '3.5'
+
+services:
+  db:
+    image: postgres
+    restart: always
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_PASSWORD: root
+  
+  redis: 
+    image: redis:alpine
+    container_name: "my_redis"
+    ports:
+      - "6379:6379"
+    restart: always     # "unless-stopped" or "always"
+    command: 'redis-server --requirepass redispass'
+    # ## UNCOMMENT THESE LINES IF WE USE CUSTOM REDIS CONFIG ##
+    # volumes:
+    #   - ./redis.conf:/usr/local/etc/redis/redis.conf    
+    #   - ./data:/data
+    # command: ["redis-server", "/usr/local/etc/redis/redis.conf"]

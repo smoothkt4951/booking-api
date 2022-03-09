@@ -53,10 +53,10 @@ describe('Booking Service ', () => {
       ],
     })
       .compile()
-      .catch((err) => {
-        console.error(err)
-        throw err
-      })
+      // .catch((err) => {
+      //   console.error(err)
+      //   throw err
+      // })
     service = moduleRef.get<BookingService>(BookingService)
   })
   it('should be defined', () => {
@@ -67,14 +67,16 @@ describe('Booking Service ', () => {
       const m_out_date = new Date('2011-10-08T14:48:00.000')
       const m_in_date = new Date('2011-10-07T14:48:00.000')
       let dtoObject: CreateBookingDtoRequest = {
-        user_id: "420d7d87-57a2-4919-b5a5-1994dc461de5",
-        room_id: "2fd4f2ac-b312-418b-beb0-ebaa451d4807",
+        user_id: '420d7d87-57a2-4919-b5a5-1994dc461de5',
+        room_id: '2fd4f2ac-b312-418b-beb0-ebaa451d4807',
         check_in_date: m_in_date,
         check_out_date: m_out_date,
       }
-      jest.spyOn(service, 'createWithTimesheet')//isssueeee
-     
-      return  service.createWithTimesheet(dtoObject).then(resObj => expect(resObj).toBeInstanceOf(BookingEntity))
+      jest.spyOn(service, 'createWithTimesheet') //isssueeee
+
+      return service
+        .createWithTimesheet(dtoObject)
+        .then((resObj) => expect(resObj).toBeInstanceOf(BookingEntity))
     })
   })
   describe('checking condition for reserving a room given a timesheet', () => {
@@ -87,9 +89,13 @@ describe('Booking Service ', () => {
         new Date('12 October 2011 14:48 UTC'),
         new Date('13 October 2011 14:48 UTC'),
       ]
-      const test_insert = [new Date('14 October 2011 14:48 UTC'),new Date('15 October 2011 14:48 UTC')]
-      return service.checkTimesheetInsertion(timesheet,test_insert[0],test_insert[1]).then(res => expect(res).toBe(true))
-
+      const test_insert = [
+        new Date('14 October 2011 14:48 UTC'),
+        new Date('15 October 2011 14:48 UTC'),
+      ]
+      return service
+        .checkTimesheetInsertion(timesheet, test_insert[0], test_insert[1])
+        .then((res) => expect(res).toBe(true))
     })
     it('should return a false value', () => {
       const timesheet = [
@@ -100,9 +106,13 @@ describe('Booking Service ', () => {
         new Date('12 October 2011 14:48 UTC'),
         new Date('13 October 2011 14:48 UTC'),
       ]
-      const test_insert = [new Date('1 October 2011 14:48 UTC'),new Date('13 October 2011 14:48 UTC')]
-      return service.checkTimesheetInsertion(timesheet,test_insert[0],test_insert[1]).then(res => expect(res).toBe(false))
-      
+      const test_insert = [
+        new Date('1 October 2011 14:48 UTC'),
+        new Date('13 October 2011 14:48 UTC'),
+      ]
+      return service
+        .checkTimesheetInsertion(timesheet, test_insert[0], test_insert[1])
+        .then((res) => expect(res).toBe(false))
     })
   })
   // describe('finding all bookings in database',()=>{

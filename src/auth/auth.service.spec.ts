@@ -1,33 +1,35 @@
-import { JwtService } from '@nestjs/jwt';
-import { Test, TestingModule } from '@nestjs/testing';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { UserEntity } from '../user/user.entity';
-import { UserService } from '../user/user.service';
-import { AuthService } from './auth.service';
-import { RegisterDto } from './dto/register.dto';
+import { JwtService } from '@nestjs/jwt'
+import { Test, TestingModule } from '@nestjs/testing'
+import { getRepositoryToken } from '@nestjs/typeorm'
+import { CloudinaryService } from 'src/cloudinary/cloudinary.service'
+import { Repository } from 'typeorm'
+import { UserEntity } from '../user/user.entity'
+import { UserService } from '../user/user.service'
+import { AuthService } from './auth.service'
+import { RegisterDto } from './dto/register.dto'
 
 const mockedJwtService = {
   sign: () => '',
-};
+}
 
-type MockRepository<T = any> = Partial<Record<keyof Repository<T>, jest.Mock>>;
+type MockRepository<T = any> = Partial<Record<keyof Repository<T>, jest.Mock>>
 const createMockRepository = <T = any>(): MockRepository<T> => ({
   findOne: jest.fn(),
   create: jest.fn(),
   save: jest.fn(),
-});
+})
 
 describe('AuthService', () => {
-  let authService: AuthService;
-  let userService: UserService;
-  let userRepository: MockRepository;
+  let authService: AuthService
+  let userService: UserService
+  let userRepository: MockRepository
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AuthService,
         UserService,
+        CloudinaryService,
         {
           provide: JwtService,
           useValue: mockedJwtService,
@@ -37,16 +39,16 @@ describe('AuthService', () => {
           useValue: createMockRepository(),
         },
       ],
-    }).compile();
+    }).compile()
 
-    authService = module.get<AuthService>(AuthService);
-    userService = module.get(UserService);
-    userRepository = module.get<MockRepository>(getRepositoryToken(UserEntity));
-  });
+    authService = module.get<AuthService>(AuthService)
+    userService = module.get(UserService)
+    userRepository = module.get<MockRepository>(getRepositoryToken(UserEntity))
+  })
 
   it('should be defined', () => {
-    expect(authService).toBeDefined();
-  });
+    expect(authService).toBeDefined()
+  })
 
   it('should attempt to create user when register', async () => {
     const mockedUser: RegisterDto = {
@@ -55,11 +57,11 @@ describe('AuthService', () => {
       email: 'user1@email.com',
       password: '123456',
       passwordConfirm: '123456',
-    };
+    }
 
     // userRepository.create.getMockImplementation()
-    const createUserSpy = jest.spyOn(userService, 'createUser');
-    await authService.register(mockedUser);
-    expect(createUserSpy).toBeCalledTimes(1);
-  });
-});
+    const createUserSpy = jest.spyOn(userService, 'createUser')
+    await authService.register(mockedUser)
+    expect(createUserSpy).toBeCalledTimes(1)
+  })
+})
