@@ -60,7 +60,7 @@ export class UserController {
     return user
   }
 
-  // @Roles(Role.Admin, Role.User)
+  @Roles(Role.Admin, Role.User)
   @Post()
   async createUser(@Body(ValidationPipe) body: CreateUserDto) {
     const createdUser = await this.userService.createUser(body)

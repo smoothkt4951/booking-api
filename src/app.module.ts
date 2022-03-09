@@ -82,10 +82,6 @@ export class AppModule implements NestModule {
           path: 'rooms/(.*)',
           method: RequestMethod.GET,
         },
-        {
-          path: 'users',
-          method: RequestMethod.POST,
-        },
       )
       .forRoutes({
         path: '*',
