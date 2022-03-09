@@ -23,6 +23,11 @@ import { CreateRoomDto, SearchRoomDto, UpdateRoomDto } from './dto/room.dto'
 import { diskStorage } from 'multer'
 import { RoomEntity } from './entity/room.entity'
 import { RoomService } from './room.service'
+import { Public } from 'src/auth/decorators/public.decorator'
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard'
+import { RolesGuard } from 'src/auth/guards/roles.guard'
+import { Roles } from 'src/auth/decorators/roles.decorator'
+import { Role } from 'src/user/user.entity'
 
 // import { RolesGuard } from 'src/auth/roles.guard';
 
@@ -50,20 +55,23 @@ export class RoomController {
   @Get('pagination')
   async getPaginatedRoom(@Query() queryParams: SearchRoomDto): Promise<object> {
     const builder = await this.roomService.getRoomPagination('room_entity')
-    if (queryParams.keyword) {
+    if (queryParams.keyword && queryParams.keyword != undefined) {
       builder.where('room_entity.codeName LIKE :keyword', {
         keyword: `%${queryParams.keyword}%`,
       })
     }
-    const sort: any = queryParams.sort
-    if (sort) {
-      builder.orderBy('room_entity.price', sort.toUpperCase())
-    }
+    // console.log(
+    //   'page & limit',
+    //   queryParams.page,
+    //   queryParams.limit,
+    //   queryParams.keyword,
+    // )
+    builder.orderBy('room_entity.created_at', 'DESC')
+
     const page: number = Number(queryParams.page) || 1
-    const limit: number = Number(queryParams.limit) || 1
+    const limit: number = Number(queryParams.limit) || 5
     const total = await builder.getCount()
     builder.offset((page - 1) * limit).limit(limit)
-
     return {
       data: await builder.getMany(),
       total,
@@ -88,8 +96,8 @@ export class RoomController {
       throw new NotFoundException()
     }
   }
-  //   @UseGuards(JwtAuthGuard, RolesGuard)
-  //   @Roles(Role.Admin)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.Admin)
   @Put('/:roomId')
   updateRoomById(
     @Param(
@@ -100,11 +108,11 @@ export class RoomController {
     )
     roomId: string,
     @Body() body: UpdateRoomDto,
-  ): Promise<string> {
+  ): Promise<object> {
     return this.roomService.updateRoom(roomId, body)
   }
-  //   @UseGuards(JwtAuthGuard, RolesGuard)
-  //   @Roles(Role.Admin)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.Admin)
   @Delete('/:roomId')
   deleteRoomById(
     @Param(
@@ -114,11 +122,11 @@ export class RoomController {
       }),
     )
     roomId: string,
-  ): Promise<string> {
-    return this.deleteRoomById(roomId)
+  ): Promise<object> {
+    return this.roomService.deleteRoom(roomId)
   }
-  //   @UseGuards(JwtAuthGuard, RolesGuard)
-  //   @Roles(Role.Admin)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.Admin)
   @Post('/images/:roomId')
   @UseInterceptors(
     FilesInterceptor('image', 20, {
@@ -139,6 +147,7 @@ export class RoomController {
     roomId: string,
     @UploadedFiles() files,
   ): Promise<string> {
+    console.log('haha')
     const response = []
     if (files) {
       for (let index = 0; index < files.length; index++) {
@@ -155,13 +164,14 @@ export class RoomController {
       return this.roomService.updateRoomImages(roomId, response)
     }
   }
-  //   @UseGuards(JwtAuthGuard, RolesGuard)
-  //   @Roles(Role.Admin)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.Admin)
   @Post()
   createRoom(@Body() body: CreateRoomDto): Promise<object> {
     return this.roomService.createRoom(body)
   }
   @Get()
+  @Public()
   getAllRoom(): Promise<RoomEntity[]> {
     const listRoom = this.roomService.findAll()
     if (listRoom) {

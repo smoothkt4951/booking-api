@@ -1,20 +1,25 @@
-import { RedisModule } from '@liaoliaots/nestjs-redis';
-import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { RedisModule } from '@liaoliaots/nestjs-redis'
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common'
+import { ConfigModule, ConfigService } from '@nestjs/config'
 // import { APP_GUARD } from '@nestjs/core';
-import { JwtModule } from '@nestjs/jwt';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { join } from 'path';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { JwtModule } from '@nestjs/jwt'
+import { TypeOrmModule } from '@nestjs/typeorm'
+import { join } from 'path'
+import { AppController } from './app.controller'
+import { AppService } from './app.service'
 
-import { AuthModule } from './auth/auth.module';
-import { RedisMiddleware } from './auth/middlewares/redis.middleware';
-import { UserModule } from './user/user.module';
-import { LoggingMiddleware } from './common/middleware/logging.middleware';
-import { AuthMiddleware } from './auth/middlewares/auth.middleware';
-import { BookingModule } from './booking/booking.module';
-import { RoomModule } from './room/room.module';
+import { AuthModule } from './auth/auth.module'
+import { RedisMiddleware } from './auth/middlewares/redis.middleware'
+import { UserModule } from './user/user.module'
+import { LoggingMiddleware } from './common/middleware/logging.middleware'
+import { AuthMiddleware } from './auth/middlewares/auth.middleware'
+import { BookingModule } from './booking/booking.module'
+import { RoomModule } from './room/room.module'
 
 @Module({
   imports: [
@@ -54,9 +59,7 @@ import { RoomModule } from './room/room.module';
     }),
   ],
   controllers: [AppController],
-  providers: [
-    AppService,
-  ],
+  providers: [AppService],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
@@ -71,11 +74,23 @@ export class AppModule implements NestModule {
           path: 'auth/register',
           method: RequestMethod.POST,
         },
+        {
+          path: 'rooms',
+          method: RequestMethod.GET,
+        },
+        {
+          path: 'rooms/(.*)',
+          method: RequestMethod.GET,
+        },
+        {
+          path: 'users',
+          method: RequestMethod.POST,
+        },
       )
       .forRoutes({
         path: '*',
         method: RequestMethod.ALL,
-      });
+      })
     consumer
       .apply(RedisMiddleware)
       .exclude(
@@ -92,6 +107,6 @@ export class AppModule implements NestModule {
           method: RequestMethod.POST,
         },
       )
-      .forRoutes('*');
+      .forRoutes('*')
   }
 }

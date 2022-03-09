@@ -5,7 +5,7 @@ import {
   Req,
 } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { Repository } from 'typeorm'
+import { DeleteResult, Repository, UpdateResult } from 'typeorm'
 import {
   CreateRoomDto,
   FileDto,
@@ -30,7 +30,7 @@ export class RoomService {
 
   async findAll(): Promise<RoomEntity[]> {
     try {
-      return await this.roomsRepository.find()
+      return await this.roomsRepository.find({ order: { created_at: 'DESC' } })
     } catch (error) {
       throw new HttpException('Internal server error', 500)
     }
@@ -72,22 +72,23 @@ export class RoomService {
       throw new HttpException('Internal server error', 500)
     }
   }
-  async updateRoom(roomId: string, payload: UpdateRoomDto): Promise<string> {
+  async updateRoom(
+    roomId: string,
+    payload: UpdateRoomDto,
+  ): Promise<UpdateResult> {
     let updatedRoom = this.findOne(roomId)
     if (updatedRoom === undefined) {
       throw new NotFoundException()
     }
     try {
-      await this.roomsRepository.update(roomId, payload)
-      return 'The room has been updated'
+      return await this.roomsRepository.update(roomId, payload)
     } catch (error) {
       throw new HttpException('Internal server error', 500)
     }
   }
-  async deleteRoom(roomId: string): Promise<string> {
+  async deleteRoom(roomId: string): Promise<DeleteResult> {
     try {
-      await this.roomsRepository.delete(roomId)
-      return 'The room has been updated'
+      return await this.roomsRepository.delete(roomId)
     } catch (error) {
       throw new HttpException('Internal server error', 500)
     }

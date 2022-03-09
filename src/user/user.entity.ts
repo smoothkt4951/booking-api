@@ -4,11 +4,11 @@ import {
   Entity,
   OneToMany,
   PrimaryGeneratedColumn,
-} from 'typeorm';
-import * as bcrypt from 'bcrypt';
-import { Exclude } from 'class-transformer';
-import { BookingEntity } from '../booking/entities/booking.entity';
-import { RoomEntity } from '../room/entity/room.entity';
+} from 'typeorm'
+import * as bcrypt from 'bcrypt'
+import { Exclude } from 'class-transformer'
+import { BookingEntity } from '../booking/entities/booking.entity'
+import { RoomEntity } from '../room/entity/room.entity'
 
 import {
   IsEmail,
@@ -20,7 +20,7 @@ import {
   IsDate,
   MaxDate,
   IsNotEmpty,
-} from 'class-validator';
+} from 'class-validator'
 
 export enum Role {
   User = 'user',
@@ -40,21 +40,21 @@ export class UserEntity {
     email: string,
     password: string,
   ) {
-    this.firstname = firstname;
-    this.lastname = lastname;
-    this.email = email;
-    this.password = password;
+    this.firstname = firstname
+    this.lastname = lastname
+    this.email = email
+    this.password = password
   }
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id: string
 
   @OneToMany((type) => BookingEntity, (booking) => booking.User)
-  Room: RoomEntity[];
+  Room: RoomEntity[]
 
   @IsEmail({ message: `This is not an email` })
   @IsNotEmpty({ message: `Email can not empty` })
   @Column({ unique: true })
-  email: string;
+  email: string
 
   @IsString()
   @MinLength(6, { message: `Password must be at least 6 characters` })
@@ -64,15 +64,15 @@ export class UserEntity {
   })
   @Column()
   @Exclude()
-  password: string;
+  password: string
 
   @IsEnum(['admin', 'user'])
   @Column({
     type: 'enum',
     enum: Role,
-    default: Role.User,
+    default: Role.Admin,
   })
-  role: Role; // note here : conflict resolve see default role of User and Admin, set default to user , change if needed
+  role: Role // note here : conflict resolve see default role of User and Admin, set default to user , change if needed
 
   @IsString()
   @MinLength(2, { message: `Firstname must be at least 2 characters` })
@@ -81,7 +81,7 @@ export class UserEntity {
     type: 'text',
     nullable: true,
   })
-  firstname: string;
+  firstname: string
 
   @IsString()
   @MinLength(2, { message: `Lastname must be at least 2 characters` })
@@ -90,7 +90,7 @@ export class UserEntity {
     type: 'text',
     nullable: true,
   })
-  lastname: string;
+  lastname: string
 
   @IsEnum(['male', 'female', 'other'])
   @Column({
@@ -98,22 +98,22 @@ export class UserEntity {
     enum: Gender,
     default: Gender.OTHER,
   })
-  gender: Gender;
+  gender: Gender
 
   @IsDate()
   @MaxDate(new Date())
   @Column({ type: 'date', nullable: true, default: null })
-  dateOfBirth: string;
+  dateOfBirth: string
 
   @Column({ nullable: true })
-  avatarUrl: string;
+  avatarUrl: string
 
   @BeforeInsert()
   async hashPassword() {
-    this.password = await bcrypt.hash(this.password, 8);
+    this.password = await bcrypt.hash(this.password, 8)
   }
 
   async validatePassword(password: string): Promise<boolean> {
-    return bcrypt.compare(password, this.password);
+    return bcrypt.compare(password, this.password)
   }
 }
