@@ -1,6 +1,6 @@
 import { Exclude } from 'class-transformer'
-import { RoomEntity } from '../../room/entity/room.entity'
-import { UserEntity } from '../../user/user.entity'
+import { RoomEntity } from '../../room/entities/room.entity'
+import { UserEntity } from '../../user/entities/user.entity'
 import {
   BeforeInsert,
   BeforeUpdate,

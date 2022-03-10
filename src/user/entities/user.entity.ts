@@ -8,7 +8,7 @@ import {
 import * as bcrypt from 'bcrypt';
 import { Exclude } from 'class-transformer';
 import { BookingEntity } from 'src/booking/entities/booking.entity';
-import { RoomEntity } from '../room/entity/room.entity';
+import { RoomEntity } from '../../room/entities/room.entity';
 
 import {
   IsEmail,
@@ -72,7 +72,7 @@ export class UserEntity {
   @Column({
     type: 'enum',
     enum: Role,
-    default: Role.Admin,
+    default: Role.User,
   })
   role: Role; // note here : conflict resolve see default role of User and Admin, set default to user , change if needed
 

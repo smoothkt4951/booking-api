@@ -1,6 +1,6 @@
 import { Type } from 'class-transformer';
 import { IsNotEmpty, IsEnum, IsDate, MaxDate } from 'class-validator';
-import { Gender } from 'src/user/user.entity';
+import { Gender } from 'src/user/entities/user.entity';
 
 export class UpdateUserInfoDto {
   @IsNotEmpty()

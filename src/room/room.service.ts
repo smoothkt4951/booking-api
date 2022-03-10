@@ -12,7 +12,7 @@ import {
   RoomResponseDto,
   UpdateRoomDto,
 } from './dto/room.dto'
-import { RoomEntity } from './entity/room.entity'
+import { RoomEntity } from './entities/room.entity'
 import { unlinkSync } from 'fs'
 import { v2 } from 'cloudinary'
 const cloud = v2

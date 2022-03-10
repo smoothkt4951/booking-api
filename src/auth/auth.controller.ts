@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common'
 import { Response, Request } from 'express'
 import { Redis } from 'ioredis'
-import { Role } from 'src/user/user.entity'
+import { Role } from 'src/user/entities/user.entity'
 import { AuthService } from './auth.service'
 import { Public } from './decorators/public.decorator'
 import { AuthLoginDto } from './dto/auth-login.dto'
