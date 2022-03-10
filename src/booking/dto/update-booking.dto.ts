@@ -7,7 +7,7 @@ import { CreateBookingDtoRequest } from './create-booking.dto'
 export class UpdateBookingDtoRequest {
   @ApiPropertyOptional()
   @IsOptional()
-  room_id: string
+  RoomID: string
 
   @Type(() => Date)
   @IsDate()
