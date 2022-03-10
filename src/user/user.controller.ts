@@ -126,7 +126,7 @@ export class UserController {
   }
 
   @Roles(Role.User, Role.Admin)
-  @Patch('avatar/upload/')
+  @Patch('avatar/upload/:id')
   @UseInterceptors(
     FileInterceptor('image', {
       storage: diskStorage({
@@ -140,9 +140,10 @@ export class UserController {
   async uploadImage(
     @UploadedFile() file: Express.Multer.File,
     @Body(ValidationPipe) body,
+    @Param('id') id: string
   ) {
     console.log({ body })
-    console.log(body.user_id)
+    // console.log(body.user_id)
     if (file) {
       const cloudinaryFile = await this.cloudinaryService
         .uploadImage(`./uploads/${file.filename}`, file)
@@ -159,7 +160,7 @@ export class UserController {
         url: cloudinaryFile.url,
         original_filename: cloudinaryFile.original_filename,
       }
-      return this.userService.saveAvatar(cloudUrl, body.user_id)
+      return this.userService.saveAvatar(cloudUrl, id)
     } else {
       throw new HttpException(
         {
