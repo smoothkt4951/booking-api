@@ -21,7 +21,7 @@ import { FilesInterceptor, MulterModule } from '@nestjs/platform-express';
 import { extname, join } from 'path';
 import { CreateRoomDto, SearchRoomDto, UpdateRoomDto } from './dto/room.dto';
 import { diskStorage } from 'multer';
-import { RoomEntity } from './entity/room.entity';
+import { RoomEntity } from './entities/room.entity';
 import { RoomService } from './room.service';
 import { ApiTags } from '@nestjs/swagger';
 

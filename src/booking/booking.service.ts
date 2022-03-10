@@ -4,9 +4,9 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common'
-import { RoomEntity } from '../room/entity/room.entity'
+import { RoomEntity } from '../room/entities/room.entity'
 import { RoomService } from '../room/room.service'
-import { UserEntity } from '../user/user.entity'
+import { UserEntity } from '../user/entities/user.entity'
 import { UserService } from '../user/user.service'
 import { Connection, LessThan, Repository } from 'typeorm'
 import { CreateBookingDtoRequest } from './dto/create-booking.dto'

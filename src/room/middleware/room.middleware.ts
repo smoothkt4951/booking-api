@@ -7,7 +7,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm'
 import { Request, Response, NextFunction } from 'express'
 import { Repository } from 'typeorm'
-import { RoomEntity } from '../entity/room.entity'
+import { RoomEntity } from '../entities/room.entity'
 @Injectable()
 export class RoomsMiddleware implements NestMiddleware {
   constructor(

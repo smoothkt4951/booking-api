@@ -1,4 +1,4 @@
-import { Gender, Role } from 'src/user/user.entity';
+import { Gender, Role } from 'src/user/entities/user.entity';
 
 export const UserStub = {
   user: {

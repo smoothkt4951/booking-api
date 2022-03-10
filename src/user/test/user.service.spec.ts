@@ -1,5 +1,5 @@
 import { CloudinaryModule } from 'src/cloudinary/cloudinary.module';
-import { UserEntity } from 'src/user/user.entity';
+import { UserEntity } from 'src/user/entities/user.entity';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { UserService } from '../user.service';
