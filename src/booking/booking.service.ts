@@ -8,12 +8,11 @@ import { RoomEntity } from '../room/entity/room.entity'
 import { RoomService } from '../room/room.service'
 import { UserEntity } from '../user/user.entity'
 import { UserService } from '../user/user.service'
-import { Connection, LessThan, Repository } from 'typeorm'
+import { LessThan, Repository } from 'typeorm'
 import { CreateBookingDtoRequest } from './dto/create-booking.dto'
 import { UpdateBookingDtoRequest } from './dto/update-booking.dto'
 import { InjectRepository } from '@nestjs/typeorm'
 import { BookingEntity } from './entities/booking.entity'
-import { type } from 'os'
 
 @Injectable()
 export class BookingService {
@@ -51,7 +50,6 @@ export class BookingService {
       dto.check_in_date,
       dto.check_out_date,
     )
-    console.log(res)
     if (res) {
       const entity = this.repository.create({
         Room: room_entity,
@@ -137,18 +135,18 @@ export class BookingService {
         HttpStatus.BAD_REQUEST,
       )
     }
-    const booking_entity = await this.findBookingByBookingId(Bookingid)
+    const booking_entity = await this.repository.findOne({uuid:Bookingid})
     let dummydto = JSON.parse(JSON.stringify(dto))
     for (var field in dto) {
       if (!dto[field]) {
         dummydto[field] = booking_entity[field]
       }
     }
-
-    let target_room_entity = await this.roomService.findOne(dto.room_id)
+    let target_room_entity = await this.roomService.findOne(dto.RoomID)
     let target_timesheet: Array<Date>
     if (!target_room_entity) {
-      target_room_entity = await this.roomService.findOne(dummydto.RoomID)
+      target_room_entity = await this.roomService.findOne(dummydto.room_id)
+      console.log(target_room_entity)
       target_timesheet = await this.getRoomTimesheet(target_room_entity.id)
       target_timesheet = target_timesheet.filter(
         (date) =>
@@ -165,7 +163,8 @@ export class BookingService {
         dummydto.check_out_date,
       )
     ) {
-      await this.repository.update(booking_entity, {
+      console.log(booking_entity)
+      await this.repository.update({uuid:Bookingid}, {
         ...dummydto,
         totalPrice: this.priceCalculation(target_room_entity, dummydto),
       })
@@ -178,8 +177,8 @@ export class BookingService {
       )
   }
 
-  async removeByBookingId(booking_id: string) {
-    const entity = await this.findBookingByBookingId(booking_id)
+  async removeByBookingId(uuid: string) {
+    const entity = await this.repository.findOne({uuid:uuid})
     if (!entity) {
       throw new NotFoundException('Booking not found')
     }
@@ -222,9 +221,9 @@ export class BookingService {
   ): Promise<boolean> {
     timesheet.push(chIn, chOut)
     
-    timesheet.sort(function (a, b) {
-      const date1 = a.getTime()
-      const date2 = b.getTime()
+    timesheet.sort(function (a:Date, b:Date) {
+      const date1 = new Date(a).getTime()
+      const date2 = new Date(b).getTime()
       return date1 - date2
     })
     console.log(timesheet)

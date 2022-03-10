@@ -53,6 +53,7 @@ export class BookingController {
     @Param('bookingId') id: string,
     @Body() updateBookingDto: UpdateBookingDtoRequest,
   ): Promise<void> {
+    console.log(updateBookingDto)
     return this.bookingService.updateByBookingId(id, updateBookingDto)
   }
 
@@ -60,4 +61,8 @@ export class BookingController {
   remove(@Param('bookingId') id: string): Promise<BookingEntity> {
     return this.bookingService.removeByBookingId(id)
   }
+
+  @Get('/timetable/:uuid')
+  async retrieveTimetable(@Param('uuid') id: string): Promise<Date[]> {
+    return await this.bookingService.getRoomTimesheet(id)}
 }
