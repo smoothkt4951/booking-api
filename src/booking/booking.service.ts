@@ -8,9 +8,9 @@ import { RoomEntity } from '../room/entities/room.entity'
 import { RoomService } from '../room/room.service'
 import { UserEntity } from '../user/entities/user.entity'
 import { UserService } from '../user/user.service'
-import { LessThan, Repository } from 'typeorm'
+import { Connection, getManager, LessThan, Repository } from 'typeorm'
 import { CreateBookingDtoRequest } from './dto/create-booking.dto'
-import { UpdateBookingDtoRequest } from './dto/update-booking.dto'
+import { findBookingDtoResponse, UpdateBookingDtoRequest } from './dto/update-booking.dto'
 import { InjectRepository } from '@nestjs/typeorm'
 import { BookingEntity } from './entities/booking.entity'
 
@@ -20,6 +20,7 @@ export class BookingService {
     @InjectRepository(BookingEntity) private repository: Repository<BookingEntity>,
     private userService: UserService,
     private roomService: RoomService,
+    private connection:Connection,
   ) {}
   priceCalculation(entity: RoomEntity, dto: Partial<BookingEntity>) {
     return (
@@ -72,15 +73,24 @@ export class BookingService {
   }
 
   async findAll() {
-    const entity_list = await this.repository.find().catch((err) => {
-      throw new HttpException(
-        {
-          message: err.message,
-        },
-        HttpStatus.BAD_REQUEST,
-      )
-    })
-    return entity_list
+    const query=await this.repository.createQueryBuilder("booking").innerJoinAndSelect("booking.Room","room").innerJoinAndSelect("booking.User","user").getMany()
+    const res:findBookingDtoResponse[] = []
+    for (const element of query){
+      const object:findBookingDtoResponse = {
+        uuid: element.uuid,
+        booking_id: element.booking_id,
+        UserID: element.UserID,
+        RoomID: element.RoomID,
+        check_in_date: element.check_in_date,
+        check_out_date: element.check_out_date,
+        created_date: element.created_date,
+        totalPrice: element.totalPrice,
+        Room_codeName: element.Room.codeName,
+        User_name: element.User.firstname + " " + element.User.lastname
+      } 
+      res.push(object)
+    }
+    return res
   }
 
   async findBookingByBookingId(id: string) {
@@ -94,6 +104,7 @@ export class BookingService {
           HttpStatus.BAD_REQUEST,
         )
       })
+      
     return entity
   }
 
@@ -144,18 +155,17 @@ export class BookingService {
     }
     let target_room_entity = await this.roomService.findOne(dto.RoomID)
     let target_timesheet: Array<Date>
-    if (!target_room_entity) {
-      target_room_entity = await this.roomService.findOne(dummydto.room_id)
-      console.log(target_room_entity)
+    if (dto.RoomID==booking_entity.RoomID) {
       target_timesheet = await this.getRoomTimesheet(target_room_entity.id)
       target_timesheet = target_timesheet.filter(
         (date) =>
-          date !== dummydto.check_in_date || date !== dummydto.check_out_date,
+          {console.log(dummydto.check_in_date,dummydto.check_out_date);date != new Date(dummydto.check_in_date) || date != new Date(dummydto.check_out_date)}
       )
     } else {
       target_timesheet = await this.getRoomTimesheet(target_room_entity.id)
+      
     }
-
+    
     if (
       await this.checkTimesheetInsertion(
         target_timesheet,
@@ -163,7 +173,6 @@ export class BookingService {
         dummydto.check_out_date,
       )
     ) {
-      console.log(booking_entity)
       await this.repository.update({uuid:Bookingid}, {
         ...dummydto,
         totalPrice: this.priceCalculation(target_room_entity, dummydto),
@@ -176,7 +185,7 @@ export class BookingService {
         HttpStatus.GONE,
       )
   }
-
+  
   async removeByBookingId(uuid: string) {
     const entity = await this.repository.findOne({uuid:uuid})
     if (!entity) {
