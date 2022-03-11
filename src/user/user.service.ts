@@ -105,7 +105,10 @@ export class UserService {
   async removeUser(id) {
     const user = await this.userRepository.findOne(id)
     console.log(user)
-    await this.cloudinaryService.deleteOldAvatar(user.avatarUrl)
+    if(user.avatarUrl){
+      await this.cloudinaryService.deleteOldAvatar(user.avatarUrl)
+    }
+    
 
     const removeUser = await this.userRepository.delete(id).catch((err) => {
       throw new HttpException(
