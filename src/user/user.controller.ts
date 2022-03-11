@@ -77,6 +77,7 @@ export class UserController {
   @Roles(Role.Admin, Role.User)
   @Post()
   async createUser(@Body(ValidationPipe) body: CreateUserDto) {
+    console.log('Vo day di con');
     const createdUser = await this.userService.createUser(body)
     if (!createdUser) {
       throw new HttpException(

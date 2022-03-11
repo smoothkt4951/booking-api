@@ -57,7 +57,6 @@ export class AuthService {
         'Email or Password is invalid!',
         HttpStatus.BAD_REQUEST,
       )
-      return null
     }
     return user
   }
