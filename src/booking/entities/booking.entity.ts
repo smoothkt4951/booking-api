@@ -1,6 +1,6 @@
-import { Exclude } from 'class-transformer'
-import { RoomEntity } from '../../room/entity/room.entity'
-import { UserEntity } from '../../user/user.entity'
+import { Exclude, Expose } from 'class-transformer'
+import { RoomEntity } from '../../room/entities/room.entity'
+import { UserEntity } from '../../user/entities/user.entity'
 import {
   BeforeInsert,
   BeforeUpdate,
@@ -30,14 +30,13 @@ export class BookingEntity {
 
   @Column({ type: 'text', nullable: false })
   UserID: string
-  @Exclude()
+
   @ManyToOne((type) => UserEntity, {onDelete: 'CASCADE'})
   @JoinColumn({ name: 'UserID' })
   User: UserEntity
 
   @Column({ type: 'text', nullable: false })
   RoomID: string
-  @Exclude()
   @ManyToOne((type) => RoomEntity ,{onDelete: 'CASCADE'}) 
   @JoinColumn({ name: 'RoomID', })
   Room: RoomEntity

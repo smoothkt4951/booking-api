@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserDto } from '../auth/dto/create-user.dto';
 import { Repository } from 'typeorm';
-import { UserEntity } from './user.entity';
+import { UserEntity } from './entities/user.entity';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { UpdateUserInfoDto } from '../user/dto/update-userInfo.dto';
 import { UploadAvatarDto } from './dto/upload-avatar.dto';
@@ -105,7 +105,10 @@ export class UserService {
   async removeUser(id) {
     const user = await this.userRepository.findOne(id)
     console.log(user)
-    await this.cloudinaryService.deleteOldAvatar(user.avatarUrl)
+    if(user.avatarUrl){
+      await this.cloudinaryService.deleteOldAvatar(user.avatarUrl)
+    }
+    
 
     const removeUser = await this.userRepository.delete(id).catch((err) => {
       throw new HttpException(

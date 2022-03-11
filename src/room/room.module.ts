@@ -1,17 +1,18 @@
+import { CloudinaryModule } from 'src/cloudinary/cloudinary.module'
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common'
 import { RoomController } from './room.controller'
 import { RoomService } from './room.service'
 import { MulterModule } from '@nestjs/platform-express'
 import { TypeOrmModule } from '@nestjs/typeorm'
-import { RoomEntity } from './entity/room.entity'
+import { RoomEntity } from './entities/room.entity'
 import { RoomsMiddleware } from './middleware/room.middleware'
 import { RequestMethod } from '@nestjs/common/enums/request-method.enum'
 import { UserService } from '../user/user.service'
 
 import { UserModule } from 'src/user/user.module'
 import { AuthModule } from 'src/auth/auth.module'
-import { UserEntity } from 'src/user/user.entity'
-import { CloudinaryModule } from 'src/cloudinary/cloudinary.module'
+import { UserEntity } from 'src/user/entities/user.entity'
+
 @Module({
   imports: [
     MulterModule.register({ dest: './uploads' }),
