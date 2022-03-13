@@ -43,10 +43,10 @@ export class UserEntity {
     email?: string,
     password?: string,
   ) {
-    this.firstname = firstname;
-    this.lastname = lastname;
-    this.email = email;
-    this.password = password;
+    this.firstname = firstname
+    this.lastname = lastname
+    this.email = email
+    this.password = password
   }
   @PrimaryGeneratedColumn('uuid')
   @ApiProperty(

@@ -1,34 +1,45 @@
-import { BookingEntity } from '../../booking/entities/booking.entity'
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm'
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm'
 
 export enum RoomSize {
-    SINGLE = 'single',
-    DOUBLE = 'double',
-    DORMITORY = 'dormitory',
+  SINGLE = 'single',
+  DOUBLE = 'double',
+  DORMITORY = 'dormitory',
 }
 
 @Entity()
 export class RoomEntity {
   @PrimaryGeneratedColumn('uuid')
-  @OneToMany((type) => BookingEntity, (booking) => booking.Room)
   id: string
-
   @Column()
   codeName: string
-
   @Column('boolean', { default: true })
   isVacant: boolean
-
   @Column({
     type: 'enum',
     enum: RoomSize,
     default: RoomSize.SINGLE,
   })
   size: RoomSize
-
   @Column('float', { default: 0 })
   price: number
-
   @Column('simple-array', { nullable: true })
   images?: string[]
+  @CreateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+  })
+  created_at: Date
+
+  @UpdateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+    onUpdate: 'CURRENT_TIMESTAMP(6)',
+  })
+  updated_at: Date
 }

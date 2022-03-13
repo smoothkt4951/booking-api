@@ -11,7 +11,7 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger'
 import { Connection } from 'typeorm'
 import { BookingService } from './booking.service'
 import { CreateBookingDtoRequest } from './dto/create-booking.dto'
-import { UpdateBookingDtoRequest } from './dto/update-booking.dto'
+import { findBookingDtoResponse, UpdateBookingDtoRequest } from './dto/update-booking.dto'
 import { BookingEntity } from './entities/booking.entity'
 
 @ApiTags('Booking')
@@ -20,7 +20,6 @@ import { BookingEntity } from './entities/booking.entity'
 export class BookingController {
   constructor(
     private readonly bookingService: BookingService,
-    private readonly connection: Connection,
   ) {}
 
   @Post('')
@@ -31,8 +30,8 @@ export class BookingController {
   }
 
   @Get('')
-  findAll(): Promise<BookingEntity[]> {
-    return this.bookingService.findAll() //done?
+  findAll(): Promise<findBookingDtoResponse[]> {
+    return this.bookingService.findAll() 
   }
 
   @Get('findByID/:bookingId')

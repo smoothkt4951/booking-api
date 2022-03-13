@@ -80,7 +80,10 @@ export class AppModule implements NestModule {
         {
           path: 'auth/logout',
           method: RequestMethod.POST,
-        }
+        },{
+          path: 'rooms/(.*)',
+          method: RequestMethod.GET,
+        },
       )
       .forRoutes({
         path: '*',
