@@ -23,7 +23,7 @@ import { CreateRoomDto, SearchRoomDto, UpdateRoomDto } from './dto/room.dto';
 import { diskStorage } from 'multer';
 import { RoomEntity } from './entities/room.entity';
 import { RoomService } from './room.service';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 // import { RolesGuard } from 'src/auth/roles.guard';
 
@@ -50,6 +50,7 @@ export const editFileName = (req, file, callback) => {
 @Controller('rooms')
 export class RoomController {
   constructor(private roomService: RoomService) {}
+  @ApiBearerAuth('access-token')
   @Get('pagination')
   async getPaginatedRoom(@Query() queryParams: SearchRoomDto): Promise<object> {
     const builder = await this.roomService.getRoomPagination('room_entity');
@@ -74,6 +75,7 @@ export class RoomController {
       last_page: Math.ceil(total / limit),
     };
   }
+  @ApiBearerAuth('access-token')
   @Get('/:roomId')
   getRoomById(
     @Param(
@@ -93,6 +95,7 @@ export class RoomController {
   }
   //   @UseGuards(JwtAuthGuard, RolesGuard)
   //   @Roles(Role.Admin)
+  @ApiBearerAuth('access-token')
   @Put('/:roomId')
   updateRoomById(
     @Param(
@@ -108,6 +111,7 @@ export class RoomController {
   }
   //   @UseGuards(JwtAuthGuard, RolesGuard)
   //   @Roles(Role.Admin)
+  @ApiBearerAuth('access-token')
   @Delete('/:roomId')
   deleteRoomById(
     @Param(
@@ -122,6 +126,7 @@ export class RoomController {
   }
   //   @UseGuards(JwtAuthGuard, RolesGuard)
   //   @Roles(Role.Admin)
+  @ApiBearerAuth('access-token')
   @Post('/images/:roomId')
   @UseInterceptors(
     FilesInterceptor('image', 20, {
@@ -160,6 +165,7 @@ export class RoomController {
   }
   //   @UseGuards(JwtAuthGuard, RolesGuard)
   //   @Roles(Role.Admin)
+  @ApiBearerAuth('access-token')
   @Post()
   createRoom(@Body() body: CreateRoomDto): Promise<object> {
     return this.roomService.createRoom(body);

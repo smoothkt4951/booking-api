@@ -1,3 +1,4 @@
+import { UpdateUserInfoDto } from './dto/update-userInfo.dto';
 import { Roles } from 'src/auth/decorators/roles.decorator'
 // import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 // import { Roles } from 'src/auth/decorator/roles.decorator';
@@ -28,9 +29,20 @@ import { Express } from 'express'
 import { Role } from './entities/user.entity'
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard'
 import { RolesGuard } from 'src/auth/guards/roles.guard'
-import { ApiTags } from '@nestjs/swagger'
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiConsumes,
+  ApiCreatedResponse,
+  ApiForbiddenResponse,
+  ApiOkResponse,
+  ApiResponse,
+  ApiTags,
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger'
 
 @ApiTags('User')
+@ApiBearerAuth('access-token')
 @UseGuards(JwtAuthGuard, RolesGuard)
 @UsePipes(ValidationPipe)
 @Controller('users')
@@ -40,8 +52,13 @@ export class UserController {
     private cloudinaryService: CloudinaryService,
   ) {}
 
-  @Get()
   @Roles(Role.Admin, Role.User)
+  @Get()
+  @ApiOkResponse({ description: 'Get all users successful' })
+  @ApiUnauthorizedResponse({ description: 'Invalid credentials' })
+  @ApiForbiddenResponse({
+    description: 'Forbidden. Cant get all users infomations',
+  })
   async getAllUsers() {
     const users = await this.userService.findAllUsers()
     if (!users) {
@@ -53,12 +70,14 @@ export class UserController {
         HttpStatus.FORBIDDEN,
       )
     }
-    // console.log(users);
     return users
   }
 
-  @Get(':id')
   @Roles(Role.Admin, Role.User)
+  @Get(':id')
+  @ApiOkResponse({ description: 'Get one user by id successful' })
+  @ApiUnauthorizedResponse({ description: 'Invalid credentials' })
+  @ApiForbiddenResponse({ description: 'Forbidden. Cant get user infomations' })
   async getUser(@Param('id') id: string) {
     const user = await this.userService.findUserBy(id)
     if (!user) {
@@ -70,14 +89,16 @@ export class UserController {
         HttpStatus.FORBIDDEN,
       )
     }
-    // console.log(user);
     return user
   }
 
   @Roles(Role.Admin, Role.User)
   @Post()
+  @ApiCreatedResponse({ description: 'Create user successful' })
+  @ApiUnauthorizedResponse({ description: 'Invalid credentials' })
+  @ApiForbiddenResponse({ description: 'Forbidden. Cant create user' })
+  @ApiBody({type: CreateUserDto})
   async createUser(@Body(ValidationPipe) body: CreateUserDto) {
-    console.log('Vo day di con');
     const createdUser = await this.userService.createUser(body)
     if (!createdUser) {
       throw new HttpException(
@@ -92,15 +113,20 @@ export class UserController {
     return createdUser
   }
 
-  @Put(':id')
   @Roles(Role.Admin, Role.User)
-  async updateUser(@Param('id') id: string, @Body(ValidationPipe) body: any) {
+  @Put(':id')
+  @ApiOkResponse({ description: 'Update user infomations successful' })
+  @ApiUnauthorizedResponse({ description: 'Invalid credentials' })
+  @ApiForbiddenResponse({
+    description: 'Forbidden. Cant update user infomations',
+  })
+  async updateUser(@Param('id') id: string, @Body(ValidationPipe) body: UpdateUserInfoDto) {
     const updatedUser = await this.userService.updateUser(id, body)
     if (!updatedUser) {
       throw new HttpException(
         {
           status: HttpStatus.FORBIDDEN,
-          error: 'Cant update user info',
+          error: 'Cant update user infomations',
         },
         HttpStatus.FORBIDDEN,
       )
@@ -111,6 +137,9 @@ export class UserController {
 
   @Roles(Role.Admin, Role.User)
   @Delete(':id')
+  @ApiOkResponse({ description: 'Delete user successful' })
+  @ApiUnauthorizedResponse({ description: 'Invalid credentials' })
+  @ApiForbiddenResponse({ description: 'Forbidden. Cant delete user' })
   async removeUser(@Param('id') id: string) {
     const removedUser = await this.userService.removeUser(id)
     if (!removedUser) {
@@ -126,6 +155,9 @@ export class UserController {
     return removedUser
   }
 
+  //
+
+
   @Roles(Role.User, Role.Admin)
   @Patch('avatar/upload/:id')
   @UseInterceptors(
@@ -138,13 +170,29 @@ export class UserController {
       limits: { fileSize: 1024 * 1024 },
     }),
   )
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    description: `File avatar uploaded`,
+    type: 'multipart/form-data',
+    required: true,
+    schema: {
+      type: 'object',
+      properties: {
+        image: {
+          type: 'string',
+          format: 'binary'
+        }
+      }
+    }
+  })
+  @ApiOkResponse({ description: 'Uploads user avatar successful' })
+  @ApiUnauthorizedResponse({ description: 'Invalid credentials' })
+  @ApiForbiddenResponse({ description: 'Forbidden. Cant uploads user avatar' })
   async uploadImage(
     @UploadedFile() file: Express.Multer.File,
     @Body(ValidationPipe) body,
-    @Param('id') id: string
+    @Param('id') id: string,
   ) {
-    console.log({ body })
-    // console.log(body.user_id)
     if (file) {
       const cloudinaryFile = await this.cloudinaryService
         .uploadImage(`./uploads/${file.filename}`, file)

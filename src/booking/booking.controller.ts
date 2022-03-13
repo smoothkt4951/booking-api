@@ -7,7 +7,7 @@ import {
   Param,
   Delete,
 } from '@nestjs/common'
-import { ApiTags } from '@nestjs/swagger'
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger'
 import { Connection } from 'typeorm'
 import { BookingService } from './booking.service'
 import { CreateBookingDtoRequest } from './dto/create-booking.dto'
@@ -15,6 +15,7 @@ import { UpdateBookingDtoRequest } from './dto/update-booking.dto'
 import { BookingEntity } from './entities/booking.entity'
 
 @ApiTags('Booking')
+@ApiBearerAuth('access-token')
 @Controller('booking')
 export class BookingController {
   constructor(

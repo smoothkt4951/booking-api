@@ -8,3 +8,11 @@ admin@gmail.com
 root
 
 master pwd: adminroot
+
+
+=== admin migrations
+
+{
+    "email": "admin2@email.com",
+    "password": "123456"
+}
