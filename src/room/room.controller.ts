@@ -62,12 +62,6 @@ export class RoomController {
         keyword: `%${queryParams.keyword}%`,
       })
     }
-    // console.log(
-    //   'page & limit',
-    //   queryParams.page,
-    //   queryParams.limit,
-    //   queryParams.keyword,
-    // )
     builder.orderBy('room_entity.created_at', 'DESC')
 
     const page: number = Number(queryParams.page) || 1
@@ -99,8 +93,8 @@ export class RoomController {
       throw new NotFoundException()
     }
   }
-  //   @UseGuards(JwtAuthGuard, RolesGuard)
-  //   @Roles(Role.Admin)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.Admin)
   @ApiBearerAuth('access-token')
   @Put('/:roomId')
   updateRoomById(
@@ -115,8 +109,8 @@ export class RoomController {
   ): Promise<object> {
     return this.roomService.updateRoom(roomId, body)
   }
-  //   @UseGuards(JwtAuthGuard, RolesGuard)
-  //   @Roles(Role.Admin)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.Admin)
   @ApiBearerAuth('access-token')
   @Delete('/:roomId')
   deleteRoomById(
@@ -130,8 +124,9 @@ export class RoomController {
   ): Promise<object> {
     return this.roomService.deleteRoom(roomId)
   }
-  //   @UseGuards(JwtAuthGuard, RolesGuard)
-  //   @Roles(Role.Admin)
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.Admin)
   @ApiBearerAuth('access-token')
   @Post('/images/:roomId')
   @UseInterceptors(
@@ -170,8 +165,25 @@ export class RoomController {
       return this.roomService.updateRoomImages(roomId, response)
     }
   }
-  //   @UseGuards(JwtAuthGuard, RolesGuard)
-  //   @Roles(Role.Admin)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.Admin)
+  @ApiBearerAuth('access-token')
+  @Delete('/:roomId/:imgIndex')
+  deleteImage(
+    @Param(
+      'roomId',
+      new ParseUUIDPipe({
+        errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE,
+      }),
+    )
+    roomId: string,
+    @Param('imgIndex')
+    imgIndex: string,
+  ): Promise<string> {
+    return this.roomService.deleteImage(roomId, imgIndex)
+  }
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.Admin)
   @ApiBearerAuth('access-token')
   @Post()
   createRoom(@Body() body: CreateRoomDto): Promise<object> {

@@ -24,7 +24,8 @@ cloud.config({
 @Injectable()
 export class RoomService {
   constructor(
-    @InjectRepository(RoomEntity) private roomsRepository: Repository<RoomEntity>,
+    @InjectRepository(RoomEntity)
+    private roomsRepository: Repository<RoomEntity>,
   ) {}
 
   async findAll(): Promise<RoomEntity[]> {
@@ -135,6 +136,29 @@ export class RoomService {
   async getRoomPagination(alias: string) {
     try {
       return await this.roomsRepository.createQueryBuilder(alias)
+    } catch (error) {
+      throw new HttpException('Internal server error', 500)
+    }
+  }
+  async deleteImage(roomId: string, imgIndex: string) {
+    let room = await this.roomsRepository.findOne(roomId)
+    if (room === undefined) {
+      throw new NotFoundException()
+    }
+    try {
+      let joinArr: string[]
+      if (room?.images === null) {
+        return 'There is no image'
+      } else {
+        console.log(room.images)
+        joinArr = room.images.filter((e, index) => index !== Number(imgIndex))
+        console.log(joinArr)
+        await this.roomsRepository.update(
+          { id: roomId },
+          { images: [...joinArr] },
+        )
+        return 'The image has been deleted'
+      }
     } catch (error) {
       throw new HttpException('Internal server error', 500)
     }
