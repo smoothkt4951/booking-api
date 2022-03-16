@@ -28,7 +28,17 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard'
 import { RolesGuard } from 'src/auth/guards/roles.guard'
 import { Roles } from 'src/auth/decorators/roles.decorator'
 import { Role } from 'src/user/entities/user.entity'
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger'
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiConsumes,
+  ApiCreatedResponse,
+  ApiForbiddenResponse,
+  ApiOkResponse,
+  ApiResponse,
+  ApiTags,
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger'
 
 // import { RolesGuard } from 'src/auth/roles.guard';
 
@@ -50,6 +60,7 @@ export const editFileName = (req, file, callback) => {
     .join('')
   callback(null, `${name}-${randomName}${fileExtName}`)
 }
+@ApiTags('Room')
 @Controller('rooms')
 export class RoomController {
   constructor(private roomService: RoomService) {}
@@ -96,6 +107,8 @@ export class RoomController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.Admin)
   @ApiBearerAuth('access-token')
+  @ApiOkResponse({ description: 'Get one user by id successful' })
+  @ApiUnauthorizedResponse({ description: 'Invalid credentials' })
   @Put('/:roomId')
   updateRoomById(
     @Param(
@@ -138,6 +151,21 @@ export class RoomController {
       fileFilter: imageFileFilter,
     }),
   )
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    description: `File image uploaded`,
+    type: 'multipart/form-data',
+    required: true,
+    schema: {
+      type: 'object',
+      properties: {
+        image: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
+  })
   async uploadRoomImages(
     @Param(
       'roomId',
@@ -168,6 +196,8 @@ export class RoomController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.Admin)
   @ApiBearerAuth('access-token')
+  @ApiOkResponse({ description: 'Delete room successful' })
+  @ApiUnauthorizedResponse({ description: 'Invalid credentials' })
   @Delete('/:roomId/:imgIndex')
   deleteImage(
     @Param(
@@ -185,12 +215,15 @@ export class RoomController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.Admin)
   @ApiBearerAuth('access-token')
+  @ApiOkResponse({ description: 'Create room successfully' })
+  @ApiUnauthorizedResponse({ description: 'Invalid credentials' })
   @Post()
   createRoom(@Body() body: CreateRoomDto): Promise<object> {
     return this.roomService.createRoom(body)
   }
   @Get()
   @Public()
+  @ApiOkResponse({ description: 'Get all users successful' })
   getAllRoom(): Promise<RoomEntity[]> {
     const listRoom = this.roomService.findAll()
     if (listRoom) {
