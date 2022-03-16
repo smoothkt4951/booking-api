@@ -23,7 +23,6 @@ import {
   IsNotEmpty,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import moment from 'moment';
 
 export enum Role {
   User = 'user',
