@@ -22,6 +22,7 @@ import { AuthMiddleware } from './auth/middlewares/auth.middleware'
 import { BookingModule } from './booking/booking.module'
 import { RoomModule } from './room/room.module'
 import { typeOrmModuleOptions } from 'src/config/orm.config'
+import { SearchModule } from './search/search.module';
 
 @Module({
   imports: [
@@ -56,6 +57,7 @@ import { typeOrmModuleOptions } from 'src/config/orm.config'
         password: process.env.REDIS_PASSWORD,
       },
     }),
+    SearchModule,
   ],
   controllers: [AppController],
   providers: [CloudinaryService, AppService],

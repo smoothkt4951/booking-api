@@ -8,7 +8,6 @@ import { UserController } from '../user.controller';
 import { DeleteResult, UpdateResult } from 'typeorm';
 import { UserStub } from './stubs/user.stubs';
 import { CreateUserDto } from '../../auth/dto/create-user.dto';
-import { UpdateUserInfoDto } from '../dto/update-userInfo.dto';
 
 jest.mock('./mocks/user.repository.mock');
 describe('UserController', () => {
@@ -18,7 +17,7 @@ describe('UserController', () => {
 
   const userStub = UserStub.user;
   const createUserStub: CreateUserDto = UserStub.createUser;
-  const updateUser: UpdateUserInfoDto = UserStub.updateUser;
+  // const updateUser: UpdateUserInfoDto = UserStub.updateUser;
 
   const usersAllStub = UserStub.usersAll;
   const userId = UserStub.user.id;
